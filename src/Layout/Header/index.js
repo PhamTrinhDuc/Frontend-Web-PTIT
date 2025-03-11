@@ -1,51 +1,62 @@
-import { Menu } from "antd";
-import { FaHome, FaShoppingCart, FaInfoCircle, FaUserCircle} from "react-icons/fa";
-import { Button } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
-import { MdContactMail } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import logo from "../../assets/images/logo.png"
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Row, Col, Input, Button, Badge } from 'antd';
+import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import { FaHome, FaShoppingCart, FaInfoCircle, FaEnvelope} from "react-icons/fa";
+import './Header.scss';
+import logo from '../../assets/images/logo.png'
 
-import "./Header.scss";
-
-function Header() {
-  const navigate = useNavigate();
+const Header = () => {
   return (
-    <header className="header">
-      <div className="header__burger"></div>
-      <div className="header__main">
-        <div className="header__logo">
-          <div className="logo"><img src={logo}></img></div>
-          <p className="brand">Zenith</p>
-        </div>
-        
-        <Menu mode="horizontal" className="header__menu">
-          <Menu.Item key="home" icon={<FaHome />} onClick={() => navigate("/")} className="header__menu-item">
-            Home
-          </Menu.Item>
-          <Menu.Item key="shop" icon={<FaShoppingCart />} onClick={() => navigate("/shop")} className="header__menu-item">
-            Shop
-          </Menu.Item>
-          <Menu.Item key="about" icon={<FaInfoCircle />} onClick={() => navigate("/about")} className="header__menu-item">
-            About
-          </Menu.Item>
-          <Menu.Item key="contact" icon={<MdContactMail />} onClick={() => navigate("/contact")} className="header__menu-item">
-            Contact
-          </Menu.Item>
-        </Menu>
+    <>
+      <div className="decorative-bar"></div>
+      <header className="header">
+        <Row align="middle" className="header-container">
+          <Col xs={12} md={4} className="logo">
+            <img src={logo}></img>
+            <h1>Zenith</h1>
+          </Col>
+          <Col xs={0} md={12} className="nav-links">
+          <nav>
+              <Link to="/" className="nav-link">
+                <FaHome /> Home
+              </Link>
+              <Link to="shop" className="nav-link">
+                <FaShoppingCart /> Shop
+              </Link>
+              <Link to="about" className="nav-link">
+                <FaInfoCircle /> About
+              </Link>
+              <Link to="contact" className="nav-link">
+                <FaEnvelope /> Contact
+              </Link>
+            </nav>
+          </Col>
+          <Col xs={12} md={8} className="header-actions">
+            <Input
+              placeholder="What you looking for?"
+              prefix={<SearchOutlined />}
+              className="search-bar"
+            />
+            
+            <Link to="/shop">
+              <Badge count={0} showZero>
+                  <Button type="link" icon={<ShoppingCartOutlined />} className="cart-icon">
+                    Cart
+                  </Button>
+              </Badge>
+            </Link>
 
-        <div className="header__search">
-          <input type="text" placeholder="What you looking for ?" />
-          <Button className="button__search" type="dashed" shape="circle" icon={<SearchOutlined />} />
-        </div>
-
-        <div className="header__auth">
-          <Button type="ghost" icon={<FaShoppingCart />} className="header__auth-item">Cart</Button>
-          <Button type="ghost" icon={< FaUserCircle />} className="header__auth-item">Sign in</Button>
-        </div>
-      </div>
-    </header>
+            <Link to="/signin">
+              <Button type="link" icon={<UserOutlined />}>
+                Sign in
+              </Button>
+            </Link>
+          </Col>
+        </Row>
+      </header>
+    </>
   );
-}
+};
 
 export default Header;

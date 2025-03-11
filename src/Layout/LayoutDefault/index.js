@@ -1,6 +1,7 @@
+import React from 'react';
 import { NavLink, Link, Outlet } from 'react-router-dom';
-import Header from '../Header'
-
+import Header from '../Header';
+import Footer from '../Footer';
 
 function LayoutDefault() {
 
@@ -11,13 +12,11 @@ function LayoutDefault() {
     <>
       <div className="layout-default">
         <Header />
-
         <main className="layout-default__main">
           <Outlet />
+          Content
         </main>
-        <footer className="layout-default__footer">
-          Copyright @2023 by PTIT
-        </footer>
+        <Footer />
       </div>
     </>
   );

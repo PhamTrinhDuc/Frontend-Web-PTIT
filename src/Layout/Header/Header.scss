@@ -1,100 +1,110 @@
-@import"../../utils/colos";
+@import"../../utils/colors";
 
+.decorative-bar {
+  background-color: $black;
+  height: 40px;
+  width: 100%;
+}
 
 .header {
+  background-color: $white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 5px 10px;
 
-  &__main{
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-bottom: 10px;
-    flex: 1;
-
+  .header-container {
+    // max-width: 1200px;
+    margin: 0 auto;
   }
 
-  &__burger {
-    width: 100%;
-    height: 40px;
-    background-color: black;
-  }
-  &__logo {
+  .logo {
     display: flex;
-    align-items: center;
-    font-weight: bold;
-    color: $black;
-    margin-left: 30px;
-    margin-top: 10px;
-
-    .logo img {
-      width: 60px;
-      height: 80px;
-      margin-right: 15px;
+    font-family: 'Times New Roman', Times, serif;
+    img {
+      width: 50px;
+      height: 70px;
+      margin-right: 10px;
     }
-
-    .brand {
+    h1 {
       font-size: 45px;
       font-weight: bold;
+      margin: 0;
       color: $black;
     }
   }
-  &__menu {
-    // min-width: 450px;
-    margin-top: 40px;
-    background-color: $bg;
 
-    &-item {
-      color: $text;
-      font-size: 20px;
-      font-weight: 700;
-      padding: 0 10px;
-      cursor: pointer;
-      transition: color 0.3s; /* Áp dụng transition ở trạng thái ban đầu */
+  .nav-links {
+    text-align: center;
 
-      .ant-menu-item-icon {
-        height: 25px;
-        width: 25px;
-      }
-      .ant-menu-item {
-        color: $text;
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+
+      .nav-link {
+        color: $black;
+        text-decoration: none;
+        font-size: 20px;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        gap: 8px; // Khoảng cách giữa icon và text
+
+        &:hover {
+          color: $hover-bg;
+        transition: all 0.3s ease;
+        }
+        svg { // Tùy chỉnh icon từ react-icons
+          font-size: 20px;
+        }
       }
     }
   }
 
-  &__search {
-    margin-top: 40px;
-    transition: opacity 0.7s;
-    
-    input {
-      padding: 5px 15px;
-      border-radius: 20px;
-      border: 1px solid $text;
-      font-size: 18px;
-    }
-
-    .button__search {
-      background-color: $black;
-      color: $white;
-      border: none;
-      margin-left: 10px;
-      border-radius: 20px;
-      cursor: pointer;
-    }
-  }
-
-  &__auth {
-    margin-right: 20px;
-    margin-top: 40px;
+  .header-actions {
     display: flex;
-    &-item {
-      border: rgb(80, 79, 77) 1px solid;
-      border-radius: 30px;
-      margin-left: 5px;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+
+    .search-bar {
+      max-width: 200px;
+      border-radius: 20px;
     }
-    &-item:hover {
-      background-color: $hover-bg;
-      transition: all 0.3s ease;
+
+    .ant-btn {
+      color: $black;
+      font-size: 16px;
+
+      &:hover {
+        color: $hover-bg;
+        transition: all 0.3s ease;
+      }
+    }
+
+    .cart-icon {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 20px;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .nav-links {
+      display: none; // Ẩn menu trên màn hình nhỏ
+    }
+
+    .logo {
+      text-align: left;
+    }
+
+    .header-actions {
+      justify-content: flex-end;
+
+      .search-bar {
+        max-width: 150px;
+      }
     }
   }
 }
