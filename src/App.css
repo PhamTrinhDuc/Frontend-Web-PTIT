@@ -37,6 +37,10 @@
   }
 }
 
+body {
+  background-color: #f5f5fa;
+}
+
 
 * {
   margin: 0;
@@ -45,8 +49,8 @@
   font-family: Arial, sans-serif;
 }
 
-.container {
+/* .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 15px;
-}
+} */
