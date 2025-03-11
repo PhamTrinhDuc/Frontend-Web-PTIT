@@ -4,7 +4,7 @@ import MainLayout from  '../../../Layout/LayoutDefault';
 function Home () {
   return (
     <>  
-      <MainLayout />
+      
     </>
   )
 }

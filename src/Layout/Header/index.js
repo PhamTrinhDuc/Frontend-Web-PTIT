@@ -12,9 +12,11 @@ const Header = () => {
       <div className="decorative-bar"></div>
       <header className="header">
         <Row align="middle" className="header-container">
-          <Col xs={12} md={4} className="logo">
-            <img src={logo}></img>
-            <h1>Zenith</h1>
+          <Col xs={12} md={4} className="logo-container">
+            <Link to="/" className='logo'>
+              <img src={logo}></img>
+              Zenith
+            </Link>
           </Col>
           <Col xs={0} md={12} className="nav-links">
           <nav>

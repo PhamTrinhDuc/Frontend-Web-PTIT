@@ -1,11 +1,11 @@
 import './App.css';
-import MainLayout from './Layout/LayoutDefault';
-import Home from './pages/user/Home';
+import AllRoutes from './routes/AllRoutes';
+
 
 function App() {
   return (
     <>
-      <Home />
+      <AllRoutes />
     </>
   );
 }

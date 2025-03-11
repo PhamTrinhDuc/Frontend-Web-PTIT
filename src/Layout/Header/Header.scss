@@ -16,7 +16,7 @@
     margin: 0 auto;
   }
 
-  .logo {
+  .logo-container {
     display: flex;
     font-family: 'Times New Roman', Times, serif;
     img {
@@ -24,7 +24,7 @@
       height: 70px;
       margin-right: 10px;
     }
-    h1 {
+    .logo {
       font-size: 45px;
       font-weight: bold;
       margin: 0;

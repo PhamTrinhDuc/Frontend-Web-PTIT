@@ -1,16 +1,11 @@
-import Login from '../components/Login';
-import InfoUser from '../components/InfoUser';
-import PrivateRoute from '../components/PrivateRoute';
+import Login from '../pages/user/Login';
+import UserInfo from '../pages/user/UserInfo';
+import PrivateRoute from '../routes/PrivateRoutes';
 import LayoutDefault from '../Layout/LayoutDefault';
-import Home from '../pages/Home';
-import About from '../pages/About';
-import Contact from '../pages/Contact';
-import Error from '../pages/Error';
-import Blog from '../pages/Blog';
-import BlogAll from '../pages/Blog/BlogAll';
-import BlogNews from '../pages/Blog/BlogNew';
-import BlogRelated from '../pages/Blog/BlogRelated';
-import BlogDetail from '../pages/Blog/BlogDetail';
+import Home from '../pages/user/Home';
+import About from '../pages/user/About';
+import Contact from '../pages/user/Contact';
+import Error from '../pages/user/Error';
 
 export const routes = [
   {
@@ -27,23 +22,6 @@ export const routes = [
         path: 'contact', element: <Contact />
       },
       {
-        path: 'blog', element: <Blog />,
-        children: [
-          {
-            index: true, element: <BlogAll />
-          },
-          {
-            path: 'news', element: <BlogNews />
-          },
-          {
-            path: 'related', element: <BlogRelated />
-          },
-          {
-            path: ':id', element: <BlogDetail />
-          }
-        ]
-      },
-      {
         path: 'login', 
         element: <Login />
       },
@@ -56,10 +34,12 @@ export const routes = [
         children: [
           {
             path: 'info-user',
-            element: <InfoUser />
+            element: <UserInfo />
           }
         ]
       }
     ]
   }
 ]
+
+export default routes;
