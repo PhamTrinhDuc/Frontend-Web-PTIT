@@ -1,0 +1,92 @@
+@import"../../utils/colors";
+
+
+
+.card-container{
+  gap: 10px;
+  margin: 10px 10px;
+
+  .card-image {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+    border: 1px solid #e8e8e8;
+    transition: all 0.3s ease;
+    ;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    .ant-card-body {
+      padding: 10px;
+    }
+    .product-image-container {
+      margin-bottom: 10px;
+      background-color: $card-product;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      overflow: hidden;
+
+      img {
+        // max-width: 100%;
+        // max-height: 100%;
+        // object-fit: contain;
+        width: 100%;
+        aspect-ratio: 4/3;
+        object-fit: cover;
+      }
+      .sale-badge {
+        .ant-ribbon {
+          font-size: 12px;
+          padding: 0 6px;
+        }
+      }
+    }
+  }
+
+  .card-content {
+    margin: 12px 8px;
+    .product-title {
+      margin-bottom: 5px;
+      font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .product-price {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+
+      .sale-price {
+        font-weight: bold;
+        color: $text;
+        font-size: 16px;
+        margin-right: 8px;
+      }
+
+      .original-price {
+        margin-right: 10px;
+        text-decoration: line-through;
+        color: $text-line-through;
+        font-size: 14px;
+      }
+    }
+    .product-rating {
+      display: flex;
+      align-items: center;
+
+      .ant-rate {
+        font-size: 16px;
+      }
+      .review-count {
+        margin-left: 10px;
+        color: &text;
+        font-size: 14px;
+      }
+    }
+  }
+}
