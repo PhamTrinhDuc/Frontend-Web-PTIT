@@ -1,0 +1,76 @@
+@import "../../../utils/colors";
+
+.login-container {
+  display: flex;
+  width: 100%;
+  position: relative;
+  height: 600px;
+  overflow: hidden; // Ẩn phần nội dung vượt quá kích thước
+  border-radius: 10px;
+
+  .illustration{
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("https://png.pngtree.com/background/20230618/original/pngtree-smartphone-black-friday-sale-promotion-stunning-3d-render-banner-design-picture-image_3708925.jpg");
+    background-size: cover;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    position: absolute;
+    z-index: 0; // Đặt dưới nội dung
+    will-change: transform; // Tối ưu hiệu suất trình duyệt
+  }
+
+  .login-form {
+    border-radius: 10px;
+    border: $white 1px solid;
+    color: $white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); // Bóng chữ tạo độ nổi
+    margin: 10px 0px 10px 10px;
+    z-index: 1; // Đặt trên nền
+
+    padding: 30px 40px;
+    background-color: rgba(255, 255, 255, 0.1); // Nền trắng trong suốt
+    backdrop-filter: blur(8px); // Hiệu ứng blur
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); // Đổ bóng nhẹ
+
+    h2 {
+      font-size: 35px;
+      margin-bottom: 20px;
+    }
+    p {
+      font-size: 15px;
+      margin-bottom: 30px;
+    }
+    .item {
+      .ant-form-item-label {
+        label {
+          color: $white;
+          font-size: 15px;
+          font-weight: 500;
+        }
+      }
+    }
+    .forgot-password {
+      color: $white;
+      font-size: 14px;
+      text-align: right;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .login-btn {
+      color: $text;
+      font-size: 18px;
+      background-color: $white;
+      font-weight: 500;
+      padding: 20px 35px;
+      border-radius: 5px;
+      margin-top: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease-out;
+  
+      &:hover {
+        background-color: $hover-bg;
+      }
+    }
+  }
+}
