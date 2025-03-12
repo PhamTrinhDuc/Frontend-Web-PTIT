@@ -1,7 +1,6 @@
 @import"../../utils/colors";
 
 
-
 .card-container{
   gap: 10px;
   margin: 10px 10px;
@@ -10,7 +9,7 @@
     border-radius: 15px;
     overflow: hidden;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-    border: 1px solid #e8e8e8;
+    border: 1px solid $white;
     transition: all 0.3s ease;
     ;
 
@@ -18,9 +17,9 @@
       transform: translateY(-5px);
     }
 
-    .ant-card-body {
-      padding: 10px;
-    }
+    // .ant-card-body {
+    //   padding: 10px;
+    // }
     .product-image-container {
       margin-bottom: 10px;
       background-color: $card-product;
@@ -31,18 +30,17 @@
       overflow: hidden;
 
       img {
-        // max-width: 100%;
-        // max-height: 100%;
-        // object-fit: contain;
-        width: 100%;
-        aspect-ratio: 4/3;
-        object-fit: cover;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        // width: 100%;
+        // aspect-ratio: 4/3;
+        // object-fit: cover;
       }
       .sale-badge {
-        .ant-ribbon {
-          font-size: 12px;
-          padding: 0 6px;
-        }
+        position: absolute;
+        top: 10px;
+        right: 10px;
       }
     }
   }
