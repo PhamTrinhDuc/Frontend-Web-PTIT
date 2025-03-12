@@ -1,0 +1,60 @@
+@import"../../utils/colors";
+
+
+.category-container {
+  box-shadow: $box-shadow;
+  border-radius: 10px;
+  padding-left: 20px;
+
+
+  .category-title {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+
+    .icon {
+      font-size: 40px;
+      margin-right: 20px;
+      color: $hover-bg;
+    }
+  }
+
+  .category-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-top: 30px;
+
+    .category-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: center; /* Căn giữa nội dung theo chiều dọc */
+      align-items: center; /* Căn giữa nội dung theo chiều ngang */
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: $box-shadow;
+      width: 100%;
+      height: 100px;
+      margin-bottom: 20px;
+      
+      svg {
+        transition: transform 0.3s ease-in-out;
+      }
+      &:hover svg {
+        transform: translateY(-5px);
+      }
+
+      .icon-category {
+        font-size: 35px;
+        margin-bottom: 10px;
+        color: $hover-bg;
+      }
+      h3 {
+        color: $text;
+      }
+    }
+  }
+}

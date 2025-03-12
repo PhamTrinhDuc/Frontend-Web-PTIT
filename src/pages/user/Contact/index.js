@@ -8,7 +8,6 @@ const { TextArea } = Input;
 
 // Khởi tạo form -> onFinish: nhận dữ liệu values từ form dưới dạng 1 bject -> Gửi dữ liệu về backend -> Xử lý kết quả trả về từ backend -> Hiển thị thông báo thành công hoặc lỗi tương ứng
 
-
 function Contact() {
   const [form] = Form.useForm()
   const onFinish = async (values) => {

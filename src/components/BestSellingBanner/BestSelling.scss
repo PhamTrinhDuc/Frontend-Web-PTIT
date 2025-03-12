@@ -1,0 +1,30 @@
+
+@import"../../utils/colors";
+
+
+.best-selling-container {
+
+  &__title {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+
+    .icon {
+      font-size: 40px;
+      margin-right: 20px;
+      color: $hover-bg;
+    }
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+
+    .view-all {
+      background-color: $hover-bg;
+      font-size: 20px;
+    }
+  }
+}
