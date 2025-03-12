@@ -9,7 +9,8 @@ import './Footer.scss';
 function Footer() {
   return (
     <footer className="footer">
-      <Row gutter={[16, 16]} className="footer-container">
+      {/* khoảng cách giữa các cột */}
+      <Row gutter={[20, 20]} className="footer-container" wrap={false}> 
         <Col xs={24} sm={12} md={6} className="footer-section">
           <h3>follow us</h3>
           <div className="social-icons">

@@ -14,7 +14,6 @@ function LayoutDefault() {
         <Header />
         <main className="layout-default__main">
           <Outlet />
-          Content
         </main>
         <Footer />
       </div>

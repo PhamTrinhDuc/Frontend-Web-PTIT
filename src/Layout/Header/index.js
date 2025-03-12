@@ -1,5 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Row, Col, Input, Button, Badge } from 'antd';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
 import { FaHome, FaShoppingCart, FaInfoCircle, FaEnvelope} from "react-icons/fa";
@@ -7,6 +8,29 @@ import './Header.scss';
 import logo from '../../assets/images/logo.png'
 
 const Header = () => {
+  const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState('');
+
+  const handleSearch = (e)  => {
+    setSearchValue(e.target.value);
+  }
+
+  const handleSearchSubmit = async() => {
+    console.log(searchValue);
+    if(searchValue.trim()){
+      try {
+        const response = await fetch("")
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error('There was a problem with your fetch operation:', error);
+      }
+    }
+  }
+
   return (
     <>
       <div className="decorative-bar"></div>
@@ -37,23 +61,26 @@ const Header = () => {
           <Col xs={12} md={8} className="header-actions">
             <Input
               placeholder="What you looking for?"
-              prefix={<SearchOutlined />}
+              suffix={<SearchOutlined onClick={handleSearchSubmit} /> }
               className="search-bar"
+              value={searchValue}
+              onChange={handleSearch}
+              onPressEnter={handleSearchSubmit}
             />
             
-            <Link to="/shop">
-              <Badge count={0} showZero>
-                  <Button type="link" icon={<ShoppingCartOutlined />} className="cart-icon">
-                    Cart
-                  </Button>
-              </Badge>
-            </Link>
+            {/* <Link to="/shop"> */}
+            <Badge count={0} showZero>
+                <Button type="dashed" shape='round' icon={<ShoppingCartOutlined />} className="cart-icon" href='/shop'>
+                  Cart
+                </Button>
+            </Badge>
+            {/* </Link> */}
 
-            <Link to="/signin">
-              <Button type="link" icon={<UserOutlined />}>
-                Sign in
-              </Button>
-            </Link>
+            {/* <Link to="/signin"> */}
+            <Button type="dashed" shape='round' icon={<UserOutlined />} href='/signin'>
+              Sign in
+            </Button>
+            {/* </Link> */}
           </Col>
         </Row>
       </header>
