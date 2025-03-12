@@ -16,7 +16,7 @@ const Banner = () => {
       image: 'https://api.beyerdynamic.de/media/catalog/category/beyerdynamic-Katalogbanner-Amiron-Copper-ohne-bubble.jpg', 
     },
     {
-      title: 'Smartwatch Collection',
+      title: 'Playstation Collection',
       discount: 'Up to 5% off Voucher',
       image: 'https://eu-images.contentstack.com/v3/assets/blt740a130ae3c5d529/blta361e2bebff3c1a8/66e066592ea67ba6a57a52ab/PS5_Pro_Header.png?width=1280&auto=webp&quality=95&format=jpg&disable=upscale',
     },
@@ -25,7 +25,6 @@ const Banner = () => {
   return (
     <>
       <div className="banner">
-
         <Carousel autoplay>
           {bannerContent.map((item, index) => (
             <div key={index} className="banner-slide">
@@ -42,7 +41,6 @@ const Banner = () => {
                   Shop Now <span>→</span>
                 </Link>
               </div>
-
             </div>
           ))}
         </Carousel>
