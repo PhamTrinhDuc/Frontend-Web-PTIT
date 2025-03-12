@@ -3,7 +3,6 @@
 
 .card-container{
   gap: 10px;
-  margin: 10px 10px;
 
   .card-image {
     border-radius: 15px;
@@ -16,7 +15,6 @@
     &:hover {
       transform: translateY(-5px);
     }
-
     // .ant-card-body {
     //   padding: 10px;
     // }

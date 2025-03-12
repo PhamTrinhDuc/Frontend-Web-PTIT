@@ -6,7 +6,6 @@ import './Card.scss';
 
 const { Text } = Typography;
 
-
 function CardProduct(props) {
   const { product } = props;
   
@@ -17,7 +16,7 @@ function CardProduct(props) {
           className="card-image"
           cover={
             <div className="product-image-container">
-              <Badge.Ribbon text="Sale" color="#DB4444" className="sale-badge">
+              <Badge.Ribbon text={`-${product.discount} %`} color="#DB4444" className="sale-badge">
                 <img src={product.image} alt={product.name} className="product-image" />
               </Badge.Ribbon>
             </div>
