@@ -1,6 +1,6 @@
 @import "../../../utils/colors";
 
-.login-container {
+.signup-container {
   display: flex;
   width: 100%;
   position: relative;
@@ -10,7 +10,7 @@
 
   .illustration{
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://png.pngtree.com/background/20230618/original/pngtree-smartphone-black-friday-sale-promotion-stunning-3d-render-banner-design-picture-image_3708925.jpg");
+    url("https://applemagazine.com/wp-content/uploads/2021/12/brandon-romanchuk-NOFyRmSQfUQ-unsplash.jpg");
     background-size: cover;
     width: 100%;
     height: 100%;
@@ -20,7 +20,7 @@
     will-change: transform; // Tối ưu hiệu suất trình duyệt
   }
 
-  .login-form {
+  .signup-form {
     border-radius: 10px;
     border: $white 1px solid;
     color: $white;
@@ -35,7 +35,7 @@
 
     h2 {
       font-size: 35px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     p {
       font-size: 15px;
@@ -50,12 +50,28 @@
         }
       }
     }
-    .forgot-password {
+    .login-link {
+      display: flex;
+      justify-content: center;
       color: $white;
-      font-size: 14px;
-      text-align: right;
-      cursor: pointer;
+      font-size: 13px;
+      margin-top: 15px;
+
     }
+
+    .login {
+      color: $white;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.3s ease-out;
+      margin-left: 10px;
+      text-decoration: underline;
+  
+      &:hover {
+        color: $hover-bg;
+      }
+    }
+
     .login-btn {
       color: $text;
       width: 100%;
@@ -69,17 +85,6 @@
   
       &:hover {
         background-color: $hover-bg;
-      }
-    }
-
-    .signup-link {
-      color: $white;
-      display: flex;
-      justify-content: center;
-      
-      .signup {
-        margin-left: 10px;
-        text-decoration: underline;
       }
     }
   }

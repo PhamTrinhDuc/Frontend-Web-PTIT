@@ -1,12 +1,12 @@
 import { Form, Input, message, Button } from 'antd';
 import { Link } from 'react-router-dom';
-import login from '../../../assets/images/login.png';
+import './SignUp.scss';
 import { FcGoogle } from "react-icons/fc";
-import './Login.scss';
+
 
 const { Item } = Form;
 
-function Login() {
+function SignUp() {
 
   const [form] = Form.useForm();
 
@@ -25,14 +25,14 @@ function Login() {
 
   return (
     <>
-      <div className='login-container'>
+      <div className='signup-container'>
 
         <div className='illustration'></div>
           
-        <div className='login-form'>
-          <h2>Login To Zenith</h2>
+        <div className='signup-form'>
+          <h2>Create an account</h2>
           <p className='desciption'>
-            Enter your details below to continue
+            Enter your details below to create your account
           </p>
           <Form
             form={form}
@@ -50,6 +50,15 @@ function Login() {
             </Item>
 
             <Item
+              name="address"
+              label="Email or Phone Number"
+              className='item'
+              rules={[{ required: true, message: 'Please input your email or phone number!' }]}
+            >
+              <Input placeholder='Enter your email or phone number'/>
+            </Item>
+
+            <Item
               name="password"
               label="Password"
               className='item'
@@ -58,9 +67,6 @@ function Login() {
               <Input placeholder='Enter your password'/>
             </Item>
 
-            <div className="forgot-password">
-              <Link to="/forgot-password">Forget Password?</Link>
-            </div>
             <Item>
               <Button type="primary" htmlType="submit" className="login-btn">
                 Create Account
@@ -77,11 +83,10 @@ function Login() {
               </Button>
             </Item>
 
-            <div className='signup-link'>
-              <span>You are new to Zenith?</span>
-              <Link className='signup' to='/signup'>Sign up</Link>
+            <div className='login-link'>
+              <span>Already have an account?</span>
+              <Link className='login' to='/login'>Login</Link>
             </div>
-
           </Form>
         </div>
       </div>
@@ -89,4 +94,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default SignUp;
