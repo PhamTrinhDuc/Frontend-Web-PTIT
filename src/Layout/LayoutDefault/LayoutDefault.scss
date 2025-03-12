@@ -1,0 +1,14 @@
+.layout-default__main {
+  flex: 1; // Đảm bảo content chiếm phần còn lại của chiều cao
+  max-width: 1200px; // Giới hạn chiều rộng tối đa
+  margin: 0 auto; // Căn giữa content
+  padding: 20px; // Khoảng cách bên trong
+  width: 100%; // Đảm bảo sử dụng toàn bộ chiều rộng
+}
+
+@media (max-width: 768px) {
+  .layout-default__main {
+    padding: 10px;
+    max-width: 100%;
+  }
+}
