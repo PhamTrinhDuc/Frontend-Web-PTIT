@@ -9,6 +9,7 @@ const { Text } = Typography;
 
 function CardProduct(props) {
   const { product } = props;
+  
   return (
     <>
       <div className="card-container">
