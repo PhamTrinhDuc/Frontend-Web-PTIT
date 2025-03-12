@@ -1,0 +1,134 @@
+@import"../../utils/colors";
+
+
+.banner {
+  width: 100%;
+  background-image: linear-gradient(
+      rgba(0, 0, 0, 0.5), // Gradient từ trong suốt đến đen (độ mờ 0.5)
+      rgba(0, 0, 0, 0.5)
+    ),
+    url(https://png.pngtree.com/background/20240214/original/pngtree-black-shelf-banner-with-laptop-mobile-phone-and-tablet-pc-3d-picture-image_7703865.jpg);
+  
+  background-size: cover; // Ảnh phủ toàn bộ div
+  background-position: center; // Căn giữa ảnh
+  position: relative; // Để nội dung bên trong có thể định vị
+  overflow: hidden;
+  border-radius: 15px;
+  margin-top: 50px;
+  margin-bottom: 100px;
+  opacity: 0.9;
+
+
+  .banner-slide {
+    position: relative;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 50px;
+
+    .banner-content {
+      z-index: 1;
+      color: $white;
+
+      h2 {
+        font-size: 24px;
+        margin: 10px 0;
+      }
+  
+      h1 {
+        font-size: 48px;
+        font-weight: bold;
+        margin: 10px 0;
+        text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        // Hiệu ứng nhấp nháy
+        animation: blink 1.25s infinite;
+      }
+
+
+      .shop-now {
+        display: inline-flex;
+        align-items: center;
+        color: $white;
+        font-size: 18px;
+        padding: 10px 20px;
+        background-color: $button;
+        border-radius: 5px;
+        border: $white 1px solid;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: $hover-bg;
+        }
+
+        span {
+          margin-left: 5px;
+        }
+      }
+    }
+
+    .banner-image {
+      position: absolute;
+      top: 20px;
+      right: 50px;
+      width: 200px; // Kích thước cố định cho container ảnh
+      height: 300px; // Tùy chỉnh chiều cao
+      // background-color: $black; // Background để lấp khoảng trống
+      z-index: 2; // Đảm bảo ảnh nằm trên nội dung
+      overflow: hidden; // Giới hạn ảnh trong container
+      border-radius: 8px; // Bo góc để mượt mà
+      background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.3),
+        rgba(0, 0, 0, 0.1)
+      ); // Gradient nhẹ để hòa hợp với nền banner
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); // Thêm bóng để tạo chiều sâu
+      
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; // Giữ tỷ lệ ảnh, cắt bớt nếu cần
+        background: transparent; // Xóa nền mặc định của ảnh
+        filter: brightness(1.1); // Tăng độ sáng để ảnh nổi bật hơn
+        border-radius: 8px; // Bo góc cho ảnh
+        transition: transform 0.3s ease; // Hiệu ứng phóng to khi hover
+
+        // Hiệu ứng khi hover
+        .banner-image:hover {
+          transform: scale(1.05); // Phóng to nhẹ
+        }
+      }
+    }
+  }
+
+
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  @media (max-width: 768px) {
+    .banner-slide {
+      flex-direction: column;
+      height: auto;
+      padding: 20px;
+
+      .banner-content {
+        text-align: center;
+      }
+
+      .banner-image {
+        position: relative;
+        right: auto;
+        top: auto;
+        margin-top: 20px;
+
+        img {
+          width: 200px;
+        }
+      }
+    }
+  }
+}
