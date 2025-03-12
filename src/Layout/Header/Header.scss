@@ -55,7 +55,8 @@
 
         &:hover {
           color: $hover-bg;
-        transition: all 0.3s ease;
+          transition: all 0.3s ease ;
+          transform: translateY(-5px);
         }
         svg { // Tùy chỉnh icon từ react-icons
           font-size: 20px;
