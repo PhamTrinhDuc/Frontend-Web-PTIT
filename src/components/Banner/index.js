@@ -4,25 +4,21 @@ import { useEffect, useState } from "react";
 import './Banner.scss';
 
 const Banner = () => {
-  const [rotate, setRotate] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setRotate((prev) => (prev === 10 ? -10 : 10)); // Xoay nhẹ qua lại
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
-
   const bannerContent = [
     {
       title: 'iPhone 14 Series',
       discount: 'Up to 10% off Voucher',
-      image: 'https://w7.pngwing.com/pngs/961/642/png-transparent-iphone-14-pro-thumbnail.png',
+      image: 'https://png.pngtree.com/background/20240214/original/pngtree-black-shelf-banner-with-laptop-mobile-phone-and-tablet-pc-3d-picture-image_7703865.jpg',
     },
     {
-      title: 'iPhone 14 Pro',
-      discount: 'Up to 15% off Voucher',
+      title: 'Headphone Collection',
+      discount: 'Up to 20% off Voucher',
       image: 'https://api.beyerdynamic.de/media/catalog/category/beyerdynamic-Katalogbanner-Amiron-Copper-ohne-bubble.jpg', 
+    },
+    {
+      title: 'Smartwatch Collection',
+      discount: 'Up to 5% off Voucher',
+      image: 'https://eu-images.contentstack.com/v3/assets/blt740a130ae3c5d529/blta361e2bebff3c1a8/66e066592ea67ba6a57a52ab/PS5_Pro_Header.png?width=1280&auto=webp&quality=95&format=jpg&disable=upscale',
     },
   ];
 
@@ -33,7 +29,13 @@ const Banner = () => {
         <Carousel autoplay>
           {bannerContent.map((item, index) => (
             <div key={index} className="banner-slide">
-              <div className="banner-content">
+              <div
+              className="banner-background"
+              style={{
+                backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${item.image})`,
+              }}
+            />
+              <div className="banner-content" >
                 <h2>{item.title}</h2>
                 <h1>{item.discount}</h1>
                 <Link to="/shop" className="shop-now">
