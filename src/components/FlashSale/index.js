@@ -15,7 +15,7 @@ function FlashSale() {
       salePrice: '$120.00',
       rating: 5,
       reviews: 74,
-      discount: 5,
+      discountPercentage: 5,
       image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
     },
     {
@@ -25,7 +25,7 @@ function FlashSale() {
       salePrice: '$60.00',
       rating: 5,
       reviews: 78,
-      discount: 10,
+      discountPercentage: 10,
       image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
     },
     {
@@ -35,7 +35,7 @@ function FlashSale() {
       salePrice: '$120.00',
       rating: 5,
       reviews: 90,
-      discount: 12,
+      discountPercentage: 12,
       image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
     },
     {
@@ -45,7 +45,7 @@ function FlashSale() {
       salePrice: '$120.00',
       rating: 5,
       reviews: 74,
-      discount: 5,
+      discountPercentage: 5,
       image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
     }
   ];

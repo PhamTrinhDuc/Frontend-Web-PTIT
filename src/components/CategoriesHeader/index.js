@@ -1,11 +1,23 @@
-import {iconMapCategory} from '../../utils/icon_mapping';
 import { Row, Col, Select, Dropdown, Typography, Button, Menu } from 'antd';
-import {DownOutlined} from '@ant-design/icons';
-import { MdMenu } from "react-icons/md";
+import { FaLaptopCode, FaKeyboard  } from "react-icons/fa";
+import { MdOutlineVideogameAsset, MdPhoneIphone, MdMenu } from "react-icons/md";
+import { RiDiscountPercentFill } from "react-icons/ri";
+import { BsFire } from "react-icons/bs";
+import { AiFillProduct } from "react-icons/ai";
 import { Link } from 'react-router-dom';
-import React, { useState } from 'react';
 import './CategoriesHeader.scss';
 
+
+
+const iconMapCategory = {
+    LaptopOutlined: <FaLaptopCode className='custom-icon' />,
+    KeyboardOutlined: <FaKeyboard className='custom-icon' />,
+    GammingOutlined: <MdOutlineVideogameAsset className='custom-icon' />,
+    ItemsOutlined: <AiFillProduct className='custom-icon' />,
+    PhoneOutlined: <MdPhoneIphone className='custom-icon' />,
+    SellerOutlined: <RiDiscountPercentFill className='custom-icon'/>,
+    DeadHotOutlined: <BsFire className='custom-icon' />,
+};
 
 const categories = [
   {
@@ -64,10 +76,12 @@ function CategoriesHeader() {
       <div className='categories-categories'>
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12} md={8} lg={3}>
-            <Dropdown overlay={dropdownMenu} trigger={['click']}>
+            <Dropdown menu={dropdownMenu} trigger={['click']}>
               <Link onClick={(e) => e.preventDefault()} className='menu-content'>
-                <MdMenu className='menu-icon' />
-                <p>Menu</p> 
+                <div className='icon-container'>
+                  <MdMenu className='custom-icon' />
+                </div>
+                <div className='category-name'>Menu</div>
               </ Link>
             </Dropdown>
           </Col>
@@ -76,8 +90,8 @@ function CategoriesHeader() {
             <Col xs={24} sm={12} md={8} lg={3} key={category.id}>
               <Link to={`/products/${category.name}`}>
                 <div className='item-category'>
-                  <div className='category-icon'>
-                    {iconMapCategory[category.icon]}
+                  <div className='icon-container'>  
+                      {iconMapCategory[category.icon]}
                   </div>
                   <div className='category-name'>
                     {category.name}

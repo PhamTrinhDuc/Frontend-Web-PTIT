@@ -17,14 +17,14 @@
     align-items: center;
     width: 80px; /* Kích thước vòng tròn */
     height: 80px;
-    border: 4px solid #d9d9d9; /* Viền xám, giống hình ảnh */
+    border: 4px solid $white; /* Viền xám, giống hình ảnh */
     border-radius: 50%; /* Tạo hình tròn */
-    background-color: #000; /* Nền đen bên trong */
+    background-color: $button; /* Nền đen bên trong */
     overflow: hidden; /* Đảm bảo icon không vượt ra ngoài */
 
     .custom-icon {
       font-size: 40px; /* Kích thước icon */
-      color: #fff; /* Màu trắng cho icon */
+      color: $white; /* Màu trắng cho icon */
       margin: 0; /* Loại bỏ margin mặc định */
       padding: 0; /* Loại bỏ padding mặc định */
 

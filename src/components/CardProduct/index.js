@@ -2,6 +2,8 @@ import {Row, Col, Card, Badge, Rate} from 'antd';
 import { Typography } from 'antd';
 import { HeartOutlined, EyeOutlined } from '@ant-design/icons';
 import './Card.scss';
+
+
 // https://grok.com/chat/dceab0b3-d8ec-4277-8959-978a792d3211?referrer=grok
 
 const { Text } = Typography;
@@ -16,7 +18,7 @@ function CardProduct(props) {
           className="card-image"
           cover={
             <div className="product-image-container">
-              <Badge.Ribbon text={`-${product.discount} %`} color="#DB4444" className="sale-badge">
+              <Badge.Ribbon text={`-${product.discountPercentage} %`} color="#DB4444" className="sale-badge">
                 <img src={product.image} alt={product.name} className="product-image" />
               </Badge.Ribbon>
             </div>

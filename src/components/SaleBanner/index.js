@@ -2,6 +2,7 @@ import { Carousel } from "antd";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import './Banner.scss';
+import spkear from '../../assets/images/sale_product.png'
 
 const Banner = () => {
   const bannerContent = [
@@ -20,6 +21,11 @@ const Banner = () => {
       discount: 'Up to 5% off Voucher',
       image: 'https://eu-images.contentstack.com/v3/assets/blt740a130ae3c5d529/blta361e2bebff3c1a8/66e066592ea67ba6a57a52ab/PS5_Pro_Header.png?width=1280&auto=webp&quality=95&format=jpg&disable=upscale',
     },
+    {
+      title: "Speaker's Collection",
+      discount: 'Up to 15% off Voucher',
+      image: spkear
+    }
   ];
 
   return (
