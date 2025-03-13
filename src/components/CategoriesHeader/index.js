@@ -1,5 +1,5 @@
 import { Row, Col, Select, Dropdown, Typography, Button, Menu } from 'antd';
-import { FaLaptopCode, FaKeyboard  } from "react-icons/fa";
+import { FaLaptopCode, FaKeyboard } from "react-icons/fa";
 import { MdOutlineVideogameAsset, MdPhoneIphone, MdMenu } from "react-icons/md";
 import { RiDiscountPercentFill } from "react-icons/ri";
 import { BsFire } from "react-icons/bs";
@@ -8,15 +8,24 @@ import { Link } from 'react-router-dom';
 import './CategoriesHeader.scss';
 
 
-
 const iconMapCategory = {
-    LaptopOutlined: <FaLaptopCode className='custom-icon' />,
-    KeyboardOutlined: <FaKeyboard className='custom-icon' />,
-    GammingOutlined: <MdOutlineVideogameAsset className='custom-icon' />,
-    ItemsOutlined: <AiFillProduct className='custom-icon' />,
-    PhoneOutlined: <MdPhoneIphone className='custom-icon' />,
-    SellerOutlined: <RiDiscountPercentFill className='custom-icon'/>,
-    DeadHotOutlined: <BsFire className='custom-icon' />,
+  LaptopOutlined: <FaLaptopCode className='custom-icon' />,
+  KeyboardOutlined: <FaKeyboard className='custom-icon' />,
+  GammingOutlined: <MdOutlineVideogameAsset className='custom-icon' />,
+  ItemsOutlined: <AiFillProduct className='custom-icon' />,
+  PhoneOutlined: <MdPhoneIphone className='custom-icon' />,
+  SellerOutlined: <RiDiscountPercentFill className='custom-icon' />,
+  DeadHotOutlined: <BsFire className='custom-icon' />,
+};
+
+const iconMapMenu = {
+  LaptopOutlined: <FaLaptopCode />,
+  KeyboardOutlined: <FaKeyboard />,
+  GammingOutlined: <MdOutlineVideogameAsset />,
+  ItemsOutlined: <AiFillProduct />,
+  PhoneOutlined: <MdPhoneIphone />,
+  SellerOutlined: <RiDiscountPercentFill />,
+  DeadHotOutlined: <BsFire />,
 };
 
 const categories = [
@@ -64,7 +73,7 @@ function CategoriesHeader() {
       {categories.map((category) => (
         <Menu.Item key={category.id}>
           <Link to={`/products/${category.name}`}>
-            <span style={{ marginRight: 8 }}>{iconMapCategory[category.icon] || null}</span>
+            <span style={{ marginRight: 8 }}>{iconMapMenu[category.icon] || null}</span>
             {category.name}
           </Link>
         </Menu.Item>
@@ -76,12 +85,14 @@ function CategoriesHeader() {
       <div className='categories-categories'>
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12} md={8} lg={3}>
-            <Dropdown menu={dropdownMenu} trigger={['click']}>
+            <Dropdown overlay={dropdownMenu} trigger={['click']}>
               <Link onClick={(e) => e.preventDefault()} className='menu-content'>
                 <div className='icon-container'>
                   <MdMenu className='custom-icon' />
                 </div>
-                <div className='category-name'>Menu</div>
+                <div className='category-name'>
+                  Menu
+                </div>
               </ Link>
             </Dropdown>
           </Col>
@@ -90,8 +101,8 @@ function CategoriesHeader() {
             <Col xs={24} sm={12} md={8} lg={3} key={category.id}>
               <Link to={`/products/${category.name}`}>
                 <div className='item-category'>
-                  <div className='icon-container'>  
-                      {iconMapCategory[category.icon]}
+                  <div className='icon-container'>
+                    {iconMapCategory[category.icon]}
                   </div>
                   <div className='category-name'>
                     {category.name}
@@ -106,5 +117,5 @@ function CategoriesHeader() {
   )
 }
 
-   
+
 export default CategoriesHeader;

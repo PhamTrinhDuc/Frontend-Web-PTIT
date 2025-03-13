@@ -1,0 +1,180 @@
+@import"../../utils/colors";
+
+
+// CSS for Rating 
+.rating-container {
+  .rating-section {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+  
+    .ant-rate {
+      margin-right: 10px;
+    }
+  
+    .review-count {
+      color: #595959;
+      font-size: 16px;
+      &:hover {
+        color: $hover-bg; // Change color on hover for better UX
+      }
+    }
+
+    .stock-status {
+      margin-left: 10px;
+      font-size: 16px;
+    
+      .in-stock {
+        color: #ff4d4f; // Màu đỏ cho "In Stock"
+      }
+    
+      .out-of-stock {
+        color: #595959; // Màu xám cho "Out of Stock"
+      }
+    }
+  }
+}
+.review-section {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: $white;
+  border-radius: 4px;
+}
+// End of CSS for Rating
+
+.product-detail {
+  padding: 16px;
+
+  .product-image-card {
+    border: none;
+    box-shadow: none;
+    display: flex; // Sử dụng Flexbox cho container
+    flex-direction: column; // Xếp các phần tử theo cột
+    align-items: center; // Căn giữa theo chiều ngang
+  
+    .main-image {
+      width: 100%;
+      max-width: 500px; // Đặt giới hạn chiều rộng tối đa để tránh quá lớn
+      height: 400px; // Chiều cao cố định
+      object-fit: contain; // Giữ tỷ lệ ảnh
+      margin-bottom: 20px;
+    }
+  
+    .thumbnail-row {
+      justify-content: center; // Căn giữa các ảnh phụ
+  
+      .thumbnail-image {
+        width: 100%;
+        height: 100px;
+        object-fit: cover;
+        border: 1px solid $white;
+        border-radius: 4px;
+        cursor: pointer;
+  
+        &:hover {
+          border-color: $hover-bg;
+        }
+      }
+    }
+  }
+
+  .product-info-card {
+    border: none;
+    box-shadow: none;
+
+    .product-price {
+      color: $ribbon-card;
+      margin-top: 8px;
+    }
+
+    .product-description {
+      margin-top: 16px;
+      color: $button;
+      line-height: 1.5;
+    }
+
+    // chọn màu sắc, size, số lượng
+    .color-options {
+      display: flex;
+      align-items: center; // Căn giữa theo chiều dọc để text và radio group thẳng hàng
+      gap: 10px; // Khoảng cách giữa Text và Radio.Group
+      margin-bottom: 20px;
+    
+      .color-radio-group {
+        display: flex; // Đảm bảo các Radio button cũng nằm ngang
+      }
+    }
+    .title-option {
+      margin-right: 16px;
+      font-size: 16px;
+    }
+    
+    .quantity-options {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+  
+      .quantity-value {
+        padding: 0 20px;
+        font-size: 16px;
+        vertical-align: middle;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+    // button mua hàng
+    .buy-button {
+      margin-top: 16px;
+      width: 100%;
+      max-width: 200px;
+      background-color: $button;
+      
+      &:hover {
+        background-color: $hover-bg;
+      }
+    }
+
+    // Thông tin giao hàng
+      
+    .delivery-info {
+      border: 1px solid $white; // Đường viền giống trong hình
+      border-radius: 4px;
+      width: 100%;
+      max-width: 400px; // Giới hạn chiều rộng giống trong hình
+      background-color: $white;
+      padding: 16px;
+      margin: 20px 0 ;
+    }
+    
+    .delivery-section {
+      display: flex;
+      align-items: flex-start; // Căn chỉnh icon và text
+      gap: 12px; // Khoảng cách giữa icon và text
+    
+      .delivery-icon {
+        font-size: 30px;
+        color: $hover-bg;
+      }
+    
+      .delivery-text {
+        line-height: 1.5;
+    
+        .ant-typography-strong {
+          color: $text; // Chữ "Free Delivery" và "Return Delivery" đậm
+        }
+    
+        a {
+          color: $text; // Màu xanh cho link
+          &:hover {
+            color: $hover-bg;
+          }
+        }
+      }
+    }
+    
+    .delivery-divider {
+      margin: 16px 0; // Khoảng cách trên dưới của divider
+    }
+  }
+}

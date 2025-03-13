@@ -1,0 +1,82 @@
+@import"../../utils/colors";
+
+
+.related-container {
+  margin-top: 130px;
+}
+
+.carousel-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.related-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+
+  .icon {
+    font-size: 40px;
+    margin-right: 20px;
+    color: $hover-bg;
+  }
+
+  h1 {
+    color: $text;
+  }
+}
+.related-items {
+  display: flex;
+  overflow: hidden; // Ẩn các sản phẩm ngoài tầm hiển thị
+}
+
+.carousel-arrow {
+  background: $white;
+  border: 1px solid $hover-bg;
+  box-shadow: $box-shadow;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+
+  &.left-arrow {
+    left: -40px;
+  }
+
+  &.right-arrow {
+    right: -40px;
+  }
+
+  &:hover {
+    background: $hover-bg;
+  }
+}
+
+.pagination-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 80px;
+  gap: 6px;
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    background: $button;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.3s;
+
+    &.active {
+      background: $black;
+    }
+  }
+}
