@@ -1,0 +1,33 @@
+@import"../../utils/colors";
+
+
+.categories-categories{
+  margin-top: 30px;
+  margin-bottom: 50px;
+
+  .menu-content, .item-category {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    display: flex;
+    color: $black;
+
+    &:hover {
+      color: $hover-bg;
+      transition: all 0.3s ease ;
+      transform: translateY(-5px);
+    }
+    svg { // Tùy chỉnh icon từ react-icons
+      font-size: 50px;
+    }
+    p {
+      font-size: 16px;
+    }
+  }
+
+  .item-category {
+    .category-name{
+      font-size: 16px;
+    }
+  }
+}

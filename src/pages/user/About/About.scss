@@ -1,0 +1,136 @@
+
+@import "../../../utils/colors";
+
+
+// Start CSS for About story
+.about-container {
+  margin-top: 50px;
+  margin-bottom: 100px;
+
+  .about-story {
+    display: flex;
+    margin-bottom: 120px;
+
+    .about-content {
+    margin-right: 20px;
+    font-size: 16px;
+
+    .about-text {
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+      h1 {
+        margin-bottom: 30px;
+        font-size: 40px;
+        color: $text
+      }
+    }
+  }
+}
+// End CSS for About story
+
+
+// Start CSS for About revenue
+
+.revenue {
+  margin-bottom: 150px;
+
+  .revenue-stats {
+    .revenue-card {
+      border-radius: 8px;
+      background-color: $white;
+      box-shadow: $box-shadow;
+      transition: all 0.3s;
+
+      &:hover {
+        background-color: $hover-bg;
+      }
+
+      .ant-card-body {
+        flex-direction: column;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+      }
+  
+      .icon-wrapper {
+        font-size: 50px;
+        margin-bottom: 10px;
+        svg {
+          transition: transform 0.3s ease-in-out;
+        }
+        &:hover svg {
+          transform: translateY(-5px);
+        }
+      }
+
+      .value {
+        font-size: 30px;
+        font-weight: 600;
+        color: $text;
+      }
+      .title {
+        font-size: 14px;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}
+// End CSS for About revenue
+
+// Start CSS for About members
+
+.members {
+  margin-bottom: 150px;
+  .team-members {
+    .member-card {
+      text-align: center;
+      border-radius: 8px;
+      background-color: $white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+
+      &:hover {
+        transform: translateY(-4px);
+      }
+
+      .member-image {
+        width: 100%;
+        height: 300px; /* Điều chỉnh chiều cao ảnh */
+        object-fit: cover;
+        border-radius: 8px 8px 0 0;
+      }
+
+      .member-name {
+        margin: 16px 0 8px;
+        color: $black;
+      }
+
+      .member-position {
+        display: block;
+        font-size: 18px;
+        color: $button;
+        margin-bottom: 16px;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+
+        .social-icon {
+          font-size: 30px;
+          color: $button;
+          transition: color 0.3s;
+        }
+        
+        .social-icon:hover {
+          color: $hover-bg; /* Màu khi hover */
+        }
+      }
+    }
+  }
+}
+
+
+// End CSS for About members

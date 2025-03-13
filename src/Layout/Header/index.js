@@ -47,7 +47,7 @@ const Header = () => {
               <Link to="/" className="nav-link">
                 <FaHome /> Home
               </Link>
-              <Link to="shop" className="nav-link">
+              <Link to="products" className="nav-link">
                 <FaShoppingCart /> Shop
               </Link>
               <Link to="about" className="nav-link">
