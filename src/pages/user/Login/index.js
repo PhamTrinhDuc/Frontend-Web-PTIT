@@ -1,39 +1,81 @@
-import { Form, Input, message, Button } from 'antd';
-import { Link } from 'react-router-dom';
-import login from '../../../assets/images/login.png';
+import { Form, Input, message, Button, Alert } from 'antd';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from "react-icons/fc";
 import './Login.scss';
+import {login} from '../../../slices/authSlice';
+import {post} from '../../../utils/requests';
+import { setCookie } from '../../../utils/cookie';
+
 
 const { Item } = Form;
 
 function Login() {
-
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onFinish = async (values) => {
     try {
-      // Gửi dữ liệu đến backend
-      const response = await fetch.post('YOUR_BACKEND_API_URL', values);
-      message.success('Login successful!'); // Thông báo thành công
-      form.resetFields(); // Xóa form (tùy chọn, tùy thuộc vào logic)
-      // Thêm logic chuyển hướng sau khi đăng nhập thành công (ví dụ: useHistory từ react-router)
+      const response = await post('auth/login', values); 
+      console.log(response);
+      if (response && response.accessToken) {
+        message.success('Login successful!');
+        form.resetFields();
+        // Xử lý lưu token vào localStorage hoặc Redux store
+        // localStorage.setItem('token', response.accessToken);
+
+        // setCookie('userId', response.id, 7);
+        // setCookie('username', response.username, 7);
+        // setCookie('email', response.email, 7);
+        // setCookie('phone', response.gender)
+        // setCookie('address', response.image)
+        // setCookie('accessToken', response.accessToken, 7);
+        // setCookie('refreshToken', response.refreshToken, 7);
+        dispatch(login({
+          token: response.accessToken, 
+          user: {
+            username: response.username, // Điều chỉnh theo response thực tế
+            email: response.email,       // Tùy chọn, nếu API trả về
+            phone: response.phone,       // Tùy chọn, nếu API trả về
+            address: response.address,   // Tùy chọn, nếu API trả về
+          },
+        }));
+        navigate('/');
+
+      } else {
+        setErrorMessage(response?.message || "Login failed. Please check your credentials.");
+      }
     } catch (error) {
-      console.error('Login failed:', error);
-      message.error('Login failed. Please try again.'); // Thông báo lỗi
+      console.error("Login error:", error);
+      setErrorMessage("Login failed. Please try again.");
     }
   };
 
   return (
     <>
       <div className='login-container'>
-
         <div className='illustration'></div>
-          
         <div className='login-form'>
           <h2>Login To Zenith</h2>
           <p className='desciption'>
             Enter your details below to continue
           </p>
+          {/* Hiển thị Alert khi có lỗi */}
+          {errorMessage && (
+            <Alert
+              message="Login Failed"
+              description={errorMessage}
+              type="error"
+              showIcon
+              closable
+              onClose={() => setErrorMessage("")} // Đóng alert khi click vào 'X'
+              className="error-alert"
+            />
+          )}
+
           <Form
             form={form}
             layout='vertical'
@@ -63,7 +105,7 @@ function Login() {
             </div>
             <Item>
               <Button type="primary" htmlType="submit" className="login-btn">
-                Create Account
+                Login
               </Button>
             </Item>
 
@@ -73,7 +115,7 @@ function Login() {
                 icon={<FcGoogle />}
                 onClick={() => window.location.href = 'URL_GOOGLE_AUTH'}
               >
-                Sign up with Google
+                Login with Google
               </Button>
             </Item>
 
@@ -81,7 +123,6 @@ function Login() {
               <span>You are new to Zenith?</span>
               <Link className='signup' to='/signup'>Sign up</Link>
             </div>
-
           </Form>
         </div>
       </div>

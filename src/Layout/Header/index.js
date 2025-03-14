@@ -1,49 +1,45 @@
 import React from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Row, Col, Input, Button, Badge } from 'antd';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
-import { FaHome, FaShoppingCart, FaInfoCircle, FaEnvelope} from "react-icons/fa";
-import { login, logout } from '../../slices/authSlide';
+import { FaHome, FaShoppingCart, FaInfoCircle, FaEnvelope } from 'react-icons/fa';
 import './Header.scss';
-import logo from '../../assets/images/logo.png'
+import logo from '../../assets/images/logo.png';
 
 const Header = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
 
-  // logic cho login va cart
+  // Logic cho cart
   const handleAddToCart = () => {
     if (isLoggedIn) {
-      // Nếu đã đăng nhập, chuyển đến trang giỏ hàng
       navigate('/cart');
     } else {
-      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
       navigate('/login');
     }
   };
 
-  const handleLogin = () => {
-    // Nếu đã đăng nhập, logout
+  // Logic cho user button
+  const handleUserClick = () => {
     if (isLoggedIn) {
-      dispatch(logout());
+      navigate('/account'); // Khi đã đăng nhập, click username dẫn đến trang account
     } else {
-      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
-      navigate('/login');
+      navigate('/login'); // Chưa đăng nhập thì dẫn đến trang login
     }
-  }
-  // logic cho search
-  const handleSearch = (e)  => {
-    setSearchValue(e.target.value);
-  }
+  };
 
-  const handleSearchSubmit = async() => {
-    if(searchValue.trim()){
+  // Logic cho search
+  const handleSearch = (e) => {
+    setSearchValue(e.target.value);
+  };
+
+  const handleSearchSubmit = async () => {
+    if (searchValue.trim()) {
       try {
-        const response = await fetch("")
+        const response = await fetch('YOUR_API_ENDPOINT/search'); // Thay bằng API search nếu cần
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -53,7 +49,7 @@ const Header = () => {
         console.error('There was a problem with your fetch operation:', error);
       }
     }
-  }
+  };
 
   return (
     <>
@@ -61,23 +57,23 @@ const Header = () => {
       <header className="header">
         <Row align="middle" className="header-container">
           <Col xs={12} md={4} className="logo-container">
-            <Link to="/" className='logo'>
-              <img src={logo}></img>
+            <Link to="/" className="logo">
+              <img src={logo} alt="Zenith Logo" />
               Zenith
             </Link>
           </Col>
           <Col xs={0} md={12} className="nav-links">
-          <nav>
+            <nav>
               <Link to="/" className="nav-link">
                 <FaHome /> Home
               </Link>
-              <Link to="products" className="nav-link">
+              <Link to="/products" className="nav-link">
                 <FaShoppingCart /> Shop
               </Link>
-              <Link to="about" className="nav-link">
+              <Link to="/about" className="nav-link">
                 <FaInfoCircle /> About
               </Link>
-              <Link to="contact" className="nav-link">
+              <Link to="/contact" className="nav-link">
                 <FaEnvelope /> Contact
               </Link>
             </nav>
@@ -85,27 +81,31 @@ const Header = () => {
           <Col xs={12} md={8} className="header-actions">
             <Input
               placeholder="What you looking for?"
-              suffix={<SearchOutlined onClick={handleSearchSubmit} /> }
+              suffix={<SearchOutlined onClick={handleSearchSubmit} />}
               className="search-bar"
               value={searchValue}
               onChange={handleSearch}
               onPressEnter={handleSearchSubmit}
             />
-            
-            {/* <Link to="/shop"> */}
             <Badge count={0} showZero>
-                <Button type="dashed" shape='round' icon={<ShoppingCartOutlined />} className="cart-icon"  onClick={handleAddToCart}>
-                  Cart
-                </Button>
+              <Button
+                type="dashed"
+                shape="round"
+                icon={<ShoppingCartOutlined />}
+                className="cart-icon"
+                onClick={handleAddToCart}
+              >
+                Cart
+              </Button>
             </Badge>
-            {/* </Link> */}
-
-            {/* <Link to="/signin"> */}
-            <Button type="dashed" shape='round' icon={<UserOutlined />} 
-            onClick={handleLogin}>
-              Sign in
+            <Button
+              type="dashed"
+              shape="round"
+              icon={<UserOutlined />}
+              onClick={handleUserClick}
+            >
+              {isLoggedIn && user?.username ? user.username : 'Sign in'}
             </Button>
-            {/* </Link> */}
           </Col>
         </Row>
       </header>

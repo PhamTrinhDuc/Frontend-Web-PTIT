@@ -1,6 +1,7 @@
-
 import {TabInfo, Header} from '../../../components/Account';
-
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../../slices/authSlice';
 import React, {useState} from 'react';
 
 const Account = () => {
@@ -31,8 +32,14 @@ const Account = () => {
     { id: 2, name: 'Đồng hồ nam', price: 1200000, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiNo-UKrl5psCtsf7xs3MQTB110xUjJ6hWPA&s' },
   ]);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { isLoggedIn, user, token } = useSelector((state) => state.auth);
+
   const handleLogout = () => {
-    console.log('Đăng xuất');
+    dispatch(logout());
+    navigate('/login');
   };
 
   const handleDeleteItem = (id) => {

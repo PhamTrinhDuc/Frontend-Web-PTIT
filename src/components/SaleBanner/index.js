@@ -43,7 +43,7 @@ const Banner = () => {
               <div className="banner-content" >
                 <h2>{item.title}</h2>
                 <h1>{item.discount}</h1>
-                <Link to="/shop" className="shop-now">
+                <Link to="/products" className="shop-now">
                   Shop Now <span>→</span>
                 </Link>
               </div>

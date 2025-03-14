@@ -7,9 +7,6 @@ import './LayoutDefault.scss';
 
 function LayoutDefault() {
 
-  const navLinkActive = (e) => {
-    return e.isActive ? 'menu__link menu__link--active' : 'menu__link';
-  }
   return (
     <>
       <div className="layout-default">
