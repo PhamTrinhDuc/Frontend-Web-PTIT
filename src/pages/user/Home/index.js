@@ -13,7 +13,7 @@ const { Content } = Layout;
 function Home () {
   return (
     <>  
-      <Content className='content'>
+      <Content className='home-container'>
         <Banner />
         <FlashSale />
         <CategoryBanner />

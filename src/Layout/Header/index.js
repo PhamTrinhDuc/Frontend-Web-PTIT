@@ -62,6 +62,7 @@ const Header = () => {
               Zenith
             </Link>
           </Col>
+
           <Col xs={0} md={12} className="nav-links">
             <nav>
               <Link to="/" className="nav-link">
@@ -78,6 +79,7 @@ const Header = () => {
               </Link>
             </nav>
           </Col>
+          
           <Col xs={12} md={8} className="header-actions">
             <Input
               placeholder="What you looking for?"
