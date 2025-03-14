@@ -1,22 +1,46 @@
 import React from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Input, Button, Badge } from 'antd';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
 import { FaHome, FaShoppingCart, FaInfoCircle, FaEnvelope} from "react-icons/fa";
+import { login, logout } from '../../slices/authSlide';
 import './Header.scss';
 import logo from '../../assets/images/logo.png'
 
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
+  // logic cho login va cart
+  const handleAddToCart = () => {
+    if (isLoggedIn) {
+      // Nếu đã đăng nhập, chuyển đến trang giỏ hàng
+      navigate('/cart');
+    } else {
+      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
+      navigate('/login');
+    }
+  };
+
+  const handleLogin = () => {
+    // Nếu đã đăng nhập, logout
+    if (isLoggedIn) {
+      dispatch(logout());
+    } else {
+      // Nếu chưa đăng nhập, chuyển đến trang đăng nhập
+      navigate('/login');
+    }
+  }
+  // logic cho search
   const handleSearch = (e)  => {
     setSearchValue(e.target.value);
   }
 
   const handleSearchSubmit = async() => {
-    console.log(searchValue);
     if(searchValue.trim()){
       try {
         const response = await fetch("")
@@ -70,14 +94,15 @@ const Header = () => {
             
             {/* <Link to="/shop"> */}
             <Badge count={0} showZero>
-                <Button type="dashed" shape='round' icon={<ShoppingCartOutlined />} className="cart-icon" href='/shop'>
+                <Button type="dashed" shape='round' icon={<ShoppingCartOutlined />} className="cart-icon"  onClick={handleAddToCart}>
                   Cart
                 </Button>
             </Badge>
             {/* </Link> */}
 
             {/* <Link to="/signin"> */}
-            <Button type="dashed" shape='round' icon={<UserOutlined />} href='/login'>
+            <Button type="dashed" shape='round' icon={<UserOutlined />} 
+            onClick={handleLogin}>
               Sign in
             </Button>
             {/* </Link> */}

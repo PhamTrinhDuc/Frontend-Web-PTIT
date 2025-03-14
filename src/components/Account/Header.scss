@@ -1,0 +1,91 @@
+
+@import "../../utils/colors"; // Import màu nếu có
+
+.profile-header-card {
+  background: $hover-bg;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  position: relative; // Để căn chỉnh phần tử con tuyệt đối
+  justify-content: space-between;
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    flex: 1;
+
+    .avatar {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid $text; // Màu chủ đạo
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    .header-info {
+      flex: 1;
+
+      h1 {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: $text;
+      }
+
+      .member-since {
+        font-size: 17px;
+        color: $text;
+      }
+
+      .stats {
+        display: flex;
+        gap: 16px;
+        margin-top: 12px;
+
+        .stat-item {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 17px;
+          background: $white;
+          padding: 6px 12px;
+          border-radius: 6px;
+
+          svg {
+            color: $text;
+          }
+        }
+      }
+    }
+  }
+
+  .edit-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: $white;
+    color: $text;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+
+  }
+}

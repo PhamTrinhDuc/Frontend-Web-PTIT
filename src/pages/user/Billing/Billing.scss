@@ -1,0 +1,183 @@
+@import "../../../utils/colors";
+
+
+
+.checkout-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  margin: 50px 0 50px 0;
+  background-color: $hover-bg;
+  border-radius: 10px;
+  gap: 20px;
+
+
+  .billing-form,
+  .order-summary {
+    width: 45%;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: $box-shadow;
+
+    h2 {
+      margin-bottom: 30px;
+    }
+  }
+
+  .billing-form {
+    .ant-form-item-label {
+      font-weight: bold;
+    }
+
+    .ant-checkbox-wrapper {
+      margin-top: 10px;
+    }
+  }
+
+  .order-summary {
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      /* Khoảng cách giữa các phần tử */
+      padding: 12px 0;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      width: 100%;
+      /* Đảm bảo chiều rộng tối đa */
+      max-width: 600px;
+      /* Giới hạn chiều rộng */
+      border-bottom: 1px solid $text;
+
+      img {
+        width: 80px;
+        /* Kích thước cố định */
+        height: 80px;
+        /* Giữ khung ảnh vuông */
+        object-fit: cover;
+        /* Giữ tỷ lệ ảnh mà không méo */
+        border-radius: 6px;
+        /* Bo góc ảnh */
+        flex-shrink: 0;
+        /* Không bị thu nhỏ */
+      }
+
+      span {
+        font-size: 16px;
+        font-weight: 500;
+        color: $text;
+        flex: 1;
+        /* Để các phần tử tên và giá có thể mở rộng */
+
+        &:last-child {
+          text-align: right;
+          /* Canh giá tiền về bên phải */
+          font-weight: bold;
+        }
+      }
+    }
+
+    .order-total {
+      margin-top: 20px;
+
+      .total-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+
+        &.total {
+          font-weight: bold;
+          border-top: 1px solid #eee;
+          padding-top: 10px;
+        }
+      }
+    }
+
+    .payment-method {
+      margin: 50px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .bank-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .bank-logos {
+          display: flex;
+          gap: 10px;
+
+          img {
+            width: 30px;
+            height: 30px;
+          }
+        }
+      }
+    }
+
+    .coupon-section {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+
+      .ant-input {
+        flex: 1;
+      }
+    }
+
+    .ant-btn-primary {
+      background: #d9d9d9;
+      border-color: #d9d9d9;
+      color: $text;
+
+      &:hover {
+        background: $hover-bg;
+        border-color: $white;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+}
+
+
+@media (max-width: 768px) {
+  .billing-form,
+  .order-summary {
+    width: 100%;
+    padding: 10px;
+
+    h2 {
+      font-size: 18px;
+    }
+
+    .ant-form-item-label {
+      font-size: 12px;
+    }
+
+    .order-item,
+    .total-row {
+      font-size: 12px;
+    }
+
+    .bank-logos img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .coupon-section {
+      flex-direction: column;
+
+      .ant-input,
+      .ant-btn {
+        width: 100%;
+      }
+    }
+  }
+}

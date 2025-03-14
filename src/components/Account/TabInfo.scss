@@ -1,0 +1,55 @@
+
+@import "../../utils/colors"; // Import màu nếu có
+
+
+.profile-tabs {
+  .ant-tabs-nav {
+    margin-bottom: 24px;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+  .profile-card {
+    border-radius: 8px;
+    box-shadow: $box-shadow;
+    transition: all 0.3s;
+    .ant-descriptions-item-content {
+      font-size: 17px; /* Tăng kích thước chữ cho nội dung */
+    }
+
+    .ant-descriptions-item-label {
+      width: 20%;
+      background: $white;
+      font-weight: 500;
+
+      .anticon {
+        margin-right: 8px;
+        display: flex;
+        align-items: center;
+        justify-self: center;
+        font-size: 30px;
+        color: $hover-bg;
+      }
+    }
+
+    .ant-timeline-item-label {
+      font-weight: 500;
+    }
+
+    &.logout-card {
+      text-align: center;
+      padding: 24px;
+      .logout-content {
+        h3 {
+          margin: 16px 0;
+          color: #1a1a1a;
+        }
+
+        p {
+          color: #737373;
+          margin-bottom: 24px;
+        }
+      }
+    }
+  }
+}
