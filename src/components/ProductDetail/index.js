@@ -51,7 +51,6 @@ const Rating = ({props}) => {
   );
 };
 
-
 const ProductDetail = ({ product }) => {
   const {
     name,

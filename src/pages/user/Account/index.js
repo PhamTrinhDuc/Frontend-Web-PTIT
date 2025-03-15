@@ -37,20 +37,11 @@ const Account = () => {
 
   const { isLoggedIn, user, token } = useSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/login');
-  };
-
-  const handleDeleteItem = (id) => {
-    setWishlist(wishlist.filter(item => item.id !== id));
-  };
-
   return (
     <div className="customer-profile-container">
       <Header userInfo={userInfo} />
 
-      <TabInfo userInfo={userInfo} orderHistory={orderHistory} vouchers={vouchers} wishlist={wishlist} handleLogout={handleLogout} handleDeleteItem={handleDeleteItem} />
+      <TabInfo userInfo={userInfo} orderHistory={orderHistory} vouchers={vouchers} wishlist={wishlist} />
 
     </div>
   );

@@ -6,11 +6,9 @@ const request = async (url, method = 'GET', body = null) => {
       method,
       headers: { 'Content-Type': 'application/json' },
     };
-
     if (body) {
       options.body = JSON.stringify(body);
     }
-
     const response = await fetch(`${API_DOMAIN}/${url}`, options);
     const data = await response.json();
     return data;

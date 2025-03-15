@@ -1,11 +1,30 @@
 import React from 'react';
 import { Button, InputNumber, Input } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { FaTrashAlt } from "react-icons/fa";
 import { useState } from 'react';
-import ProductRelated from '../../../components/ProductRelated';
+import NavigationProduct from '../../../components/NavigationProduct';
+import { updateQuantity, removeFromCart } from '../../../slices/cartSlice';
 import products from '../../../utils/mock_data';
 import './Cart.scss';
+
+// const products = [{
+//   id: 1,
+//   name: 'LCD Monitor',
+//   price: 1200000,
+//   quantity: 1,
+//   image: 'https://images.philips.com/is/image/philipsconsumer/7daebfa708a148d7a0bbb01b009011d1?wid=700&hei=700&$pnglarge$', // Thay bằng URL ảnh thực tế
+// },
+// {
+//   id: 2,
+//   name: 'Hi Gamepad',
+//   price: 4390000,
+//   quantity: 2,
+//   image: 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTBtbu6EpQ4Vu0_PPg4oPN13mRKFIWk85Og0ZJFfgcfq35E_7qyXGgvA1vBH4yB8kCF9XmlBHtx0f8IqXRn0Tj3yHjaze0zJfHEVxzLCdDdMnKeFB9-bkIb35iJEVDAKdaQW-RA9A&usqp=CAc', // Thay bằng URL ảnh thực tế
+// }];
+
 
 
 const CartItem = ({ item, onQuantityChange, onRemove }) => {
@@ -45,7 +64,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
         />
       </div>
 
-      <span className="subtotal">{(item.price * item.quantity).toLocaleString()}</span>
+      <span className="subtotal">{(item.salePrice * item.quantity).toLocaleString()}$</span>
       <Button className='remove-button' icon={<FaTrashAlt />} type="link" danger onClick={() => onRemove(item.id)} />
     </div>
   );
@@ -53,6 +72,12 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
 
 
 const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode }) => {
+
+  const navigate = useNavigate();
+  const handlePay = () => {
+    navigate('/billing');
+  }
+
   return (
     <div className="cart-summary">
       <h3>Cart Total</h3>
@@ -68,7 +93,7 @@ const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode }) => {
         <span>Total:</span>
         <span>{cartTotal.toLocaleString()}đ</span>
       </div>
-      <Button type="default" block onClick={() => alert('Proceeding to checkout')}>
+      <Button type="default" block onClick={handlePay}>
         Process to checkout
       </Button>
       <div className="coupon-section">
@@ -87,38 +112,30 @@ const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode }) => {
 
 
 function Cart() {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'LCD Monitor',
-      price: 1200000,
-      quantity: 1,
-      image: 'https://images.philips.com/is/image/philipsconsumer/7daebfa708a148d7a0bbb01b009011d1?wid=700&hei=700&$pnglarge$', // Thay bằng URL ảnh thực tế
-    },
-    {
-      id: 2,
-      name: 'Hi Gamepad',
-      price: 4390000,
-      quantity: 2,
-      image: 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTBtbu6EpQ4Vu0_PPg4oPN13mRKFIWk85Og0ZJFfgcfq35E_7qyXGgvA1vBH4yB8kCF9XmlBHtx0f8IqXRn0Tj3yHjaze0zJfHEVxzLCdDdMnKeFB9-bkIb35iJEVDAKdaQW-RA9A&usqp=CAc', // Thay bằng URL ảnh thực tế
-    },
-  ]);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const cartItems = useSelector((state) => state.cart.items); // Lấy sản phẩm từ Redux
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
 
-
+  // Xử lý thay đổi số lượng
   const handleQuantityChange = (id, quantity) => {
-    setCartItems(cartItems.map(item =>
-      item.id === id ? { ...item, quantity: quantity } : item
-    ));
+    dispatch(updateQuantity({ id, quantity })); // Dispatch action để cập nhật số lượng
   };
 
+  // Xử lý xóa sản phẩm
   const handleRemove = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+    dispatch(removeFromCart(id)); // Dispatch action để xóa sản phẩm
   };
 
+  // xử lý chuyển hướng về trang sản phẩm
+  const handleReturnShop = () => {
+    navigate('/products');
+  };
+
+  // Logic áp dụng coupon
   const applyCoupon = (code) => {
-    // Logic áp dụng coupon (ví dụ: giảm 10% nếu mã là "DISCOUNT10")
     if (code === 'DISCOUNT10') {
       setDiscount(cartTotal * 0.1);
       alert('Coupon applied! 10% discount.');
@@ -128,7 +145,8 @@ function Cart() {
     }
   };
 
-  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0) - discount;
+  // Tính tổng giá từ cartItems của Redux
+  const cartTotal = cartItems.reduce((total, item) => total + item.salePrice * item.quantity, 0) - discount;
 
   return (
     <>
@@ -142,7 +160,7 @@ function Cart() {
               onRemove={handleRemove}
             />
           ))}
-          <Button type="link" className="return-shop">
+          <Button type="link" className="return-shop" onClick={handleReturnShop}>
             Return To Shop
           </Button>
         </div>
@@ -153,7 +171,7 @@ function Cart() {
           setCouponCode={setCouponCode}
         />
       </div>
-      <ProductRelated products={products}/>
+      <NavigationProduct products={products} numOfProduct={4}/>
     </>
   );
 }

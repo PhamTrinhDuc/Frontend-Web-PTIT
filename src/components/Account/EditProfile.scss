@@ -1,0 +1,57 @@
+
+@import "../../utils/colors"; // Import màu nếu có
+
+.edit-profile-container {
+
+  .form-card {
+    padding: 10px 30px;
+
+    .form-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: $hover-bg;
+      margin-bottom: 30px;
+    
+    }
+  }
+
+  .form-row {
+    display: flex;
+    gap: 20px;
+    // padding: 10px 30px;
+    align-items: center;
+    justify-content: space-between;
+  
+    .form-item {
+      height: 50px;
+      width: 45%;
+      margin-bottom: 30px;
+
+      .form-input {
+        height: 40px;
+      }
+    }
+  }
+
+  .button-group {
+    .button-item {
+      margin-right: 20px;
+      margin-top: 20px;
+
+      &:last-child {
+        background-color: $hover-bg;
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+    }
+  }
+
+  .delete-account-btn {
+    font-size: 20px;
+    color: red;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+}

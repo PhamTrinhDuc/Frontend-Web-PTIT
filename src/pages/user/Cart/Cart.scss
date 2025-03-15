@@ -5,6 +5,7 @@
   display: flex;
   justify-content: space-between;
   background-color: $white;
+  margin-bottom: 100px;
 }
 
 .cart-items {
@@ -97,11 +98,11 @@
       text-align: right;
       margin-right: 25px;
 
-      &::after {
-        content: " đ";
-        font-size: 14px;
-        color: #666;
-      }
+      // &::after {
+      //   content: " đ";
+      //   font-size: 14px;
+      //   color: #666;
+      // }
     }
 
     .remove-button {

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import './FlashSale.scss';
 import CardProduct from '../CardProduct';
 import CountdownTimer from './CountdownTimer';
+import NavigationProduct from '../NavigationProduct';
+
 
 function FlashSale() {
   // data giả định, sau này gọi APi đến backend
@@ -55,13 +57,7 @@ function FlashSale() {
       <div className='flash-sale'>
         <CountdownTimer />
 
-        <Row className="product-container" gutter={[16, 16]} justify="center">
-          {products.map((product) => (
-            <Col xs={24} sm={12} md={6} key={product.id}>
-              <CardProduct product={product} />
-            </Col>
-          ))}
-        </Row>
+        <NavigationProduct products={products} numOfProduct={4} />
       </div>
     </>
   );

@@ -42,16 +42,12 @@ export const routes = [
         element: <AllProduct />,
       },
       {
-        path: "product-detail",
-        element: <Product />
+        path: "product-detail/:id",
+        element: <Product  /> // không cần truyền props product vì sẽ lấy dữ liệu từ API
       },
       {
         path: "cart",
         element: <Cart />
-      },
-      {
-        path: "billing",
-        element: <Billing />
       },
       {
         path: "*",
@@ -65,21 +61,16 @@ export const routes = [
         element: <PrivateRoute />,
         children: [
           {
+            
             path: 'account',
             element: <Account />,
-            // children: [
-            //   {
-            //     path: 'setting',
-            //     element: <EditProfile />
-            //   }
-            // ]
-          }
+          },
+          {
+            path: "billing",
+            element: <Billing />
+          },
         ]
       },
-      {
-        path: 'setting',
-        element: <EditProfile />
-      }
     ]
   },
   {

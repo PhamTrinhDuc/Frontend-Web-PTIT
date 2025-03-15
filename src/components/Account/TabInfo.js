@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { 
   Card, 
   Descriptions, 
@@ -7,6 +7,7 @@ import {
   Badge,
   Tabs,
   Button,
+  Modal
 } from 'antd';
 import {
   DeleteOutlined,
@@ -15,14 +16,56 @@ import {
   HomeOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout } from '../../slices/authSlice';
+import EditProfile from './EditProfile';
+
 import './TabInfo.scss';
 
 // https:grok.com/chat/a6a948f6-554e-4712-b6e9-8e7023d5434c
 
-function TabInfo({ userInfo, orderHistory, vouchers, wishlist, handleLogout, handleDeleteItem }) {
+function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+
+  const { isLoggedIn, user, token } = useSelector((state) => state.auth);
+
+
+  const showDeleteModal = () => {
+    setIsDeleteModalVisible(true);
+  };
+  const handleDeleteItem = () => {
+    // Logic xóa item (giả định gọi API)
+    setIsDeleteModalVisible(false);
+    // Thêm logic redirect hoặc logout sau khi xóa
+  };
+  const handleCancelDelete = () => {
+    setIsDeleteModalVisible(false);
+  };
+
+  const showLogoutModal = () => {
+    setIsLogoutModalVisible(true);
+  };
+  const handleLogoutAccount = () => {
+    dispatch(logout());
+    navigate('/login');
+    // Logic xóa item (giả định gọi API)
+
+    setIsLogoutModalVisible(false);
+    // Thêm logic redirect hoặc logout sau khi xóa
+  };
+  const handleCancelLogout = () => {
+    setIsLogoutModalVisible(false);
+  };
+
   return(
-    <Tabs defaultActiveKey="1" centered className="profile-tabs">
-        <Tabs.TabPane tab="Thông tin cá nhân" key="1">
+    <>
+      <Tabs defaultActiveKey="1" centered className="profile-tabs">
+        <Tabs.TabPane tab="Profile" key="1">
           <Card className="profile-card">
             <Descriptions title="Thông tin cơ bản" column={1} bordered>
               <Descriptions.Item label={<MailOutlined />}>
@@ -38,7 +81,7 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist, handleLogout, han
           </Card>
         </Tabs.TabPane>
 
-        <Tabs.TabPane tab="Lịch sử mua sắm" key="2">
+        <Tabs.TabPane tab="History orders" key="2">
           <Card className="profile-card">
             <Timeline mode="left">
               {orderHistory.map((order) => (
@@ -57,7 +100,7 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist, handleLogout, han
           </Card>
         </Tabs.TabPane>
 
-        <Tabs.TabPane tab="Ưu đãi" key="3">
+        <Tabs.TabPane tab="Promotion" key="3">
           <Card className="profile-card">
             <List
               dataSource={vouchers}
@@ -67,7 +110,7 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist, handleLogout, han
                     title={voucher.name}
                     description={`Hết hạn: ${voucher.expiry}`}
                   />
-                  <Button type="primary">Sử dụng</Button>
+                  <Button type="primary" onClick={() => navigate('/products')} >Sử dụng</Button>
                 </List.Item>
               )}
             />
@@ -85,7 +128,7 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist, handleLogout, han
                     title={item.name}
                     description={`${item.price.toLocaleString()} VNĐ`}
                   />
-                  <Button type="link" icon={<DeleteOutlined />} onClick={() => handleDeleteItem(item.id)} />
+                  <Button type="link" icon={<DeleteOutlined />} onClick={showDeleteModal} />
                 </List.Item>
               )}
             />
@@ -102,7 +145,7 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist, handleLogout, han
                 type="primary"
                 danger
                 icon={<LogoutOutlined />}
-                onClick={handleLogout}
+                onClick={showLogoutModal}
                 size="large"
               >
                 Đăng xuất
@@ -110,8 +153,36 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist, handleLogout, han
             </div>
           </Card>
         </Tabs.TabPane>
+        
+        <Tabs.TabPane tab="Edit Profile" key="6">
+          <EditProfile />
+        </Tabs.TabPane >
       </Tabs>
-  )
+
+      <Modal
+        title="Confirm item deletion"
+        visible={isDeleteModalVisible}
+        onOk={handleDeleteItem}
+        onCancel={handleCancelDelete}
+        okText="Confirm"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to delete this item? This action cannot be reversed!</p>
+      </Modal>
+
+      <Modal
+        title="Confirm logout action"
+        visible={isLogoutModalVisible}
+        onOk={handleLogoutAccount}
+        onCancel={handleCancelLogout}
+        okText="Confirm"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to log out? This action cannot be reversed!</p>
+      </Modal>
+    </>
+      
+  );
 }
 
 export default TabInfo;

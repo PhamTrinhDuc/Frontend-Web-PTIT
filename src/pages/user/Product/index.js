@@ -1,11 +1,12 @@
-import { Card, Col, Image, Row } from 'antd'
 import './Product.scss';
+import { useEffect, useState } from 'react';
+import { useParams } from "react-router-dom";
 import ProductDetail from '../../../components/ProductDetail';
 import ProductRelated from '../../../components/ProductRelated';
 import products from '../../../utils/mock_data';
+import {get} from '../../../utils/requests';
 
-
-const product = {
+const productMock = {
   name: 'Havic HV-G92 Gamepad',
   price: 2300000,
   images: [
@@ -24,10 +25,35 @@ const product = {
 };
 
 function Product() {
+  const { id } = useParams();
+  const [product, setProduct] = useState();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const data = await get(`products/${id}`);
+        setProduct(data);
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProduct();
+  }, [id]);
+  if (loading) {
+    return <p>Loading product...</p>; // Hoặc thay bằng Spinner
+  }
+  if (!product) {
+    return <p>Product not found</p>; // Nếu API trả về null hoặc lỗi
+  }
+
+  console.log('Product:', product);
 
   return (
     <>
-      <ProductDetail product={product} />
+      <ProductDetail product={productMock} />
 
       <ProductRelated products={products}/>
     </>

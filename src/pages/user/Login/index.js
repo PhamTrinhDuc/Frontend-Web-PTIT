@@ -97,7 +97,7 @@ function Login() {
               className='item'
               rules={[{ required: true, message: 'Please input your password!' }]}
             >
-              <Input placeholder='Enter your password'/>
+              <Input.Password placeholder='Enter your password'/>
             </Item>
 
             <div className="forgot-password">

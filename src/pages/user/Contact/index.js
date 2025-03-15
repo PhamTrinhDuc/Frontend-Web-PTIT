@@ -1,4 +1,6 @@
 import { Form, Input, Button,message, Col, Row } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { FaPhoneSquare } from "react-icons/fa";
 import { IoMdMail } from "react-icons/io";
 import './Contact.scss';
@@ -10,6 +12,10 @@ const { TextArea } = Input;
 
 function Contact() {
   const [form] = Form.useForm()
+  const { isLoggedIn, user, token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const onFinish = async (values) => {
     console.log('Form values:', values);
     try {

@@ -13,10 +13,6 @@ import { useNavigate } from 'react-router-dom';
 import './Header.scss';
 
 function Header({ userInfo }) {
-  const navigate = useNavigate();
-  const handleEdit = () => {
-    navigate('/account/setting');
-  }
 
   return (
     <Card className="profile-header-card">
@@ -38,14 +34,6 @@ function Header({ userInfo }) {
             </div>
           </div>
         </div>
-        <Button
-          type="primary"
-          icon={<EditOutlined />}
-          onClick={() => handleEdit()}
-          className="edit-btn"
-        >
-          Chỉnh sửa
-        </Button>
       </div>
     </Card>
   )

@@ -71,21 +71,4 @@
       }
     }
   }
-
-  .edit-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: $white;
-    color: $text;
-    border-radius: 6px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.3s ease;
-
-  }
 }

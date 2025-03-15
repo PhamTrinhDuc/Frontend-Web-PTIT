@@ -1,0 +1,79 @@
+@import"../../utils/colors";
+
+.decorative-bar {
+  background-color: $black;
+  height: 40px;
+  width: 100%;
+}
+
+.header {
+  background-color: $white;
+  box-shadow: $box-shadow;
+  padding: 10px 20px;
+  
+
+  .header-container {
+    // max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  .logo-container {
+    display: flex;
+    font-family: 'Times New Roman', Times, serif;
+    img {
+      width: 50px;
+      height: 70px;
+      margin-right: 10px;
+    }
+    .logo {
+      font-size: 45px;
+      font-weight: bold;
+      margin: 0;
+      color: $black;
+    }
+  }
+
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+
+    .search-bar {
+      max-width: 200px;
+      border-radius: 20px;
+    }
+
+    .ant-btn {
+      color: $black;
+      font-size: 16px;
+
+      &:hover {
+        color: $hover-bg;
+        transition: all 0.3s ease;
+      }
+    }
+  }
+}
+
+@media (max-width: 1100px) {
+  .nav-links {
+    display: none; // Ẩn menu trên màn hình nhỏ
+  }
+
+  .logo {
+    text-align: left;
+  }
+
+  .header-actions {
+    justify-content: flex-end;
+
+    .search-bar {
+      max-width: 150px;
+    }
+  }
+}

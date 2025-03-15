@@ -63,7 +63,7 @@ function CategoryBanner() {
         <Row className="category-row" gutter={[16, 16]} justify="center">
           {categoriesList.map((category) => (
               <Col xs={24} sm={12} md={8} lg={4} key={category.id}>
-                <Link to = {`category${category.name}`}>
+                <Link to = {`category/${category.name}`}>
                     <div className="category-item">
                       {categoryIcons[category.id-1]}
                       <h3>{category.name}</h3>

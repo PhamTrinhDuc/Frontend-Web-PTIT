@@ -3,6 +3,8 @@ import './ShowProduct.scss';
 import CardProduct from '../CardProduct'
 import {Row, Col} from 'antd'; 
 import products from '../../utils/mock_data';
+import NavigationProduct from "../NavigationProduct";
+
 
 function ShowProduct() {
   // const [products, setProducts] = useState([]);
@@ -26,13 +28,8 @@ function ShowProduct() {
   return (
     <>
       <div className='products-container'>
-      <Row gutter={[16, 16]}>
-        {products.map((product) => (
-          <Col key={product.id} xs={24} sm={12} md={6} lg={6} xl={6}>
-            <CardProduct product={product} />
-          </Col>
-        ))}
-      </Row>
+
+        <NavigationProduct products={products} numOfProduct={16} />
       </div>
     </>
   );

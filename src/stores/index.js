@@ -1,19 +1,28 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage
+import storage from 'redux-persist/lib/storage';
 import authReducer from '../slices/authSlice';
+import cartReducer from '../slices/cartSlice';
 
+// Cấu hình persist
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist: ['auth', 'cart'], // Persist cả auth và cart
 };
 
-const persistedReducer = persistReducer(persistConfig, authReducer);
+// Kết hợp các reducer
+const rootReducer = combineReducers({
+  auth: authReducer, // Key là 'auth'
+  cart: cartReducer, // Key là 'cart'
+});
 
+// Áp dụng persist cho rootReducer
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+// Tạo store
 const store = configureStore({
-  reducer: {
-    auth: persistedReducer,
-  },
+  reducer: persistedReducer,
 });
 
 export const persistor = persistStore(store);

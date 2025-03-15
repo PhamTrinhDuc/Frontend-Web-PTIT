@@ -8,14 +8,25 @@ import {
   Modal, 
   message,
 } from 'antd';
-// import { UserContext } from '../context/UserContext';
 import { DeleteOutlined } from '@ant-design/icons';
 import './EditProfile.scss';
 
 const EditProfile = () => {
-  const { userInfo, setUserInfo } = useContext();
+  const UserContext = React.createContext({
+    userInfo: {
+      fullName: 'John Doe',
+      email: 'john.doe@example.com',
+      address: '123 Main St',
+    },
+    setUserInfo: () => {},
+  });
+
+  const { userInfo, setUserInfo } = useContext(UserContext);
   const [form] = Form.useForm();
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
+  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
+
 
   const initialValues = {
     firstName: userInfo.fullName.split(' ')[0] || '',
@@ -55,10 +66,39 @@ const EditProfile = () => {
     form.resetFields(['currentPassword', 'newPassword', 'confirmPassword']);
   };
 
+  const showCancelModal = () => {
+    setIsCancelModalVisible(true);
+  };
+  const handleCancelAccount = () => {
+    // Logic hủy bỏ thay đổi (giả định gọi API)
+    console.log('Hủy bỏ thay đổi');
+    setIsCancelModalVisible(false);
+    message.success('Thay đổi đã được hủy bỏ!');
+    // Thêm logic reset form hoặc các hành động khác sau khi hủy bỏ
+  };
+  const handleCancelCancel = () => {
+    setIsCancelModalVisible(false);
+  };
+
+
+  const showConfirmModal = () => {
+    setIsConfirmModalVisible(true);
+  };
+  const hanleConfirmAccount = () => {
+    // Logic xác nhận tài khoản (giả định gọi API)
+    console.log('Xác nhận tài khoản');
+    setIsConfirmModalVisible(false);
+    message.success('Tài khoản đã được xác nhận!');
+    // Thêm logic redirect hoặc logout sau khi xác nhận
+  };
+  const handleCancelConfirm = () => {
+    setIsConfirmModalVisible(false);
+  };
+
+  
   const showDeleteModal = () => {
     setIsDeleteModalVisible(true);
   };
-
   const handleDeleteAccount = () => {
     // Logic xóa tài khoản (giả định gọi API)
     console.log('Xóa tài khoản');
@@ -66,14 +106,15 @@ const EditProfile = () => {
     message.success('Tài khoản đã được xóa!');
     // Thêm logic redirect hoặc logout sau khi xóa
   };
-
   const handleCancelDelete = () => {
     setIsDeleteModalVisible(false);
   };
 
   return (
     <div className="edit-profile-container">
-      <Card title="Edit Your Profile">
+      <Card className='form-card' >
+      <Divider className='form-title'>Edit your profile</Divider>
+
         <Form
           form={form}
           name="edit-profile"
@@ -85,16 +126,19 @@ const EditProfile = () => {
             <Form.Item
               name="firstName"
               label="First Name"
-              rules={[{ required: true, message: 'Vui lòng nhập tên!' }]}
+              className='form-item'
+              rules={[{ required: true, message: 'Please enter name!' }]}
             >
-              <Input placeholder="Phạm Trịnh" />
+              <Input placeholder="Phạm Trịnh" className='form-input' />
             </Form.Item>
+
             <Form.Item
               name="lastName"
               label="Last Name"
-              rules={[{ required: true, message: 'Vui lòng nhập họ!' }]}
+              className='form-item'
+              rules={[{ required: true, message: 'Please enter your last name!' }]}
             >
-              <Input placeholder="Đức" />
+              <Input placeholder="Đức"  className='form-input'/>
             </Form.Item>
           </div>
 
@@ -102,49 +146,72 @@ const EditProfile = () => {
             <Form.Item
               name="email"
               label="Email"
-              rules={[{ required: true, type: 'email', message: 'Email không hợp lệ!' }]}
+              className='form-item'
+              rules={[{ required: true, type: 'email', message: 'Invalid email!' }]}
             >
-              <Input placeholder="rimell11@gmail.com" />
+              <Input placeholder="rimell11@gmail.com" className='form-input'/>
             </Form.Item>
             <Form.Item
               name="address"
               label="Address"
-              rules={[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]}
+              className='form-item'
+              rules={[{ required: true, message: 'Please enter address!' }]}
             >
-              <Input placeholder="Kingston, 5236, United State" />
+              <Input placeholder="Kingston, 5236, United State" className='form-input'/>
             </Form.Item>
           </div>
 
-          <Divider>Password Changes</Divider>
+          <div className="form-row">
+            <Form.Item
+              name="phone"
+              label="Phone Number"
+              className='form-item'
+              rules={[{ required: true, message: 'Please enter phone number' }]}
+            >
+              <Input placeholder="0123456789" className='form-input'/>
+            </Form.Item>
+            <Form.Item
+              name="gender"
+              label="Gender"
+              className='form-item'
+              rules={[{ required: true, message: 'Please enter gender!' }]}
+            >
+              <Input placeholder="Kingston, 5236, United State" className='form-input'/>
+            </Form.Item>
+          </div>
 
-          <Form.Item
-            name="currentPassword"
-            label="Current Password"
-            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu hiện tại!' }]}
-          >
-            <Input.Password placeholder="Current Password" />
-          </Form.Item>
-          <Form.Item
-            name="newPassword"
-            label="New Password"
-            rules={[{ message: 'Vui lòng nhập mật khẩu mới!' }]}
-          >
-            <Input.Password placeholder="New Password" />
-          </Form.Item>
-          <Form.Item
-            name="confirmPassword"
-            label="Confirm New Password"
-            rules={[{ message: 'Vui lòng xác nhận mật khẩu mới!' }]}
-          >
-            <Input.Password placeholder="Confirm New Password" />
-          </Form.Item>
+          <Divider className='form-title'>Password Changes</Divider>
+          <div className='form-change'>
+            <Form.Item
+              name="currentPassword"
+              label="Current Password"
+              rules={[{ required: true, message: 'Please enter current password!' }]}
+            >
+              <Input.Password placeholder="Current Password" className='form-input' />
+            </Form.Item>
+            <Form.Item
+              name="newPassword"
+              label="New Password"
+              rules={[{ required: true, message: 'Please enter new password!' }]}
+            >
+              <Input.Password placeholder="New Password" className='form-input' />
+            </Form.Item>
+            <Form.Item
+              name="confirmPassword"
+              label="Confirm New Password"
+              rules={[{ required:true, message: 'Please confirm new password!' }]}
+            >
+              <Input.Password placeholder="Confirm New Password" className='form-input' />
+            </Form.Item>
+          </div>
 
           <Form.Item>
+
             <div className="button-group">
-              <Button type="default" onClick={() => form.resetFields()}>
+              <Button className='button-item' type="default" onClick={showCancelModal}>
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit">
+              <Button className='button-item' type="primary" htmlType="submit" onClick={showConfirmModal}>
                 Save Changes
               </Button>
             </div>
@@ -161,15 +228,38 @@ const EditProfile = () => {
         Delete Account
       </Button>
 
+
       <Modal
-        title="Xác nhận xóa tài khoản"
+        title="Cancel information change"
+        visible={isCancelModalVisible}
+        onOk={handleCancelAccount}
+        onCancel={handleCancelCancel}
+        okText="Confirm"
+        cancelText="Cancel"
+      >
+        <p>Are you sure you want to cancel the changes? This cannot be undone!</p>
+      </Modal>
+
+      <Modal
+        title="Confirm information change"
+        visible={isConfirmModalVisible}
+        onOk={hanleConfirmAccount}
+        onCancel={handleCancelConfirm}
+        okText="Confirm"
+        cancelText="Cancel"
+      >
+        <p>Are you sure with the information changed? This cannot be undone!</p>
+      </Modal>
+
+      <Modal
+        title="Confirm account deletion"
         visible={isDeleteModalVisible}
         onOk={handleDeleteAccount}
         onCancel={handleCancelDelete}
-        okText="Xóa"
-        cancelText="Hủy"
+        okText="Delete"
+        cancelText="Cancel"
       >
-        <p>Bạn có chắc muốn xóa tài khoản? Hành động này không thể hoàn tác!</p>
+        <p>Are you sure you want to delete your account? This action cannot be undone!</p>
       </Modal>
     </div>
   );
