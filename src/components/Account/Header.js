@@ -9,9 +9,15 @@ import {
   ShoppingCartOutlined,
   GiftOutlined,
 } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import './Header.scss';
 
 function Header({ userInfo }) {
+  const navigate = useNavigate();
+  const handleEdit = () => {
+    navigate('/account/setting');
+  }
+
   return (
     <Card className="profile-header-card">
       <div className="profile-header">
@@ -35,7 +41,7 @@ function Header({ userInfo }) {
         <Button
           type="primary"
           icon={<EditOutlined />}
-          onClick={() => console.log('Chuyển hướng sang trang setting')}
+          onClick={() => handleEdit()}
           className="edit-btn"
         >
           Chỉnh sửa

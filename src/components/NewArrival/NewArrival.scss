@@ -1,3 +1,6 @@
+@import"../../utils/colors";
+
+
 .banner-container {
   margin-bottom: 120px;
 
@@ -5,8 +8,8 @@
     position: relative;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    background: #000; // Màu nền tối giống hình
+    box-shadow: $box-shadow; 
+    background: $black;
 
     img {
       width: 100%;
@@ -17,14 +20,14 @@
     }
 
     &:hover img {
-      opacity: 0.9;
+      opacity: 1;
     }
 
     .block-content {
       position: absolute;
       bottom: 20px;
       left: 20px;
-      color: #fff;
+      color: $white;
 
       h3 {
         font-size: 24px;
@@ -39,32 +42,30 @@
       }
 
       .ant-btn {
-        background: #fff;
-        color: #000;
-        border: none;
+        background: $white;
+        color: $black;
         border-radius: 4px;
         padding: 6px 20px;
         font-weight: bold;
         transition: background 0.3s ease;
 
         &:hover {
-          background: #f0f0f0;
-          color: #000;
+          background: $hover-bg;
+          color: $text;
+        }
+        &:active {
+          transform: scale(0.95);
         }
       }
-
       .ant-btn-link {
-        color: #fff;
+        color: $text;
         font-weight: bold;
-        &:hover {
-          color: #ddd;
-        }
       }
     }
   }
 
   .large-block {
-    height: 400px; // Chiều cao khối lớn
+    height: 600px; // Chiều cao khối lớn
     img {
       height: 100%;
     }
@@ -81,7 +82,7 @@
   }
 
   .small-block {
-    height: 192px; // Chiều cao khối nhỏ (400px / 2 - khoảng cách giữa 2 hàng)
+    height: 292px; // Chiều cao khối nhỏ (600-12)/2
     img {
       height: 100%;
     }

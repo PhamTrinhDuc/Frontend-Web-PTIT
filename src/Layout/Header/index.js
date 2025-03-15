@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Row, Col, Input, Button, Badge } from 'antd';
-import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import { SearchOutlined, ShoppingCartOutlined, UserOutlined, MenuOutlined} from '@ant-design/icons';
 import { FaHome, FaShoppingCart, FaInfoCircle, FaEnvelope } from 'react-icons/fa';
 import './Header.scss';
 import logo from '../../assets/images/logo.png';
@@ -12,6 +12,7 @@ const Header = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const [menuVisible, setMenuVisible] = useState(false); // State để toggle menu
 
   // Logic cho cart
   const handleAddToCart = () => {
@@ -59,11 +60,19 @@ const Header = () => {
           <Col xs={12} md={4} className="logo-container">
             <Link to="/" className="logo">
               <img src={logo} alt="Zenith Logo" />
-              Zenith
+              <p>Zenith</p>
             </Link>
           </Col>
 
-          <Col xs={0} md={12} className="nav-links">
+          <Col xs={4} md={0} className="menu-toggle">
+            <Button
+              type="text"
+              icon={<MenuOutlined />}
+              onClick={() => setMenuVisible(!menuVisible)}
+            />
+          </Col>
+
+          <Col xs={0} md={12} className={`nav-links ${menuVisible ? 'active' : ''}`}>
             <nav>
               <Link to="/" className="nav-link">
                 <FaHome /> Home

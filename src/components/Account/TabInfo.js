@@ -17,7 +17,7 @@ import {
 } from '@ant-design/icons';
 import './TabInfo.scss';
 
-
+// https:grok.com/chat/a6a948f6-554e-4712-b6e9-8e7023d5434c
 
 function TabInfo({ userInfo, orderHistory, vouchers, wishlist, handleLogout, handleDeleteItem }) {
   return(

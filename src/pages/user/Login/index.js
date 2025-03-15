@@ -20,6 +20,7 @@ function Login() {
   const onFinish = async (values) => {
     try {
       const response = await post('auth/login', values); 
+      response.role = 'user'; // giả lập role admin
       console.log(response);
       if (response && response.accessToken) {
         message.success('Login successful!');
@@ -29,22 +30,21 @@ function Login() {
 
         // setCookie('userId', response.id, 7);
         // setCookie('username', response.username, 7);
-        // setCookie('email', response.email, 7);
-        // setCookie('phone', response.gender)
-        // setCookie('address', response.image)
-        // setCookie('accessToken', response.accessToken, 7);
         // setCookie('refreshToken', response.refreshToken, 7);
         dispatch(login({
           token: response.accessToken, 
           user: {
-            username: response.username, // Điều chỉnh theo response thực tế
-            email: response.email,       // Tùy chọn, nếu API trả về
-            phone: response.phone,       // Tùy chọn, nếu API trả về
-            address: response.address,   // Tùy chọn, nếu API trả về
+            id: response.id,
+            username: response.username,
           },
+          role: response.role || 'user',
         }));
-        navigate('/');
-
+        if (response.role === 'admin') {
+          navigate('/admin');
+        }
+        else if (response.role === 'user') {
+          navigate('/');
+        }
       } else {
         setErrorMessage(response?.message || "Login failed. Please check your credentials.");
       }

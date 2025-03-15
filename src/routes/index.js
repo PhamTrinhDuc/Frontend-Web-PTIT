@@ -13,6 +13,7 @@ import Billing from '../pages/user/Billing';
 import Account from '../pages/user/Account';
 import EditProfile from '../components/Account/EditProfile';
 
+import AminLayout from '../Layout/AminLayout';
 
 export const routes = [
   {
@@ -66,16 +67,24 @@ export const routes = [
           {
             path: 'account',
             element: <Account />,
-            children: [
-              {
-                path: 'edit-profile',
-                element: <EditProfile />
-              }
-            ]
+            // children: [
+            //   {
+            //     path: 'setting',
+            //     element: <EditProfile />
+            //   }
+            // ]
           }
         ]
+      },
+      {
+        path: 'setting',
+        element: <EditProfile />
       }
     ]
+  },
+  {
+    path: 'admin',
+    element: <AminLayout />,
   }
 ]
 

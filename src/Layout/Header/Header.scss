@@ -21,13 +21,16 @@
 
   .logo-container {
     display: flex;
+    align-items: center;
     font-family: 'Times New Roman', Times, serif;
     img {
       width: 50px;
       height: 70px;
-      margin-right: 10px;
+      margin-right: 20px;
     }
     .logo {
+      display: flex;
+      align-items: center;
       font-size: 45px;
       font-weight: bold;
       margin: 0;
@@ -72,8 +75,11 @@
     gap: 15px;
 
     .search-bar {
-      max-width: 200px;
+      width: 100%; // Chiếm toàn bộ không gian khả dụng
+      max-width: 400px; // Giới hạn tối đa để không quá dài trên desktop
+      min-width: 150px; // Đảm bảo không co quá nhỏ
       border-radius: 20px;
+      flex-grow: 1; // Tự động mở rộng trong không gian của .header-actions
     }
 
     .ant-btn {
@@ -93,22 +99,120 @@
       font-size: 20px;
     }
   }
+}
 
-  @media (max-width: 1100px) {
-    .nav-links {
-      display: none; // Ẩn menu trên màn hình nhỏ
+
+
+
+@media (max-width: 1024px) {
+  // Tablet
+  .header-container {
+    padding: 0 10px;
+  }
+
+  .logo-container {
+    .logo {
+      font-size: 36px; // Giảm kích thước logo
     }
+
+    img {
+      width: 40px;
+      height: 56px;
+    }
+  }
+
+  .nav-links {
+    nav {
+      gap: 20px; // Giảm khoảng cách giữa các link
+
+      .nav-link {
+        font-size: 18px;
+
+        svg {
+          font-size: 18px;
+        }
+      }
+    }
+  }
+
+  .header-actions {
+    .search-bar {
+      max-width: 150px;
+    }
+
+    .ant-btn {
+      font-size: 14px;
+    }
+
+    .cart-icon {
+      font-size: 18px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  // Mobile
+  .header-container {
+    flex-direction: column; // Xếp dọc các phần
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .logo-container {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 10px;
 
     .logo {
-      text-align: left;
+      font-size: 32px;
     }
 
-    .header-actions {
-      justify-content: flex-end;
+    img {
+      width: 35px;
+      height: 50px;
+    }
+  }
 
-      .search-bar {
-        max-width: 150px;
+  .nav-links {
+    display: none; // Ẩn menu mặc định trên mobile
+    width: 100%;
+
+    &.active { // Thêm class active khi toggle menu
+      display: block;
+      margin: 10px 0;
+
+      nav {
+        flex-direction: column;
+        gap: 15px;
+
+        .nav-link {
+          font-size: 16px;
+          justify-content: center;
+
+          svg {
+            font-size: 16px;
+          }
+        }
       }
+    }
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+
+    .search-bar {
+      max-width: 100%; // Chiếm toàn bộ chiều rộng
+      margin-bottom: 10px;
+    }
+
+    .ant-btn {
+      font-size: 14px;
+      padding: 4px 10px;
+    }
+
+    .cart-icon {
+      font-size: 16px;
     }
   }
 }

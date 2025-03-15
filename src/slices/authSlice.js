@@ -1,28 +1,34 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { message } from 'antd';
 
+const initialState = {
+  user: null,
+  role: null, // Thêm role vào state
+  isAuthenticated: false,
+  token: null,
+};
 
-const initialState ={
-  isLoggedIn: false,
-  id: null,
-  user: null, // Lưu thông tin user (username, email, etc.)
-  token: null, // Lưu token}
-}
-const authSlice = createSlice({
-  name: 'auth',
-  initialState: initialState,
+const userSlice = createSlice({
+  name: 'user',
+  initialState,
   reducers: {
     login(state, action) {
-      state.isLoggedIn = true;
       state.user = action.payload.user;
+      state.role = action.payload.role || 'user'; // Lưu role từ payload, mặc định là 'user'
+      state.isAuthenticated = true;
       state.token = action.payload.token;
     },
+    updateUser(state, action) {
+      state.user = { ...state.user, ...action.payload };
+    },
     logout(state) {
-      state.isLoggedIn = false;
       state.user = null;
+      state.role = null;
+      state.isAuthenticated = false;
       state.token = null;
     },
   },
 });
 
-export const { login, logout } = authSlice.actions;
-export default authSlice.reducer;
+export const { login, updateUser, logout } = userSlice.actions;
+export default userSlice.reducer;
