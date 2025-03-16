@@ -1,0 +1,28 @@
+@import '../../utils//colors';
+
+.floating-admin-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1000;
+  background-color: $ribbon-card; // Màu đỏ nổi bật cho Admin
+  color: $white;
+  width: 80px; // Kích thước lớn hơn
+  height: 80px;
+  font-size: 30px; // Icon to hơn
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: $box-shadow;
+  transition: all 0.3s ease-in-out;
+  padding: 0; // Loại bỏ padding mặc định của AntD Button
+
+  &:hover {
+    background-color: $hover-bg;
+    transform: scale(1.15);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}

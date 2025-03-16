@@ -157,6 +157,7 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
         <Tabs.TabPane tab="Edit Profile" key="6">
           <EditProfile />
         </Tabs.TabPane >
+
       </Tabs>
 
       <Modal
