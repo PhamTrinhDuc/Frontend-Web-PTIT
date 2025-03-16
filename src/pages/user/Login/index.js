@@ -20,8 +20,8 @@ function Login() {
   const onFinish = async (values) => {
     try {
       const response = await post('auth/login', values); 
-      response.role = 'user'; // giả lập role admin
-      console.log(response);
+      response.role = 'admin'; // giả lập role admin
+      console.log(response.role);
       if (response && response.accessToken) {
         message.success('Login successful!');
         form.resetFields();

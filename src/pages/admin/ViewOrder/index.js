@@ -1,15 +1,15 @@
 
 import React from 'react';
 import CardOrder from '../../../components/admin/CardOrder';
-import HeaderManage from '../../../components/admin/HeaderManage';
-
+import HeaderManageOrder from '../../../components/admin/HeaderManageOrder';
+import './ViewOrder.scss';
 
 
 
 function ViewOrder() {
   return (
     <>
-      <HeaderManage title="View Order" />
+      <HeaderManageOrder />
       <CardOrder />
     </>
   );

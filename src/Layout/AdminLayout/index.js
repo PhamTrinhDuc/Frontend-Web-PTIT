@@ -17,8 +17,6 @@ import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 
 
-
-
 const AdminHeader = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');

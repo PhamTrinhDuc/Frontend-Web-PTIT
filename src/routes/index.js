@@ -1,3 +1,5 @@
+import React from 'react';
+import { Navigate } from 'react-router-dom';
 import Login from '../pages/user/Login';
 import SignUp from '../pages/user/SignUp';
 import PrivateRoute from '../routes/PrivateRoutes';
@@ -18,107 +20,55 @@ import Promotion from '../pages/admin/Promotion';
 import ManageCustomer from '../pages/admin/ManageCustomer';
 import ViewOrder from '../pages/admin/ViewOrder';
 import ManageProduct from '../pages/admin/ManageProduct';
-import AminLayout from '../Layout/AminLayout';
+import AdminLayout from '../Layout/AdminLayout';
 import AddProduct from '../pages/admin/AddProduct';
-
+import EditProduct from '../pages/admin/EditProduct';
+import ProtectedAdminRoute from "./ProtectedAdminRoute";
 
 export const routes = [
   {
-    path: '/',
+    path: "/",
     element: <LayoutDefault />,
     children: [
-      {
-        path: '/', element: <Home />
-      },
-      {
-        path: 'about', element: <About />
-      },
-      {
-        path: 'contact', element: <Contact />
-      },
-      {
-        path: 'login', 
-        element: <Login />
-      },
-      {
-        path: 'signup', 
-        element: <SignUp />
-      },
-      {
-        path: "products",
-        element: <AllProduct />,
-      },
-      {
-        path: "product-detail/:id",
-        element: <Product  /> // không cần truyền props product vì sẽ lấy dữ liệu từ API
-      },
-      {
-        path: "cart",
-        element: <Cart />
-      },
-      {
-        path: "*",
-        element: <Error />
-      },
-      {
-        path: 'edit-profile',
-        element: <EditProfile />
-      },
+      { index: true, element: <Home /> },
+      { path: "about", element: <About /> },
+      { path: "contact", element: <Contact /> },
+      { path: "login", element: <Login /> },
+      { path: "signup", element: <SignUp /> },
+      { path: "products", element: <AllProduct /> },
+      { path: "product-detail/:id", element: <Product /> },
+      { path: "cart", element: <Cart /> },
+      { path: "*", element: <Error /> },
+
+      // Private Route cho user
       {
         element: <PrivateRoute />,
         children: [
-          {
-            
-            path: 'account',
-            element: <Account />,
-          },
-          {
-            path: "billing",
-            element: <Billing />
-          },
-        ]
+          { path: "account", element: <Account /> },
+          { path: "billing", element: <Billing /> },
+          { path: "edit-profile", element: <EditProfile /> },
+        ],
       },
-    ]
+    ],
   },
-  
-  {
-    path: 'admin',
-    element: <AminLayout />,
-    children: [
-      {
-        path: 'dashboard',
-        element: <Dashboard />
-      },
-      {
-        path: 'inventory',
-        element: <Inventory />
-      },
-      {
-        path: 'promotion',
-        element: <Promotion />
-      },
-      {
-        path: 'manage-customer',
-        element: <ManageCustomer />
-      },
-      {
-        path: 'view-order',
-        element: <ViewOrder />
-      },
-      {
-        path: 'add-product',
-        element: <AddProduct />
-      },
-      {
-        path: 'manage-product',
-        element: <ManageProduct />
-      },
-      {
-        path: "*",
-        element: <Error />
-      },
-    ]
-  }
-]
 
-export default routes;
+  // Admin Routes - Đã thêm ProtectedAdminRoute
+  {
+    path: "admin",
+    element: <ProtectedAdminRoute />,  // Kiểm tra quyền trước khi vào Admin
+    children: [
+      { index: true, element: <Navigate to="dashboard" /> },
+      { path: "", element: <AdminLayout />, children: [
+        { path: "dashboard", element: <Dashboard /> },
+        { path: "inventory", element: <Inventory /> },
+        { path: "promotion", element: <Promotion /> },
+        { path: "manage-customer", element: <ManageCustomer /> },
+        { path: "view-order", element: <ViewOrder /> },
+        { path: "add-product", element: <AddProduct /> },
+        { path: "edit-product/:id", element: <EditProduct /> },
+        { path: "manage-product", element: <ManageProduct /> },
+        { path: "*", element: <Error /> },
+      ]},
+    ],
+  },
+];

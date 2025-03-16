@@ -1,0 +1,29 @@
+@import"../../../utils/colors";
+
+
+.header-manage {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  margin-bottom: 20px;
+  background: $white; // Tuỳ chỉnh màu nền
+  box-shadow: $box-shadow; 
+
+  h2 {
+    margin: 0; // Xoá margin mặc định
+  }
+
+  .button-manage {
+    display: flex;
+    gap: 10px; // Khoảng cách giữa các nút
+
+    button {
+      background-color: $hover-bg;
+      color:$white;
+      border: none;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+  }
+}

@@ -1,64 +1,67 @@
 import React, { useState } from 'react';
 import { Table, Button, Popconfirm, message } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import './CardProduct.scss';
 
+const mock_data = [
+  {
+    id: '1',
+    productName: 'iPhone 13 pro max - Pacific Blue-128GB',
+    price: '13,000,000',
+    category: 'Phone',
+    publishDate: '19-12-2025 10:45 AM',
+  },
+  {
+    id: '2',
+    productName: 'iPhone 13 pro max - Pacific Blue-128GB',
+    price: '13,000,000',
+    category: 'Phone',
+    publishDate: '19-12-2025 10:45 AM',
+  },
+  {
+    id: '3',
+    productName: 'iPhone 13 pro max - Pacific Blue-128GB',
+    price: '13,000,000',
+    category: 'Phone',
+    publishDate: '19-12-2025 10:45 AM',
+  },
+  {
+    id: '4',
+    productName: 'iPhone 13 pro max - Pacific Blue-128GB',
+    price: '13,000,000',
+    category: 'Phone',
+    publishDate: '19-12-2025 10:45 AM',
+  },
+  {
+    id: '5',
+    productName: 'iPhone 13 pro max - Pacific Blue-128GB',
+    price: '13,000,000',
+    category: 'Phone',
+    publishDate: '19-12-2025 10:45 AM',
+  },
+  {
+    id: '6',
+    productName: 'iPhone 13 pro max - Pacific Blue-128GB',
+    price: '13,000,000',
+    category: 'Phone',
+    publishDate: '19-12-2025 10:45 AM',
+  },
+  {
+    id: '7',
+    productName: 'iPhone 13 pro max - Pacific Blue-128GB',
+    price: '13,000,000',
+    category: 'Phone',
+    publishDate: '19-12-2025 10:45 AM',
+  },
+]
+
 const CardProduct = () => {
   // Dữ liệu mẫu
-  const [products, setProducts] = useState([
-    {
-      key: '1',
-      productName: 'iPhone 13 pro max - Pacific Blue-128GB',
-      price: '13,000,000',
-      category: 'Phone',
-      publishDate: '19-12-2025 10:45 AM',
-    },
-    {
-      key: '2',
-      productName: 'iPhone 13 pro max - Pacific Blue-128GB',
-      price: '13,000,000',
-      category: 'Phone',
-      publishDate: '19-12-2025 10:45 AM',
-    },
-    {
-      key: '3',
-      productName: 'iPhone 13 pro max - Pacific Blue-128GB',
-      price: '13,000,000',
-      category: 'Phone',
-      publishDate: '19-12-2025 10:45 AM',
-    },
-    {
-      key: '4',
-      productName: 'iPhone 13 pro max - Pacific Blue-128GB',
-      price: '13,000,000',
-      category: 'Phone',
-      publishDate: '19-12-2025 10:45 AM',
-    },
-    {
-      key: '5',
-      productName: 'iPhone 13 pro max - Pacific Blue-128GB',
-      price: '13,000,000',
-      category: 'Phone',
-      publishDate: '19-12-2025 10:45 AM',
-    },
-    {
-      key: '6',
-      productName: 'iPhone 13 pro max - Pacific Blue-128GB',
-      price: '13,000,000',
-      category: 'Phone',
-      publishDate: '19-12-2025 10:45 AM',
-    },
-    {
-      key: '7',
-      productName: 'iPhone 13 pro max - Pacific Blue-128GB',
-      price: '13,000,000',
-      category: 'Phone',
-      publishDate: '19-12-2025 10:45 AM',
-    },
-  ]);
-
+  const [products, setProducts] = useState(mock_data);
   // Quản lý trạng thái chọn sản phẩm
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const navigate = useNavigate();
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -104,10 +107,12 @@ const columns = [
     key: 'actions',
     render: (_, record) => (
       <span>
-        <Button type="link" icon={<EditOutlined />} />
+        <Button type="link" icon={<EditOutlined />} 
+        onClick={() => navigate(`/admin/edit-product/${record.id}`)} 
+      />
           <Popconfirm
             title="Are you sure to delete this product?"
-            onConfirm={() => handleDelete(record.key)}
+            onConfirm={() => handleDelete(record.id)}
             okText="Yes"
             cancelText="No"
           >
