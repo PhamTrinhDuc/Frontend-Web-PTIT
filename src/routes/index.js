@@ -12,8 +12,15 @@ import Cart from '../pages/user/Cart';
 import Billing from '../pages/user/Billing';
 import Account from '../pages/user/Account';
 import EditProfile from '../components/Account/EditProfile';
-
+import Dashboard from '../pages/admin/Dashboard';
+import Inventory from '../pages/admin/Inventory';
+import Promotion from '../pages/admin/Promotion';
+import ManageCustomer from '../pages/admin/ManageCustomer';
+import ViewOrder from '../pages/admin/ViewOrder';
+import ManageProduct from '../pages/admin/ManageProduct';
 import AminLayout from '../Layout/AminLayout';
+import AddProduct from '../pages/admin/AddProduct';
+
 
 export const routes = [
   {
@@ -73,9 +80,44 @@ export const routes = [
       },
     ]
   },
+  
   {
     path: 'admin',
     element: <AminLayout />,
+    children: [
+      {
+        path: 'dashboard',
+        element: <Dashboard />
+      },
+      {
+        path: 'inventory',
+        element: <Inventory />
+      },
+      {
+        path: 'promotion',
+        element: <Promotion />
+      },
+      {
+        path: 'manage-customer',
+        element: <ManageCustomer />
+      },
+      {
+        path: 'view-order',
+        element: <ViewOrder />
+      },
+      {
+        path: 'add-product',
+        element: <AddProduct />
+      },
+      {
+        path: 'manage-product',
+        element: <ManageProduct />
+      },
+      {
+        path: "*",
+        element: <Error />
+      },
+    ]
   }
 ]
 

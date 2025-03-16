@@ -1,0 +1,131 @@
+@import "../../../utils/colors";
+
+
+
+.add-product {
+  padding: 20px;
+  background: $white;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+  }
+
+  .pricing {
+    margin-top: 20px;
+    .pricing-row {
+      display: flex;
+      align-items: flex-start; // Căn các input thẳng hàng phía trên
+
+      .ant-col {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .ant-form-item {
+        margin-bottom: 16px;
+        width: 100%; // Đảm bảo form item chiếm toàn bộ chiều rộng của Col
+      }
+
+      .ant-input-number,
+      .ant-select {
+        width: 100%; // Đảm bảo input và select chiếm toàn bộ chiều rộng
+        border-radius: 4px;
+      }
+    }
+  }
+
+  // Các style khác giữ nguyên
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+  }
+
+  .product-media-card {
+    border-radius: 12px;
+    box-shadow: $box-shadow;
+    padding: 16px;
+    background-color: #fff;
+  
+    .ant-card-head {
+      font-size: 18px;
+      text-align: center;
+      background-color: $white;
+    }
+  
+    .ant-form-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  
+      label {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+    }
+  
+    .ant-upload-list {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+  
+      .ant-upload-list-item {
+        box-shadow: $box-shadow;
+        transition: transform 0.2s;
+  
+        &:hover {
+          transform: scale(1.05);
+        }
+      }
+    }
+  }
+  
+
+  .ant-card {
+    border-radius: 8px;
+    box-shadow: $box-shadow;
+  }
+
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
+
+  .ant-upload-picture-card-wrapper {
+    .ant-upload-list-picture-card-container {
+      width: 100px;
+      height: 100px;
+      margin: 0 8px 8px 0;
+    }
+  }
+
+  .ant-btn {
+    border-radius: 4px;
+  }
+
+  .ant-btn-primary {
+    width: 100%;
+    background-color: $hover-bg;
+    color: $white;
+    border-radius: 8px;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}

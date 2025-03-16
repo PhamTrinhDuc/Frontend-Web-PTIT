@@ -77,3 +77,86 @@
     }
   }
 }
+
+// End CSS main content
+
+.admin-layout {
+  display: flex;
+  height: 100vh; // Chiếm toàn bộ chiều cao màn hình
+
+  .main-layout {
+    flex: 1; // Cho phép Content mở rộng
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sider {
+    width: 250px;
+    min-width: 200px; // Giới hạn chiều rộng khi thu gọn
+    max-width: 250px;
+    background: $white;
+  }
+
+  .content {
+    flex: 1;
+    padding: 16px;
+    background: $white;
+    overflow: auto; // Tránh tràn nội dung
+  }
+}
+
+// End CSS Admin Layout
+
+
+// Start CSS Menu
+.menu {
+  width: 100%;
+  height: 100%;
+  background-color: $hover-bg;
+  border-right: 1px solid $text;
+  margin: 20px 0px;
+  border-radius: 8px;
+  box-shadow: $box-shadow;
+
+  .ant-menu {
+    background-color: transparent;
+    font-size: 16px;
+    padding: 30px 20px;
+
+    .ant-menu-item {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px !important;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px ;
+      margin: 0 ;
+      color: $text;
+
+
+      &.ant-menu-item-selected {
+        background-color: $white;
+        color: #1890ff;
+      }
+
+      &:hover {
+        background-color: #f0f0f0;
+        color: #1890ff;
+      }
+    }
+  }
+}
+// End CSS Menu
+
+
+// Start CSS Footer
+.footer {
+  background-color: $black;
+  color: $white;
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+// End CSS Footer

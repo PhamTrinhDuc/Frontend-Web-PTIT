@@ -1,10 +1,12 @@
 import './Product.scss';
 import { useEffect, useState } from 'react';
+import { Spin } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import ProductDetail from '../../../components/ProductDetail';
 import ProductRelated from '../../../components/ProductRelated';
 import products from '../../../utils/mock_data';
-import {get} from '../../../utils/requests';
+import { get } from '../../../utils/requests';
 
 const productMock = {
   name: 'Havic HV-G92 Gamepad',
@@ -26,6 +28,7 @@ const productMock = {
 
 function Product() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState();
   const [loading, setLoading] = useState(true);
 
@@ -43,19 +46,19 @@ function Product() {
     fetchProduct();
   }, [id]);
   if (loading) {
-    return <p>Loading product...</p>; // Hoặc thay bằng Spinner
+    return <div className="spin-container">
+            <Spin spinning={loading} size="large" />
+          </div>
   }
   if (!product) {
-    return <p>Product not found</p>; // Nếu API trả về null hoặc lỗi
+    navigate('*')
   }
-
-  console.log('Product:', product);
 
   return (
     <>
       <ProductDetail product={productMock} />
 
-      <ProductRelated products={products}/>
+      <ProductRelated products={products} />
     </>
   )
 }

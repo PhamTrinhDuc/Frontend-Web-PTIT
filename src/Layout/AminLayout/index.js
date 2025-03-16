@@ -2,10 +2,22 @@ import React from 'react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Row, Col, Input, Button, Badge } from 'antd';
+import { Row, Col, Input, Button, Badge, Menu, Layout} from 'antd';
+import { Outlet } from 'react-router-dom';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import { MdDashboard, MdOutlineBorderColor, MdInventory   } from "react-icons/md";
+import { BsPersonLinesFill } from "react-icons/bs";
+import { FaShoppingCart } from "react-icons/fa";
+import { HiSpeakerWave } from "react-icons/hi2";
+
+
 import './AdminLayout.scss';
 import logo from '../../assets/images/logo.png';
+import Sider from 'antd/es/layout/Sider';
+import { Content } from 'antd/es/layout/layout';
+
+
+
 
 const AdminHeader = () => {
   const navigate = useNavigate();
@@ -50,7 +62,7 @@ const AdminHeader = () => {
           <Col xs={12} md={4} className="logo-container">
             <Link to="/" className="logo">
               <img src={logo} alt="Zenith Logo" />
-              Zenit
+              Zenith
             </Link>
           </Col>
           
@@ -78,11 +90,80 @@ const AdminHeader = () => {
   );
 };
 
-function Adminlayout() {
+
+const AdminMenu = () => {
+  const  navigate = useNavigate();
+
+  return (
+    <div className="menu">
+      <Menu
+        mode="vertical"
+        defaultSelectedKeys={['1']}
+        style={{ height: '100%', borderRight: 0 }}
+      >
+        <Menu.Item key="1" icon={<MdDashboard style={{ fontSize: '24px' }} />}
+         onClick={() => navigate('/admin/dashboard')}>
+          Dashboard
+        </Menu.Item>
+        <Menu.Item key="2" icon={<FaShoppingCart style={{ fontSize: '24px' }} />}
+        onClick={() => navigate('/admin/manage-product')}>
+          Manage Product
+        </Menu.Item>
+        <Menu.Item key="3" icon={<MdOutlineBorderColor style={{ fontSize: '24px' }} />}
+        onClick={() => navigate('/admin/view-order')}>
+          View Order
+        </Menu.Item>
+        <Menu.Item key="4" icon={<BsPersonLinesFill style={{ fontSize: '24px' }} />}
+        onClick={() => navigate('/admin/manage-customer')}>
+          Customer
+        </Menu.Item>
+        <Menu.Item key="5" icon={<HiSpeakerWave style={{ fontSize: '24px' }} />}
+        onClick={() => navigate('/admin/promotion')}>
+          Promotion
+        </Menu.Item>
+        <Menu.Item key="6" icon={<MdInventory style={{ fontSize: '24px' }} />}
+        onClick={() => navigate('/admin/inventory')}>
+          Inventory
+        </Menu.Item>
+      </Menu>
+    </div>
+  )
+}
+
+
+const AdminFooter = () => {
   return (
     <>
-      <AdminHeader />
+      <div className='footer'>
+        © 2025 Zenith - All Rights Reserved
+      </div>
     </>
+  );
+};
+
+
+function Adminlayout() {
+
+  return (
+    <>
+    <AdminHeader />
+
+    <Layout className="admin-layout">
+      {/* Sider cho AdminMenu */}
+      <Sider className="sider" theme="light" width={250} >
+        <AdminMenu />
+      </Sider>
+
+      {/* Phần còn lại là Content */}
+      <Layout className="main-layout">
+        <Content className="content">
+          <Outlet />
+        </Content>
+      </Layout>
+    </Layout>
+
+    <AdminFooter />
+  </>
   );
 }
 

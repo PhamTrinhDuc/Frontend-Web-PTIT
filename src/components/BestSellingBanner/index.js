@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import { Col, Row } from "antd";
 import { TbRectangleVerticalFilled } from "react-icons/tb";
-import NavigationProduct from "../NavigationProduct";
+import PanigationProduct from "../PanigationProduct";
 import CardProduct from "../CardProduct";
 import './BestSelling.scss';
 
@@ -65,7 +65,7 @@ function BestSellingBanner() {
         </Button>
       </div>
 
-      <NavigationProduct products={products} numOfProduct={4} />
+      <PanigationProduct products={products} numOfProduct={4} />
     </div>
   );
 }

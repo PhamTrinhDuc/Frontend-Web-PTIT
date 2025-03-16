@@ -4,7 +4,7 @@ import { useState } from 'react';
 import './FlashSale.scss';
 import CardProduct from '../CardProduct';
 import CountdownTimer from './CountdownTimer';
-import NavigationProduct from '../NavigationProduct';
+import PanigationProduct from '../PanigationProduct';
 
 
 function FlashSale() {
@@ -57,7 +57,7 @@ function FlashSale() {
       <div className='flash-sale'>
         <CountdownTimer />
 
-        <NavigationProduct products={products} numOfProduct={4} />
+        <PanigationProduct products={products} numOfProduct={4} />
       </div>
     </>
   );

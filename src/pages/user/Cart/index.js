@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { FaTrashAlt } from "react-icons/fa";
 import { useState } from 'react';
-import NavigationProduct from '../../../components/NavigationProduct';
+import ProductRelated from '../../../components/ProductRelated';
 import { updateQuantity, removeFromCart } from '../../../slices/cartSlice';
 import products from '../../../utils/mock_data';
 import './Cart.scss';
@@ -171,7 +171,7 @@ function Cart() {
           setCouponCode={setCouponCode}
         />
       </div>
-      <NavigationProduct products={products} numOfProduct={4}/>
+      <ProductRelated products={products} />
     </>
   );
 }

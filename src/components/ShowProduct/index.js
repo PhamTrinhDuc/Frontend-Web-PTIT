@@ -3,7 +3,7 @@ import './ShowProduct.scss';
 import CardProduct from '../CardProduct'
 import {Row, Col} from 'antd'; 
 import products from '../../utils/mock_data';
-import NavigationProduct from "../NavigationProduct";
+import PanigationProduct from "../PanigationProduct";
 
 
 function ShowProduct() {
@@ -29,7 +29,7 @@ function ShowProduct() {
     <>
       <div className='products-container'>
 
-        <NavigationProduct products={products} numOfProduct={16} />
+        <PanigationProduct products={products} numOfProduct={16} />
       </div>
     </>
   );
