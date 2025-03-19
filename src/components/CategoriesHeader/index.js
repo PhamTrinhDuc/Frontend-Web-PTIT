@@ -1,79 +1,62 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../../components/Loading';
+import {categoryIcons} from '../../utils/icons';
 import { Row, Col, Select, Dropdown, Typography, Button, Menu } from 'antd';
-import { FaLaptopCode, FaKeyboard } from "react-icons/fa";
-import { MdOutlineVideogameAsset, MdPhoneIphone, MdMenu } from "react-icons/md";
-import { RiDiscountPercentFill } from "react-icons/ri";
-import { BsFire } from "react-icons/bs";
-import { AiFillProduct } from "react-icons/ai";
+import { MdMenu } from "react-icons/md";
+import { get } from '../../utils/requests';
 import { Link } from 'react-router-dom';
 import './CategoriesHeader.scss';
 
 
-const iconMapCategory = {
-  LaptopOutlined: <FaLaptopCode className='custom-icon' />,
-  KeyboardOutlined: <FaKeyboard className='custom-icon' />,
-  GammingOutlined: <MdOutlineVideogameAsset className='custom-icon' />,
-  ItemsOutlined: <AiFillProduct className='custom-icon' />,
-  PhoneOutlined: <MdPhoneIphone className='custom-icon' />,
-  SellerOutlined: <RiDiscountPercentFill className='custom-icon' />,
-  DeadHotOutlined: <BsFire className='custom-icon' />,
-};
-
-const iconMapMenu = {
-  LaptopOutlined: <FaLaptopCode />,
-  KeyboardOutlined: <FaKeyboard />,
-  GammingOutlined: <MdOutlineVideogameAsset />,
-  ItemsOutlined: <AiFillProduct />,
-  PhoneOutlined: <MdPhoneIphone />,
-  SellerOutlined: <RiDiscountPercentFill />,
-  DeadHotOutlined: <BsFire />,
-};
-
-const categories = [
-  {
-    id: 1,
-    name: 'Laptop',
-    icon: 'LaptopOutlined',
-  },
-  {
-    id: 2,
-    name: 'Keyboard',
-    icon: 'KeyboardOutlined',
-  },
-  {
-    id: 3,
-    name: 'Gamming',
-    icon: 'GammingOutlined',
-  },
-  {
-    id: 4,
-    name: 'Items',
-    icon: 'ItemsOutlined',
-  },
-  {
-    id: 5,
-    name: 'Phone',
-    icon: 'PhoneOutlined',
-  },
-  {
-    id: 6,
-    name: 'Best Seller',
-    icon: 'SellerOutlined',
-  },
-  {
-    id: 7,
-    name: 'Hot Deals',
-    icon: 'DeadHotOutlined',
-  },
-]
-
-
 function CategoriesHeader() {
+
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      const fetchCategories = async () => {
+        try {
+          const response = await get("categories");
+  
+          if (!response || response.code !== 200) {
+            throw new Error(response?.message || "Failed to fetch categories");
+          }
+  
+          console.log(response.result);
+          const formattedData = response.result.map((category) => ({
+            ...category,
+            name: category.name.charAt(0).toUpperCase() + category.name.slice(1),
+          }));
+  
+          setCategoriesList(formattedData);
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          setError(error.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchCategories();
+    }, []);
+  
+    if (loading) {
+      return <Loading loading={loading} />;
+    }
+    if (error) {
+      navigate("/error");
+      return null;
+    }
+
   const dropdownMenu = (
     <Menu>
-      {categories.map((category) => (
+      {categoriesList.map((category) => (
         <Menu.Item key={category.id}>
           <Link to={`/products/${category.name}`}>
-            <span style={{ marginRight: 8 }}>{iconMapMenu[category.icon] || null}</span>
+            <span style={{ marginRight: 8 }}></span>
             {category.name}
           </Link>
         </Menu.Item>
@@ -97,12 +80,12 @@ function CategoriesHeader() {
             </Dropdown>
           </Col>
 
-          {categories.map((category) => (
+          {categoriesList.slice(0, 7).map((category) => (
             <Col xs={24} sm={12} md={8} lg={3} key={category.id}>
-              <Link to={`/products/${category.name}`}>
+              <Link to={`/products/${category.slug}`}>
                 <div className='item-category'>
                   <div className='icon-container'>
-                    {iconMapCategory[category.icon]}
+                    {categoryIcons[category.slug]}
                   </div>
                   <div className='category-name'>
                     {category.name}
@@ -116,6 +99,5 @@ function CategoriesHeader() {
     </>
   )
 }
-
 
 export default CategoriesHeader;

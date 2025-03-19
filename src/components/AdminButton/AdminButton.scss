@@ -1,25 +1,32 @@
 @import '../../utils//colors';
 
+@keyframes floating {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); } // Chỉ di chuyển lên xuống, không thay đổi scale
+}
+
 .floating-admin-button {
   position: fixed;
   bottom: 30px;
   right: 30px;
   z-index: 1000;
-  background-color: $ribbon-card; // Màu đỏ nổi bật cho Admin
-  color: $white;
-  width: 80px; // Kích thước lớn hơn
-  height: 80px;
-  font-size: 30px; // Icon to hơn
+  background-color: #ff4d4f; 
+  color: white;
+  width: 70px;
+  height: 70px;
+  font-size: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: $box-shadow;
-  transition: all 0.3s ease-in-out;
-  padding: 0; // Loại bỏ padding mặc định của AntD Button
+  border-radius: 50%;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease-in-out, background-color 0.3s;
+  padding: 0;
+  animation: floating 2s infinite ease-in-out;
 
   &:hover {
-    background-color: $hover-bg;
-    transform: scale(1.15);
+    background-color: #d9363e;
+    transform: scale(1.15) translateY(0); // Hover vẫn scale được, không bị animation ghi đè
   }
 
   &:focus {

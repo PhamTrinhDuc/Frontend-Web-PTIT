@@ -1,10 +1,10 @@
 import './Product.scss';
 import { useEffect, useState } from 'react';
-import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import ProductDetail from '../../../components/ProductDetail';
 import ProductRelated from '../../../components/ProductRelated';
+import Loading from '../../../components/Loading';
 import products from '../../../utils/mock_data';
 import { get } from '../../../utils/requests';
 
@@ -46,9 +46,7 @@ function Product() {
     fetchProduct();
   }, [id]);
   if (loading) {
-    return <div className="spin-container">
-            <Spin spinning={loading} size="large" />
-          </div>
+    return <Loading loading={loading}/>
   }
   if (!product) {
     navigate('*')
