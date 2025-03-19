@@ -20,11 +20,11 @@ import Promotion from '../pages/admin/Promotion';
 import ManageCustomer from '../pages/admin/ManageCustomer';
 import ViewOrder from '../pages/admin/ViewOrder';
 import ManageProduct from '../pages/admin/ManageProduct';
+import ManageCategories from '../pages/admin/ManageCategories';
 import AdminLayout from '../Layout/AdminLayout';
 import AddProduct from '../pages/admin/AddProduct';
 import EditProduct from '../pages/admin/EditProduct';
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
-
 export const routes = [
   {
     path: "/",
@@ -66,6 +66,7 @@ export const routes = [
         { path: "view-order", element: <ViewOrder /> },
         { path: "add-product", element: <AddProduct /> },
         { path: "edit-product/:id", element: <EditProduct /> },
+        { path: "manage-categories", element: <ManageCategories /> },
         { path: "manage-product", element: <ManageProduct /> },
         { path: "*", element: <Error /> },
       ]},

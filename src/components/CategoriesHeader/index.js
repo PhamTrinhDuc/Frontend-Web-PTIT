@@ -1,55 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading';
 import {categoryIcons} from '../../utils/icons';
 import { Row, Col, Select, Dropdown, Typography, Button, Menu } from 'antd';
 import { MdMenu } from "react-icons/md";
-import { get } from '../../utils/requests';
 import { Link } from 'react-router-dom';
+import { useCategories } from '../../hook/useCategories';
 import './CategoriesHeader.scss';
-
 
 function CategoriesHeader() {
 
-  const [categoriesList, setCategoriesList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { categoriesList, loading, error } = useCategories();
   const navigate = useNavigate();
 
-  useEffect(() => {
-      const fetchCategories = async () => {
-        try {
-          const response = await get("categories");
-  
-          if (!response || response.code !== 200) {
-            throw new Error(response?.message || "Failed to fetch categories");
-          }
-  
-          console.log(response.result);
-          const formattedData = response.result.map((category) => ({
-            ...category,
-            name: category.name.charAt(0).toUpperCase() + category.name.slice(1),
-          }));
-  
-          setCategoriesList(formattedData);
-        } catch (error) {
-          console.error("Error fetching categories:", error);
-          setError(error.message);
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-      fetchCategories();
-    }, []);
-  
-    if (loading) {
-      return <Loading loading={loading} />;
-    }
-    if (error) {
-      navigate("/error");
-      return null;
-    }
+  if (loading) return <Loading loading={loading} />;
+  if (error) {
+    navigate("/error");
+    return null;
+  }
 
   const dropdownMenu = (
     <Menu>

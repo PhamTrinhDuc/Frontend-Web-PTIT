@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { Row, Col, Input, Button, Badge, Menu, Layout} from 'antd';
 import { Outlet } from 'react-router-dom';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
-import { MdDashboard, MdOutlineBorderColor, MdInventory   } from "react-icons/md";
+import { MdDashboard, MdOutlineBorderColor, MdInventory, MdCategory   } from "react-icons/md";
 import { BsPersonLinesFill } from "react-icons/bs";
 import { FaShoppingCart } from "react-icons/fa";
 import { HiSpeakerWave } from "react-icons/hi2";
@@ -107,19 +107,23 @@ const AdminMenu = () => {
         onClick={() => navigate('/admin/manage-product')}>
           Manage Product
         </Menu.Item>
-        <Menu.Item key="3" icon={<MdOutlineBorderColor style={{ fontSize: '24px' }} />}
+        <Menu.Item key="3" icon={<MdCategory style={{ fontSize: '24px' }} />}
+        onClick={() => navigate('/admin/manage-categories')}>
+          Manage Categories
+        </Menu.Item>
+        <Menu.Item key="4" icon={<MdOutlineBorderColor style={{ fontSize: '24px' }} />}
         onClick={() => navigate('/admin/view-order')}>
           View Order
         </Menu.Item>
-        <Menu.Item key="4" icon={<BsPersonLinesFill style={{ fontSize: '24px' }} />}
+        <Menu.Item key="5" icon={<BsPersonLinesFill style={{ fontSize: '24px' }} />}
         onClick={() => navigate('/admin/manage-customer')}>
           Customer
         </Menu.Item>
-        <Menu.Item key="5" icon={<HiSpeakerWave style={{ fontSize: '24px' }} />}
+        <Menu.Item key="6" icon={<HiSpeakerWave style={{ fontSize: '24px' }} />}
         onClick={() => navigate('/admin/promotion')}>
           Promotion
         </Menu.Item>
-        <Menu.Item key="6" icon={<MdInventory style={{ fontSize: '24px' }} />}
+        <Menu.Item key="7" icon={<MdInventory style={{ fontSize: '24px' }} />}
         onClick={() => navigate('/admin/inventory')}>
           Inventory
         </Menu.Item>

@@ -1,56 +1,25 @@
 import { TbRectangleVerticalFilled } from "react-icons/tb";
 import { Link } from 'react-router-dom';
-import { get } from '../../utils/requests';
 import {categoryIcons} from '../../utils/icons';
 import Loading from '../../components/Loading';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Row, Col, Button } from 'antd';
+import { useCategories } from '../../hook/useCategories';
+
 import './CategoryBanner.scss';
 
 function CategoryBanner() {
-  const [categoriesList, setCategoriesList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(0); // Quản lý trang hiện tại
+  const { categoriesList, loading, error } = useCategories();
   const itemsPerPage = 6; // Số danh mục trên mỗi trang
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await get("categories");
-
-        if (!response || response.code !== 200) {
-          throw new Error(response?.message || "Failed to fetch categories");
-        }
-
-        console.log(response.result);
-        const formattedData = response.result.map((category) => ({
-          ...category,
-          name: category.name.charAt(0).toUpperCase() + category.name.slice(1),
-        }));
-
-        setCategoriesList(formattedData);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
-  if (loading) {
-    return <Loading loading={loading} />;
-  }
+  if (loading) return <Loading loading={loading} />;
   if (error) {
     navigate("/error");
     return null;
   }
-
   // Lấy dữ liệu danh mục của trang hiện tại
   const startIndex = currentPage * itemsPerPage;
   const displayedCategories = categoriesList.slice(startIndex, startIndex + itemsPerPage);

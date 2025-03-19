@@ -4,6 +4,7 @@
 .categories-categories{
   margin-top: 30px;
   margin-bottom: 50px;
+  
 
   .icon-container {
     display: inline-flex;
@@ -16,28 +17,36 @@
     background-color: $text; /* Nền đen bên trong */
     overflow: hidden; /* Đảm bảo icon không vượt ra ngoài */
 
-    .custom-icon {
-      font-size: 40px; /* Kích thước icon */
-      color: $white; /* Màu trắng cho icon */
-      margin: 0; /* Loại bỏ margin mặc định */
-      padding: 0; /* Loại bỏ padding mặc định */
+    // .custom-icon {
+    //   font-size: 40px; /* Kích thước icon */
+    //   color: $white; /* Màu trắng cho icon */
+    //   margin: 0; /* Loại bỏ margin mặc định */
+    //   padding: 0; /* Loại bỏ padding mặc định */
+
+    svg { // Tùy chỉnh icon từ react-icons
+      font-size: 20px;
+      padding: 5px;
+      color: $white;
 
       &:hover {
-        color: $hover-bg;
-        transition: all 0.3s ease ;
-        transform: translateY(-5px);
+            color: $hover-bg;
+            transition: all 0.3s ease ;
+            transform: translateY(-5px);
+          }
       }
-      svg { // Tùy chỉnh icon từ react-icons
-        font-size: 30px;
-      }
-    }
   }
 
+  .category-name{
+    font-size: 20px;
+    font-weight: 700;
+  }
+  
   .menu-content, .item-category {
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;  
     display: flex;
+    flex-direction: column; /* Xếp các phần tử theo cột (dọc) */
+    align-items: center; /* Căn giữa theo chiều ngang */
+    text-align: center; /* Căn giữa nội dung văn bản */
+    gap: 10px; /* Khoảng cách giữa icon và tên */
     color: $black;
 
     &:hover {
@@ -53,8 +62,4 @@
     }
   }
 
-  .category-name{
-    font-size: 20px;
-    font-weight: 700;
-  }
 }

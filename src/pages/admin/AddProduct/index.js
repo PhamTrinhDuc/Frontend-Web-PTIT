@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Row, Col, Card, Form, Input, InputNumber, Select, Button, Upload, message, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import Loading from '../../../components/Loading';
+import {useCategories} from '../../../hook/useCategories';
 import './AddProduct.scss';
 
 const { Option } = Select;
@@ -12,6 +15,15 @@ const AddProduct = () => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [selectedTags, setSelectedTags] = useState(['Internet of Things']);
+  const { categoriesList, loading, error } = useCategories();
+  const navigate = useNavigate();
+
+  if (loading) return <Loading loading={loading} />;
+  if (error) {
+    navigate("/error");
+    return null;
+  }
+
 
   // Xử lý upload ảnh
   const handleUploadChange = ({ fileList }) => {
@@ -159,12 +171,12 @@ const AddProduct = () => {
 
             <Card title="Category" style={{ marginTop: 16 }}>
               <Form.Item label="Product Category" name="category">
-                <Select placeholder="Electronics">
-                  <Option value="electronics">Electronics</Option>
-                  <Option value="clothing">Clothing</Option>
-                  <Option value="toys">Toys</Option>
-                  <Option value="books">Books & Stationery</Option>
-                  <Option value="art">Art Supplies</Option>
+                <Select placeholder="Select a category">
+                  {categoriesList.map((category) => (
+                    <Option key={category.id} value={category.id}>
+                      {category.name}
+                    </Option>
+                  ))}
                 </Select>
               </Form.Item>
               <Form.Item label="Product Tags" name="tags">
