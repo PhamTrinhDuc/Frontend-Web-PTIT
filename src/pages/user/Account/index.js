@@ -5,13 +5,19 @@ import { logout } from '../../../slices/authSlice';
 import React, {useState} from 'react';
 
 const Account = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+
   const userInfo = {
-    fullName: 'Trần Thị B',
-    email: 'tranthib@gmail.com',
-    phone: '0987 654 321',
-    address: '456 Nguyễn Trãi, TP.HCM',
-    avatar: 'https://i.pravatar.cc/300',
-    memberSince: '2023-01-15',
+    fullName: user.fullname,
+    email: user.email,
+    phone: user.phone,
+    address: user.address,
+    avatar: user.avatar,
+    memberSince: user.createdAt,
     orders: 25,
     points: 1500,
   };
@@ -32,10 +38,6 @@ const Account = () => {
     { id: 2, name: 'Đồng hồ nam', price: 1200000, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiNo-UKrl5psCtsf7xs3MQTB110xUjJ6hWPA&s' },
   ]);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const { isLoggedIn, user, token } = useSelector((state) => state.auth);
 
   return (
     <div className="customer-profile-container">

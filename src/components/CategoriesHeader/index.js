@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import { useCategories } from '../../hook/useCategories';
 import './CategoriesHeader.scss';
 
+
+
 function CategoriesHeader() {
 
   const { categoriesList, loading, error } = useCategories();
@@ -23,7 +25,7 @@ function CategoriesHeader() {
     <Menu>
       {categoriesList.map((category) => (
         <Menu.Item key={category.id}>
-          <Link to={`/products/${category.name}`}>
+          <Link to={`/products/${category.slug}`}>
             <span style={{ marginRight: 8 }}></span>
             {category.name}
           </Link>

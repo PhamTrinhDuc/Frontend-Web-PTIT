@@ -18,31 +18,30 @@ function Login() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const onFinish = async (values) => {
+    console.log('Received values:', values);
     try {
       const response = await post('auth/login', values); 
-      response.role = 'admin'; // giả lập role admin
-      console.log(response.role);
-      if (response && response.accessToken) {
+      console.log('Login response:', response);
+
+      if (response && response.token) {
         message.success('Login successful!');
         form.resetFields();
         // Xử lý lưu token vào localStorage hoặc Redux store
-        // localStorage.setItem('token', response.accessToken);
+        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('user', JSON.stringify(response.user));
 
         // setCookie('userId', response.id, 7);
         // setCookie('username', response.username, 7);
         // setCookie('refreshToken', response.refreshToken, 7);
         dispatch(login({
-          token: response.accessToken, 
-          user: {
-            id: response.id,
-            username: response.username,
-          },
-          role: response.role || 'user',
+          token: response.token, 
+          user: response.user,
         }));
-        if (response.role === 'admin') {
+
+        if (response.user.role === 'admin') {
           navigate('/admin');
         }
-        else if (response.role === 'user') {
+        else if (response.user.role === 'user') {
           navigate('/');
         }
       } else {

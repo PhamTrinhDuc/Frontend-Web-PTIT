@@ -17,6 +17,7 @@ import EditProfile from '../components/Account/EditProfile';
 import Dashboard from '../pages/admin/Dashboard';
 import Inventory from '../pages/admin/Inventory';
 import Promotion from '../pages/admin/Promotion';
+import ProductIdentify from '../pages/user/ProductIdentify';
 import ManageCustomer from '../pages/admin/ManageCustomer';
 import ViewOrder from '../pages/admin/ViewOrder';
 import ManageProduct from '../pages/admin/ManageProduct';
@@ -37,6 +38,7 @@ export const routes = [
       { path: "signup", element: <SignUp /> },
       { path: "products", element: <AllProduct /> },
       { path: "product-detail/:id", element: <Product /> },
+      { path: "products/:categorySlug", element: <ProductIdentify />},
       { path: "cart", element: <Cart /> },
       { path: "*", element: <Error /> },
 

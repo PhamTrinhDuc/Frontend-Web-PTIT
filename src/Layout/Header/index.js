@@ -12,7 +12,6 @@ const Header = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const { isLoggedIn, user } = useSelector((state) => state.auth);
-  console.log('isLoggedIn', isLoggedIn);
   const cartItems = useSelector((state) => state.cart.items);
   const totalQuantityProduct = isLoggedIn ? cartItems.reduce((sum, item) => sum + item.quantity, 0) : 0;
   const [menuVisible, setMenuVisible] = useState(false); // State để toggle menu

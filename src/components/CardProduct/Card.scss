@@ -1,5 +1,4 @@
-@import"../../utils/colors";
-
+@import "../../utils/colors";
 
 .cart-alert {
   max-width: 300px;
@@ -18,7 +17,8 @@
   }
 }
 
-.card-container{
+.card-container {
+  position: relative;
   gap: 10px;
 
   .card-image {
@@ -27,51 +27,91 @@
     box-shadow: $box-shadow;
     border: 1px solid $white;
     transition: all 0.3s ease;
-    
-    .product-action-button {
-      width: 80%;
-      background-color: $black;
-      color: $white;
-      &:hover {
-        background-color: $hover-bg;
-      }
-      &:active {
-        transform: scale(0.95);
-      }
-    }
+
     &:hover {
       transform: translateY(-3px);
     }
-    // .ant-card-body {
-    //   padding: 10px;
-    // }
+
     .product-image-container {
       margin-bottom: 10px;
       background-color: $card-product;
       display: flex;
-      justify-content: center;
-      align-items: center;
+      justify-content: center; /* Đảm bảo căn giữa ngang */
+      align-items: center; /* Đảm bảo căn giữa dọc */
       height: 200px;
       overflow: hidden;
-
+      padding: 0; /* Loại bỏ padding nếu có */
+      margin: 0 auto; /* Đảm bảo container chính giữa */
+    
       img {
-        max-width: 100%;
-        max-height: 100%;
+        max-width: 80%;
+        max-height: 80%;
         object-fit: contain;
-        // width: 100%;
-        // aspect-ratio: 4/3;
-        // object-fit: cover;
+        display: block; /* Đảm bảo img không bị ảnh hưởng bởi inline style */
+        margin: 0 auto; /* Căn giữa ảnh trong container */
       }
+    
       .sale-badge {
         position: absolute;
         top: 20px;
         right: 10px;
       }
     }
+
+    .ant-card-actions {
+      display: flex;
+      justify-content: space-around;
+      padding: 8px;
+      background-color: $white; /* Đảm bảo nền không bị che */
+      position: relative; /* Đảm bảo icon không bị ảnh hưởng bởi các phần tử khác */
+      z-index: 2; /* Đặt z-index cao hơn để icon luôn hiển thị */
+    }
+
+    .product-action-icon {
+      font-size: 18px;
+      color: $text;
+      transition: color 0.3s;
+
+      &:hover {
+        color: $hover-bg;
+      }
+    }
+  }
+
+  .product-action-button {
+    position: absolute;
+    bottom: 60px; /* Đặt nút phía trên icon */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    background-color: $black;
+    color: $white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1; /* Đặt z-index thấp hơn icon để không che khuất */
+
+    &:hover {
+      background-color: $hover-bg;
+    }
+
+    &:active {
+      transform: translateX(-50%) scale(0.95);
+    }
+  }
+
+  &:hover {
+    .product-action-button {
+      opacity: 1;
+    }
+
+    .ant-card-actions {
+      opacity: 1; /* Đảm bảo icon không bị ẩn khi hover */
+    }
   }
 
   .card-content {
     margin: 12px 8px;
+
     .product-title {
       margin-bottom: 5px;
       font-weight: bold;
@@ -79,6 +119,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .product-price {
       display: flex;
       align-items: center;
@@ -98,10 +139,12 @@
         font-size: 14px;
       }
     }
+
     &:hover {
       cursor: pointer;
     }
   }
+
   .product-rating {
     display: flex;
     align-items: center;
@@ -109,9 +152,10 @@
     .ant-rate {
       font-size: 16px;
     }
+
     .review-count {
       margin-left: 10px;
-      color: &text;
+      color: $text;
       font-size: 14px;
     }
   }

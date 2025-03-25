@@ -32,7 +32,7 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const { isLoggedIn, user, token } = useSelector((state) => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
 
 
   const showDeleteModal = () => {
@@ -53,10 +53,7 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
   const handleLogoutAccount = () => {
     dispatch(logout());
     navigate('/login');
-    // Logic xóa item (giả định gọi API)
-
     setIsLogoutModalVisible(false);
-    // Thêm logic redirect hoặc logout sau khi xóa
   };
   const handleCancelLogout = () => {
     setIsLogoutModalVisible(false);

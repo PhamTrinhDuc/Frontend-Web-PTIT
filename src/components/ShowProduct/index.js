@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import './ShowProduct.scss';
 import CardProduct from '../CardProduct'
 import {Row, Col} from 'antd'; 
-import products from '../../utils/mock_data';
 import PanigationProduct from "../PanigationProduct";
 
 
-function ShowProduct() {
+function ShowProduct({products}) {
   // const [products, setProducts] = useState([]);
   {/* Hàm lấy dữ liệu từ API */}
   // const fetchProducts = async () => {
