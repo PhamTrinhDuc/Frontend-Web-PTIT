@@ -1,63 +1,28 @@
 
-import { Row, Col } from 'antd';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './FlashSale.scss';
-import CardProduct from '../CardProduct';
+import useProductByOrderDesc from '../../hook/useProductByOrderDesc';
 import CountdownTimer from './CountdownTimer';
 import PanigationProduct from '../PanigationProduct';
+import Loading from '../../components/Loading';
 
 
 function FlashSale() {
-  // data giả định, sau này gọi APi đến backend
-  const products = [
-    {
-      id: 1,
-      name: 'Toy clm chiil game HY-G93',
-      originalPrice: '$168.00',
-      salePrice: '$120.00',
-      rating: 5,
-      reviews: 74,
-      discountPercentage: 5,
-      image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
-    },
-    {
-      id: 2,
-      name: 'San palnt AK-900 Wired',
-      originalPrice: '$160.00',
-      salePrice: '$60.00',
-      rating: 5,
-      reviews: 78,
-      discountPercentage: 10,
-      image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
-    },
-    {
-      id: 3,
-      name: 'Toy clm chiil game HY-G93',
-      originalPrice: '$168.00',
-      salePrice: '$120.00',
-      rating: 5,
-      reviews: 90,
-      discountPercentage: 12,
-      image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
-    },
-    {
-      id: 4,
-      name: 'Toy clm chiil game HY-G93',
-      originalPrice: '$168.00',
-      salePrice: '$120.00',
-      rating: 5,
-      reviews: 74,
-      discountPercentage: 5,
-      image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
-    }
-  ];
-
+  const navigate = useNavigate();
+  const { products, loading, error } = useProductByOrderDesc();
+  if (loading) return <Loading loading={loading} />;
+  if (error) {
+    navigate("/error");
+    return null;
+  }
+  
   return (
     <>
       <div className='flash-sale'>
         <CountdownTimer />
 
-        <PanigationProduct products={products} numOfProduct={4} />
+        <PanigationProduct products={products.slice(0, 20)} numOfProduct={4} />
       </div>
     </>
   );

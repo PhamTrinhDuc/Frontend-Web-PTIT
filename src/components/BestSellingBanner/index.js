@@ -7,49 +7,8 @@ import './BestSelling.scss';
 
 
 
-function BestSellingBanner() {
-  const products = [
-    {
-      id: 1,
-      name: 'Toy clm chiil game HY-G93',
-      originalPrice: '$168.00',
-      salePrice: '$120.00',
-      rating: 5,
-      reviews: 74,
-      discount: 5,
-      image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
-    },
-    {
-      id: 2,
-      name: 'San palnt AK-900 Wired',
-      originalPrice: '$160.00',
-      salePrice: '$60.00',
-      rating: 5,
-      reviews: 78,
-      discount: 10,
-      image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
-    },
-    {
-      id: 3,
-      name: 'Toy clm chiil game HY-G93',
-      originalPrice: '$168.00',
-      salePrice: '$120.00',
-      rating: 5,
-      reviews: 90,
-      discount: 12,
-      image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
-    },
-    {
-      id: 4,
-      name: 'Toy clm chiil game HY-G93',
-      originalPrice: '$168.00',
-      salePrice: '$120.00',
-      rating: 5,
-      reviews: 74,
-      discount: 5,
-      image: 'https://www.shutterstock.com/image-photo/antalya-turkey-september-14-2023-260nw-2361564459.jpg',
-    }
-  ];
+function BestSellingBanner({products}) {
+
 
   return (
     <div className="best-selling-container">

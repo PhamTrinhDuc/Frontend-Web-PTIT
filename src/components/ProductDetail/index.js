@@ -54,21 +54,27 @@ const Rating = ({props}) => {
 const ProductDetail = ({ product }) => {
   const {
     name,
-    price,
-    images,
     description,
-    colors,
-    sizes ,
-    inStock,
-    reviews,
-    rating,
+    discount,
+    imagePaths,
+    price,
+    specification ,
+    quantityStock,
+    // reviews,
+    // rating,
   } = product;
+  console.log(specification)
 
-  const [selectedColor, setSelectedColor] = useState(colors[0]);
-  const [selectedSize, setSelectedSize] = useState(sizes[2]); // Mặc định là 'M'
+  const [selectedColor, setSelectedColor] = useState(
+    specification.colors?.length > 0 ? specification.color[0] : "defaultColor"
+  );
+  
   const [quantity, setQuantity] = useState(1);
-  const [mainImage, setMainImage] = useState(images[0]); // State để theo dõi ảnh chính
-
+  
+  const [mainImage, setMainImage] = useState(
+    imagePaths?.length > 0 ? imagePaths[0] : "defaultImage.jpg"
+  );
+  
   const handleThumbnailClick = (img) => {
     setMainImage(img); // Cập nhật ảnh chính khi click vào ảnh phụ
   };
@@ -86,7 +92,7 @@ const ProductDetail = ({ product }) => {
             style={{ width: '100%', height: 400 }} // Đặt chiều cao cố định
           />
           <Row gutter={[8, 8]} className="thumbnail-row">
-            {images.slice(1).map((img, index) => (
+            {imagePaths.slice(0).map((img, index) => (
               <Col key={index} xs={6}>
                 <Image
                   src={img}
@@ -107,19 +113,19 @@ const ProductDetail = ({ product }) => {
           <Title level={3}>{name}</Title>
           <Rating props={product} />
           <Title level={2} className="product-price">
-            {price.toLocaleString()}đ
+            {price.toLocaleString()} $
           </Title>
           <Paragraph className="product-description">{description}</Paragraph>
 
           {/* Tùy chọn màu sắc */}
           <div className="color-options">
-            <Text strong className='title-option'>Colours:</Text>
+            <Text strong className='title-option'>Colors:</Text>
             <Radio.Group
               value={selectedColor}
               onChange={(e) => setSelectedColor(e.target.value)}
               className="color-radio-group"
             >
-              {colors.map((color) => (
+              {specification.color.map((color) => (
                 <Radio key={color} value={color}>
                   {color}
                 </Radio>
