@@ -47,7 +47,7 @@ function CardProduct({ product }) {
           cover={
             <div className="product-image-container">
               <Badge.Ribbon text={`-${product.discount} $`} color="#DB4444" className="sale-badge">
-                <img src={product.imagePaths[0]} alt={product.name} className="product-image" />
+              <img src={product.imagePaths?.[0] || "default-image.jpg"} alt={product.name} className="product-image" />
               </Badge.Ribbon>
             </div>
           }
