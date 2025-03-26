@@ -7,24 +7,9 @@ import { FaTrashAlt } from "react-icons/fa";
 import { useState } from 'react';
 import ProductRelated from '../../../components/ProductRelated';
 import { updateQuantity, removeFromCart } from '../../../slices/cartSlice';
-import products from '../../../utils/mock_data';
+import Loading from '../../../components/Loading';
+import useAllProductVariant from '../../../hook/useAllProductVariant';
 import './Cart.scss';
-
-// const products = [{
-//   id: 1,
-//   name: 'LCD Monitor',
-//   price: 1200000,
-//   quantity: 1,
-//   image: 'https://images.philips.com/is/image/philipsconsumer/7daebfa708a148d7a0bbb01b009011d1?wid=700&hei=700&$pnglarge$', // Thay bằng URL ảnh thực tế
-// },
-// {
-//   id: 2,
-//   name: 'Hi Gamepad',
-//   price: 4390000,
-//   quantity: 2,
-//   image: 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTBtbu6EpQ4Vu0_PPg4oPN13mRKFIWk85Og0ZJFfgcfq35E_7qyXGgvA1vBH4yB8kCF9XmlBHtx0f8IqXRn0Tj3yHjaze0zJfHEVxzLCdDdMnKeFB9-bkIb35iJEVDAKdaQW-RA9A&usqp=CAc', // Thay bằng URL ảnh thực tế
-// }];
-
 
 
 const CartItem = ({ item, onQuantityChange, onRemove }) => {
@@ -43,7 +28,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
   return (
     <div className="cart-item">
       <div className='item-image'>
-        <img src={item.image} alt={item.name} />
+        <img src={item.imagePaths?.[0] || "default-image.jpg"} alt={item.name} />
       </div>
       <div className="item-details">
         <span>{item.name}</span>
@@ -64,7 +49,7 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
         />
       </div>
 
-      <span className="subtotal">{(item.salePrice * item.quantity).toLocaleString()}$</span>
+      <span className="subtotal">{(item.price * item.quantity).toLocaleString()}$</span>
       <Button className='remove-button' icon={<FaTrashAlt />} type="link" danger onClick={() => onRemove(item.id)} />
     </div>
   );
@@ -75,8 +60,9 @@ const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode }) => {
 
   const navigate = useNavigate();
   const handlePay = () => {
-    navigate('/billing');
-  }
+    navigate('/billing', { state: { cartTotal } });  
+  
+}
 
   return (
     <div className="cart-summary">
@@ -112,9 +98,11 @@ const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode }) => {
 
 
 function Cart() {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const { products, loading, error } = useAllProductVariant(); 
+
   const cartItems = useSelector((state) => state.cart.items); // Lấy sản phẩm từ Redux
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
@@ -146,7 +134,13 @@ function Cart() {
   };
 
   // Tính tổng giá từ cartItems của Redux
-  const cartTotal = cartItems.reduce((total, item) => total + item.salePrice * item.quantity, 0) - discount;
+  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0) - discount;
+
+  if (loading) return <Loading loading={loading} />;
+  if (error) {
+    navigate("/error");
+    return null;
+  }
 
   return (
     <>

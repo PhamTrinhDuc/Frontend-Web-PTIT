@@ -14,7 +14,7 @@ const Account = () => {
   const userInfo = {
     fullName: user.fullname,
     email: user.email,
-    phone: user.phone,
+    phone_number: user.phoneNumber,
     address: user.address,
     avatar: user.avatar,
     memberSince: user.createdAt,

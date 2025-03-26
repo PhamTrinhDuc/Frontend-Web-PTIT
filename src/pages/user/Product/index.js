@@ -5,11 +5,13 @@ import ProductRelated from '../../../components/ProductRelated';
 import Loading from '../../../components/Loading';
 import products from '../../../utils/mock_data';
 import useProductVariantById from '../../../hook/useProductVariantById';
+import useAllProductVariant from '../../../hook/useAllProductVariant';
 import './Product.scss';
 
 function Product() {
   const { id } = useParams();
   const { product, loading, error } = useProductVariantById({ id });
+  const { products } = useAllProductVariant(); 
   const navigate = useNavigate();
 
   if (loading) return <Loading loading={loading} />;
@@ -22,7 +24,7 @@ function Product() {
     <>
       <ProductDetail product={product.data} />
 
-      <ProductRelated products={products} />
+      <ProductRelated products={products.slice(0, 20)} />
     </>
   )
 }

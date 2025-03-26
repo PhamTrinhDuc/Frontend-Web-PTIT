@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { use, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Button, Form, Input, Checkbox, Radio, message } from 'antd';
 import './Billing.scss';
 
 
-function BillingForm({ onSave }) {
+function BillingForm({ onSave, user }) {
+  console.log('User:', user);
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
@@ -20,10 +23,16 @@ function BillingForm({ onSave }) {
         name="billing_form"
         onFinish={onFinish}
         layout="vertical"
+        initialValues ={{
+          fullName: user.fullname || "",
+          streetAddress: user.address || "",
+          emailAddress: user.email || "",
+          phoneNumber: user.phone || "123456789"
+        }}
       >
         <Form.Item
-          name="firstName"
-          label="First Name*"
+          name="fullName"
+          label="Full name"
           rules={[{ required: true, message: 'Please input your first name!' }]}
         >
           <Input />
@@ -112,7 +121,7 @@ const OrderSummary = ({ cartItems, onPlaceOrder }) => {
       <h2>Your Order</h2>
       {cartItems.map((item) => (
         <div key={item.id} className="order-item">
-          <img src={item.image} alt={item.name} />
+          <img src={item.imagePaths[0]} alt={item.name} />
           <span>{item.name}</span>
           <span>${item.price.toLocaleString()}</span>
         </div>
@@ -165,10 +174,13 @@ const OrderSummary = ({ cartItems, onPlaceOrder }) => {
 
 
 function Billing() {
-  const [cartItems] = useState([
-    { id: 1, name: 'LCD Monitor', price: 650, quantity: 1, image: 'https://images.philips.com/is/image/philipsconsumer/7daebfa708a148d7a0bbb01b009011d1?wid=700&hei=700&$pnglarge$' },
-    { id: 2, name: 'Hi Gamepad', price: 1100, quantity: 1, image: 'https://images.philips.com/is/image/philipsconsumer/7daebfa708a148d7a0bbb01b009011d1?wid=700&hei=700&$pnglarge$' },
-  ]);
+   // Lấy cartTotal từ state
+   const location = useLocation();
+   const { cartTotal } = location.state || { cartTotal: 0 }; // Fallback nếu state không có
+   // Lấy danh sách sản phẩm từ Redux
+   const cartItems = useSelector((state) => state.cart.items); // Lấy sản phẩm từ Redux
+   // Lấy thông tin người dùng để fill vào billing form
+   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const handleSaveBilling = (billingData) => {
     console.log('Saved Billing Data:', billingData);
@@ -182,7 +194,7 @@ function Billing() {
 
   return (
     <div className="checkout-container">
-      <BillingForm onSave={handleSaveBilling} />
+      <BillingForm onSave={handleSaveBilling} user={user} />
       <OrderSummary cartItems={cartItems} onPlaceOrder={handlePlaceOrder} />
     </div>
   )

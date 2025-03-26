@@ -63,7 +63,6 @@ const ProductDetail = ({ product }) => {
     // reviews,
     // rating,
   } = product;
-  console.log(specification)
 
   const [selectedColor, setSelectedColor] = useState(
     specification.colors?.length > 0 ? specification.color[0] : "defaultColor"
