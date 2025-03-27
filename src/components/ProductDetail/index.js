@@ -1,8 +1,11 @@
 import React, { useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Rate } from 'antd';
 import { Row, Col, Card, Radio, Select, Button, Image, Typography,Divider } from 'antd';
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { CarOutlined, SyncOutlined } from '@ant-design/icons';
+import { addToCart } from '../../slices/cartSlice';
 import './ProductDetail.scss';
 
 
@@ -63,19 +66,25 @@ const ProductDetail = ({ product }) => {
     // reviews,
     // rating,
   } = product;
+  const dispatch = useDispatch(); // Để gửi action đến Redux
+  const navigate = useNavigate(); // Để chuyển hướng
 
   const [selectedColor, setSelectedColor] = useState(
     specification.colors?.length > 0 ? specification.color[0] : "defaultColor"
   );
-  
   const [quantity, setQuantity] = useState(1);
-  
   const [mainImage, setMainImage] = useState(
     imagePaths?.length > 0 ? imagePaths[0] : "defaultImage.jpg"
   );
   
   const handleThumbnailClick = (img) => {
     setMainImage(img); // Cập nhật ảnh chính khi click vào ảnh phụ
+  };
+
+  // Hàm xử lý "Mua ngay"
+  const handleBuyNow = () => {
+    dispatch(addToCart(product)); // Thêm vào giỏ hàng qua Redux
+    navigate('/billing'); // Chuyển hướng sang trang thanh toán
   };
 
   return (
@@ -154,6 +163,7 @@ const ProductDetail = ({ product }) => {
             icon={<ShoppingCartOutlined />}
             size="large"
             className="buy-button"
+            onClick={handleBuyNow}
           >
             Buy Now
           </Button>

@@ -15,42 +15,45 @@ const FilterSetion = () => {
   // Hàm lấy dữ liệu từ API dựa trên filter
   const fetchProducts = async () => {
     try {
-      const params = {};
+      const params = new URLSearchParams();
       if (priceRange) {
         const [min, max] = priceRange.split('-').map(Number);
         if (priceRange === '>50') {
-          params.minPrice = 50;
-        }
-        else {
-          params.minPrice = min;
-          params.maxPrice = max;
+          params.append('minPrice', 50_000_000); // Chuyển thành số (giả định đơn vị là đồng)
+        } else {
+          params.append('minPrice', min * 1_000_000); // Chuyển triệu thành số
+          params.append('maxPrice', max * 1_000_000);
         }
       }
 
       if (sortBy) {
-        params.sortBy = sortBy;
+        params.append('sortBy', sortBy);
       }
-      // Giả lập API call (thay bằng axios.get('/api/products', { params }))
-      const response = await fetch('https://dummyjson.com/products', {
+
+      // Gọi API với query params
+      const response = await fetch(`http://localhost:8080/api/product-variants/filter?${params.toString()}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(params),
       });
       const data = await response.json();
 
-      setProducts(data);
-    }
-    catch (error) {
+      if (data.status === 'success') {
+        setProducts(data.data);
+      } else {
+        console.error('Error from API:', data.message);
+        setProducts([]);
+      }
+    } catch (error) {
       console.log('Error: ', error);
+      setProducts([]);
     }
   };
 
   useEffect(() => {
     fetchProducts();
   }, [priceRange, sortBy]);
-
   return (
     <>
       <div className="filter-container">

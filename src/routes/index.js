@@ -15,6 +15,7 @@ import Billing from '../pages/user/Billing';
 import Account from '../pages/user/Account';
 import EditProfile from '../components/Account/EditProfile';
 import Dashboard from '../pages/admin/Dashboard';
+import SuccessOrder from '../pages/user/SuccessOrder';
 import Inventory from '../pages/admin/Inventory';
 import Promotion from '../pages/admin/Promotion';
 import ProductIdentify from '../pages/user/ProductIdentify';
@@ -47,8 +48,9 @@ export const routes = [
         element: <PrivateRoute />,
         children: [
           { path: "account", element: <Account /> },
-          { path: "billing", element: <Billing /> },
+          { path: "billing", element: <Billing />},
           { path: "edit-profile", element: <EditProfile /> },
+          { path: "order-success", element: <SuccessOrder />},
         ],
       },
     ],

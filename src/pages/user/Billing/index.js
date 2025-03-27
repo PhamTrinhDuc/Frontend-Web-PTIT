@@ -1,12 +1,15 @@
 import { use, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Button, Form, Input, Checkbox, Radio, message } from 'antd';
+import { post } from '../../../utils/requests';
+import { clearCart } from '../../../slices/cartSlice';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import './Billing.scss';
 
 
 function BillingForm({ onSave, user }) {
-  console.log('User:', user);
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
@@ -176,6 +179,8 @@ const OrderSummary = ({ cartItems, onPlaceOrder }) => {
 function Billing() {
    // Lấy cartTotal từ state
    const location = useLocation();
+   const navigate = useNavigate();
+   const dispatch = useDispatch();
    const { cartTotal } = location.state || { cartTotal: 0 }; // Fallback nếu state không có
    // Lấy danh sách sản phẩm từ Redux
    const cartItems = useSelector((state) => state.cart.items); // Lấy sản phẩm từ Redux
@@ -187,13 +192,34 @@ function Billing() {
     // Logic lưu thông tin người dùng (có thể tích hợp API)
   };
 
-  const handlePlaceOrder = (orderData) => {
-    console.log('Order Data:', orderData);
-    // Logic đặt hàng (có thể tích hợp API)
+  const handlePlaceOrder = async (orderData) => {
+
+    if (!orderData) {
+      console.error('Missing order data!');
+      return;
+    }
+
+    const orderDataResponse = {
+      userId: user.id,
+      items: orderData.cartItems,
+      paymentMethod: orderData.paymentMethod,
+    };
+    try {
+      const response = await post('orders', orderDataResponse);
+      console.log('Order placed successfully:', response);
+      dispatch(clearCart());
+      navigate('/order-success');
+
+      return response; // Trả về dữ liệu nếu cần
+    } catch (error) {
+      console.error("Error placing order:", error.response?.data || error.message);
+      throw error; // Ném lỗi để xử lý ở nơi gọi hàm
+    }
   };
 
   return (
     <div className="checkout-container">
+      <Outlet />
       <BillingForm onSave={handleSaveBilling} user={user} />
       <OrderSummary cartItems={cartItems} onPlaceOrder={handlePlaceOrder} />
     </div>
