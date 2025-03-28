@@ -12,7 +12,7 @@ const useAllProductVariant = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await get('product_variant');
+        const response = await get('product-variant');
         setProducts(response.data);
       } catch (err) {
         setError(err.message || 'Failed to fetch products');

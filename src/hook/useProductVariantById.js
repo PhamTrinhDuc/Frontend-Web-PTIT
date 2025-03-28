@@ -12,7 +12,7 @@ const useProductVariantById = ({id}) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const data = await get(`product_variant/id/${id}`);
+        const data = await get(`product-variant/id/${id}`);
         setProduct(data);
       } catch (error) {
         setError(error.message || 'Failed to fetch products');

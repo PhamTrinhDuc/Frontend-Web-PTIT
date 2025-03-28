@@ -1,70 +1,131 @@
-
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Select, Radio, Typography } from 'antd';
-import {priceRanges, sortOptions} from '../../utils/filter';
+import { priceRanges, sortOptions } from '../../utils/filter';
+import { get } from '../../utils/requests'; 
 import './FilterCommon.scss';
 
 const { Option } = Select;
 const { Title } = Typography;
 
-const FilterSetion = () => {
+const FilterSetion = ({ onProductsChange }) => {
   const [priceRange, setPriceRange] = useState(null);
-  const [sortBy, setSortBy] = useState('newnest');
+  const [sortOption, setSortOption] = useState("newest");
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [products, setProducts] = useState([]);
 
-  // Hàm lấy dữ liệu từ API dựa trên filter
-  const fetchProducts = async () => {
+  // Truyền products ra ngoài khi thay đổi
+  useEffect(() => {
+    onProductsChange(products);
+  }, [products, onProductsChange]);
+
+  // Hàm lấy dữ liệu theo khoảng giá
+  const fetchProductsByPriceRange = async () => {
     try {
       const params = new URLSearchParams();
       if (priceRange) {
         const [min, max] = priceRange.split('-').map(Number);
-        if (priceRange === '>50') {
-          params.append('minPrice', 50_000_000); // Chuyển thành số (giả định đơn vị là đồng)
+        if (priceRange === '>2000') {
+          params.append('minPrice', 2000);
         } else {
-          params.append('minPrice', min * 1_000_000); // Chuyển triệu thành số
-          params.append('maxPrice', max * 1_000_000);
+          params.append('minPrice', min);
+          params.append('maxPrice', max);
         }
       }
 
-      if (sortBy) {
-        params.append('sortBy', sortBy);
+      const response = await get(`product-variant/filter/price?${params.toString()}`);
+      console.log('Price filter response:', response);
+
+      // Kiểm tra response có hợp lệ không
+      if (!response) {
+        throw new Error('No response received from price filter API');
       }
 
-      // Gọi API với query params
-      const response = await fetch(`http://localhost:8080/api/product-variants/filter?${params.toString()}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const data = await response.json();
+      // Giả định response đã là JSON (hàm get tự parse)
+      const data = response;
 
-      if (data.status === 'success') {
-        setProducts(data.data);
+      if (data.status) {
+        setFilteredProducts(data.data);
+        setProducts(data.data); // Cập nhật danh sách sản phẩm
       } else {
-        console.error('Error from API:', data.message);
+        console.error('Error from price filter API:', data.message);
+        setFilteredProducts([]);
         setProducts([]);
       }
     } catch (error) {
-      console.log('Error: ', error);
+      console.log('Error fetching products by price range: ', error);
+      setFilteredProducts([]);
       setProducts([]);
     }
   };
 
+  // Hàm lấy dữ liệu theo tiêu chí sắp xếp
+  const fetchProductsBySortOption = async () => {
+    try {
+      console.log('Fetching products by sort option:', sortOption);
+      const params = new URLSearchParams();
+      if (sortOption) {
+        params.append('sortBy', sortOption);
+      } else {
+        console.log('No sort option selected, skipping sort API call');
+        return; // Không gọi API nếu sortOption là null
+      }
+
+      const response = await get(`product-variant/sort?${params.toString()}`);
+      console.log('Sort response:', response);
+
+      if (!response) {
+        throw new Error('No response received from sort API');
+      }
+
+      const data = response;
+
+      if (data.status) {
+        if (filteredProducts.length > 0) {
+          // Nếu đã có filteredProducts, chỉ sắp xếp lại filteredProducts
+          setProducts(data.data.filter(product => 
+            filteredProducts.some(filtered => filtered.id === product.id)
+          ));
+        } else {
+          setProducts(data.data); // Nếu không có lọc giá, dùng toàn bộ danh sách đã sắp xếp
+        }
+      } else {
+        console.error('Error from sort API:', data.message);
+        setProducts([]);
+      }
+    } catch (error) {
+      console.log('Error fetching products by sort: ', error);
+      setProducts([]);
+    }
+  };
+
+  // Xử lý khi chọn khoảng giá
   useEffect(() => {
-    fetchProducts();
-  }, [priceRange, sortBy]);
+    fetchProductsByPriceRange();
+  }, [priceRange]);
+
+  const handlePriceRangeChange = (value) => {
+    setPriceRange(value);
+  };
+  // Xử lý khi chọn tiêu chí sắp xếp
+  useEffect(() => {
+    fetchProductsBySortOption();
+  }, [sortOption]); 
+  
+  const handleSortOptionChange = (e) => {
+    setSortOption(e.target.value);
+  };
+
   return (
     <>
       <div className="filter-container">
-         {/* Chọn khoảng giá */}
+        {/* Chọn khoảng giá */}
         <Row gutter={[16, 16]} align="middle">
-          <Col className='filter-content'>
+          <Col className="filter-content">
             <Title level={5}>Chọn khoảng giá:</Title>
             <Select
-              className='price-select'
-              defaultValue="10-15 triệu"
-              onChange={(value) => setPriceRange(value)}
+              className="price-select"
+              defaultValue="100-500"
+              onChange={handlePriceRangeChange}
               style={{ width: 120 }}
               allowClear
             >
@@ -79,17 +140,17 @@ const FilterSetion = () => {
 
         {/* Sắp xếp theo */}
         <Row gutter={[16, 16]} align="middle">
-          <Col className='filter-content'>
+          <Col className="filter-content">
             <Title level={5}>Sắp xếp theo:</Title>
             <Radio.Group
-              className='price-select'
-              onChange={(e) => setSortBy(e.target.value)}
-              value={sortBy}
+              className="price-select"
+              onChange={handleSortOptionChange}
+              value={sortOption}
               buttonStyle="solid"
               allowClear
             >
               {sortOptions.map((option) => (
-                <Radio.Button  key={option.value} value={option.value}>
+                <Radio.Button key={option.value} value={option.value}>
                   {option.label}
                 </Radio.Button>
               ))}
@@ -98,7 +159,7 @@ const FilterSetion = () => {
         </Row>
       </div>
     </>
-  )
-}
+  );
+};
 
 export default FilterSetion;

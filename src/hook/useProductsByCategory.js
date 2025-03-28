@@ -13,7 +13,7 @@ const useProductsByCategory = (categorySlug) => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await get(`product_variant/${categorySlug}`);
+        const response = await get(`product-variant/${categorySlug}`);
         setProducts(response.data);
       } catch (err) {
         setError(err.message || 'Failed to fetch products');
