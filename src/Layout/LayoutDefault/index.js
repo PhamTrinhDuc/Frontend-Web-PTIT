@@ -5,6 +5,7 @@ import AdminButton from '../../components/AdminButton';
 import Header from '../Header';
 import Footer from '../Footer';
 import './LayoutDefault.scss';
+import Chatbot from '../../pages/user/Chatbot';
 
 
 function LayoutDefault() {
@@ -22,6 +23,7 @@ function LayoutDefault() {
           <Outlet />
           {/* Admin Button */}
           {role === "admin" && <AdminButton />}
+          <Chatbot />
         </main>
         <Footer />
       </div>

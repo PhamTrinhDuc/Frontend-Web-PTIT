@@ -20,6 +20,7 @@ import Inventory from '../pages/admin/Inventory';
 import Promotion from '../pages/admin/Promotion';
 import ProductIdentify from '../pages/user/ProductIdentify';
 import ManageCustomer from '../pages/admin/ManageCustomer';
+import Chatbot from '../pages/user/Chatbot';
 import ViewOrder from '../pages/admin/ViewOrder';
 import ManageProduct from '../pages/admin/ManageProduct';
 import ManageCategories from '../pages/admin/ManageCategories';
@@ -40,6 +41,7 @@ export const routes = [
       { path: "products", element: <AllProduct /> },
       { path: "product-detail/:id", element: <Product /> },
       { path: "products/:categorySlug", element: <ProductIdentify />},
+      // { path: 'chatbot', element: <Chatbot /> },
       { path: "cart", element: <Cart /> },
       { path: "*", element: <Error /> },
 

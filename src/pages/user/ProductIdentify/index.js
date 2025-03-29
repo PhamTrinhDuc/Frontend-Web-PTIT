@@ -1,40 +1,49 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import Loading from '../../../components/Loading';
 import useProductsByCategory from '../../../hook/useProductsByCategory';
-import FilterSetion from '../../../components/FilterCommon';
+import FilterSection from '../../../components/FilterCommon';
 import CategoriesHeader from '../../../components/CategoriesHeader';
 import ShowProduct from '../../../components/ShowProduct';
 import './ProductIdentify.scss';
 
 function ProductIdentify() {
-  const { categorySlug } = useParams(); // URL: /products/{categorySlug}
+  const { categorySlug } = useParams();
   const navigate = useNavigate();
+  const { products: defaultProducts, loading, error } = useProductsByCategory(categorySlug);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filters, setFilters] = useState({ priceRange: null, sortOption: null });
 
-  // Gọi API để lấy sản phẩm dựa trên categorySlug
-  const { products, loading, error } = useProductsByCategory(categorySlug);
-
+  // Xử lý loading và error
   if (loading) return <Loading loading={loading} />;
   if (error) {
-    navigate("/error");
+    navigate('/error');
     return null;
   }
 
+  const handleProductsChange = (newProducts) => {
+    setFilteredProducts(newProducts);
+  };
+
+  const handleFilterChange = ({ priceRange, sortOption }) => {
+    setFilters({ priceRange, sortOption });
+  };
+
+  // Hiển thị sản phẩm: ưu tiên filteredProducts nếu có filter, ngược lại dùng defaultProducts
+  const displayProducts =
+    filters.priceRange || filters.sortOption ? filteredProducts : defaultProducts;
+
   return (
-    <>
-      <div className='products-container'>
-        <CategoriesHeader />
-
-        <FilterSetion />
-
-        <ShowProduct products={products}/>
-
-        <div className='product-container'>
-        </div>
-      </div>
-    </>
-  )
+    <div className="products-container">
+      <CategoriesHeader />
+      <FilterSection
+        onProductsChange={handleProductsChange}
+        onFilterChange={handleFilterChange}
+        categorySlug={categorySlug}
+      />
+      <ShowProduct products={displayProducts} />
+    </div>
+  );
 }
 
 export default ProductIdentify;

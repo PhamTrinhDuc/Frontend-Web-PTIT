@@ -1,0 +1,158 @@
+@import "../../../utils/colors";
+
+
+.chatbot-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  animation: floating 2s infinite ease-in-out;
+
+  .chatbot-toggle-wrapper {
+    position: relative;
+    display: inline-block;
+
+    .chatbot-toggle {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background-color: $ribbon-card;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  
+      .chatbot-icon {
+        font-size: 24px;
+        color: $white;
+        transition: transform 0.3s ease-in-out;
+      }
+    }
+
+    .chatbot-preview-message {
+      position: absolute;
+      bottom: 50px; // Điều chỉnh vị trí theo ý muốn
+      right: 20px;
+      background: $white;
+      padding: 8px 12px;
+      border-radius: 12px;
+      box-shadow: $box-shadow;
+      font-size: 14px;
+      white-space: nowrap;
+      color: $black;
+    }
+  }
+
+
+  .chatbot-box {
+    width: 350px;
+    height: 500px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: $box-shadow;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chatbot-header {
+    padding: 10px 15px;
+    background: $hover-bg;
+    color: $white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+
+    span {
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .ant-btn {
+      color: $white;
+    }
+  }
+
+  .chatbot-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f9f9f9;
+
+
+    .message {
+      display: flex;
+      margin-bottom: 15px;
+
+      &.user {
+        justify-content: flex-end;
+        order: 1; /* Avatar của bot nằm sau tin nhắn */
+
+        .message-content {
+          background: $hover-bg;
+          color: $white;
+          border-radius: 12px 12px 0 12px;
+        }
+      }
+
+      &.bot {
+        justify-content: flex-start;
+        order: -1; /* Avatar của user nằm trước tin nhắn */
+        .message-content {
+          background: $hover-bg;
+          color: $white;
+          border-radius: 12px 12px 12px 0;
+        }
+      }
+      .user .message-avatar {
+        order: -1; /* Avatar của user nằm trước tin nhắn */
+      }
+      .bot .message-avatar {
+        order: 1; /* Avatar của bot nằm sau tin nhắn */
+      }
+      .message-avatar {
+        margin: 0 8px;
+      }
+
+      .message-content {
+        max-width: 70%;
+        padding: 8px 12px;
+
+        p {
+          margin: 0;
+          word-wrap: break-word;
+        }
+
+        .message-timestamp {
+          font-size: 10px;
+          opacity: 0.7;
+          display: block;
+          margin-top: 4px;
+        }
+      }
+    }
+  }
+
+  .chatbot-input {
+    padding: 10px;
+    display: flex;
+    border-top: 1px solid #e8e8e8;
+    color: $black;
+    
+    .ant-input-textarea {
+      flex: 1;
+      margin-right: 10px;
+    }
+
+    .ant-btn {
+      height: 100%;
+    }
+  }
+}
+
+
+@keyframes floating {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); } // Chỉ di chuyển lên xuống, không thay đổi scale
+}
