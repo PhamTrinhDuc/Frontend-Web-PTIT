@@ -74,6 +74,34 @@
     }
   }
 
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    
+    span {
+      height: 8px;
+      width: 8px;
+      margin: 0 1px;
+      background-color: #606060;
+      border-radius: 50%;
+      display: block;
+      opacity: 0.4;
+      animation: typing 1s infinite;
+      
+      &:nth-child(1) {
+        animation-delay: 0s;
+      }
+      
+      &:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      
+      &:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+    }
+  }
+
   .chatbot-messages {
     flex: 1;
     padding: 15px;
@@ -155,4 +183,20 @@
 @keyframes floating {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); } // Chỉ di chuyển lên xuống, không thay đổi scale
+}
+
+
+@keyframes typing {
+  0% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
 }
