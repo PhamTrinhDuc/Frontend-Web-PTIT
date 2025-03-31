@@ -1,7 +1,5 @@
 @import "../../../utils/colors";
 
-
-
 .add-product {
   padding: 20px;
   background: $white;
@@ -19,7 +17,7 @@
   }
 
   .pricing {
-    margin-top: 20px;
+    margin-top: 0px;
     .pricing-row {
       display: flex;
       align-items: flex-start; // Căn các input thẳng hàng phía trên
@@ -42,24 +40,12 @@
     }
   }
 
-  // Các style khác giữ nguyên
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-
-    h1 {
-      font-size: 24px;
-      margin: 0;
-    }
-  }
-
   .product-media-card {
     border-radius: 12px;
     box-shadow: $box-shadow;
     padding: 16px;
     background-color: #fff;
+    min-height: 200px;
   
     .ant-card-head {
       font-size: 18px;
@@ -95,11 +81,11 @@
       }
     }
   }
-  
 
   .ant-card {
     border-radius: 8px;
     box-shadow: $box-shadow;
+    min-height: 150px;
   }
 
   .ant-form-item {

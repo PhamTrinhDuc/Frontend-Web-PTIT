@@ -20,18 +20,13 @@ const EditProduct = () => {
     { uid: '-2', name: 'image2.png', status: 'done', url: 'https://via.placeholder.com/100' },
   ]);
   const [selectedTags, setSelectedTags] = useState(['Internet of Things']);
-
-  // Dữ liệu sản phẩm mẫu (trong thực tế, mày sẽ lấy từ API hoặc props)
   const productData = {
-    productName: 'Xiaomi Watch 2 Pro',
+    productVariantName: 'Xiaomi Watch 2 Pro',
     description: 'Xiaomi Watch 2 Pro supports 19 professional fitness modes...',
     basePrice: 188.89,
     discountPercentage: 25,
     discountType: 'percentage',
-    sku: '113902',
-    barcode: '0324298012',
     quantity: '100',
-    variationType: 'SKU Variation',
     category: 'electronics',
     tags: ['Internet of Things'],
   };
@@ -41,7 +36,6 @@ const EditProduct = () => {
     form.setFieldsValue(productData);
     setSelectedTags(productData.tags);
   }, [form]);
-
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -70,12 +64,10 @@ const EditProduct = () => {
   const handleUploadChange = ({ fileList }) => {
     setFileList(fileList);
   };
-
   // Xử lý chọn tags
   const handleTagChange = (value) => {
     setSelectedTags(value);
   };
-
   // Xử lý submit form
   const onFinish = (values) => {
     const updatedProductData = {
@@ -106,8 +98,8 @@ const EditProduct = () => {
           <Col xs={24} md={16}>
             <Card title="General Information">
               <Form.Item
-                label="Product Name"
-                name="productName"
+                label="Product Variant Name"
+                name="productVariantName"
                 rules={[{ required: true, message: 'Please enter product name' }]}
               >
                 <Input placeholder="Iphone 14 promax" />
@@ -152,27 +144,6 @@ const EditProduct = () => {
                       <Option value="percentage">Percentage</Option>
                       <Option value="fixed">Fixed Amount</Option>
                     </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Card>
-
-            {/* Inventory */}
-            <Card title="Inventory" style={{ marginTop: 16 }}>
-              <Row gutter={16}>
-                <Col xs={24} md={8}>
-                  <Form.Item label="SKU" name="sku">
-                    <Input placeholder="113902" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={8}>
-                  <Form.Item label="Barcode" name="barcode">
-                    <Input placeholder="0324298012" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={8}>
-                  <Form.Item label="Quantity" name="quantity">
-                    <Input placeholder="Type product quantity" />
                   </Form.Item>
                 </Col>
               </Row>
