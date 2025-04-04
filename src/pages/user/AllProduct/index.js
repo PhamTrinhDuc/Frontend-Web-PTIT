@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState, useEffect} from 'react';
-import useAllProductVariant from '../../../hook/useAllProductVariant';
+import useAllProduct from '../../../hook/useAllProduct';
 import FilterSetion from '../../../components/FilterCommon';
 import CategoriesHeader from '../../../components/CategoriesHeader';
 import ShowProduct from '../../../components/ShowProduct';
@@ -10,7 +10,7 @@ import './AllProduct.scss';
 
 function AllProduct() {
   // const navigate = useNavigate();
-  // const { products, loading, error } = useAllProductVariant();
+  // const { products, loading, error } = useAllProduct();
   // if (loading) return <Loading loading={loading} />;
   // if (error) {
   //   navigate("/error");

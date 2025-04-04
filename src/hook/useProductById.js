@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import {get} from '../utils/requests';
 
 
-const useProductVariantById = ({id}) => {
+const useProductById = ({id}) => {
   const [product, setProduct] = useState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState();
@@ -12,7 +12,7 @@ const useProductVariantById = ({id}) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const data = await get(`product-variant/id/${id}`);
+        const data = await get(`products/id/${id}`);
         setProduct(data);
       } catch (error) {
         setError(error.message || 'Failed to fetch products');
@@ -26,4 +26,4 @@ const useProductVariantById = ({id}) => {
   return { product, loading, error };
 };
 
-export default useProductVariantById;
+export default useProductById;

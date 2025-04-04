@@ -12,7 +12,7 @@ const useProductByOrderDesc = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await get('product-variant/by-discount');
+        const response = await get('products/by-discount');
         setProducts(response.data);
       } catch (err) {
         setError(err.message || 'Failed to fetch products');

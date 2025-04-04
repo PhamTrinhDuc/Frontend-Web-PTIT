@@ -8,7 +8,7 @@ import { useState } from 'react';
 import ProductRelated from '../../../components/ProductRelated';
 import { updateQuantity, removeFromCart } from '../../../slices/cartSlice';
 import Loading from '../../../components/Loading';
-import useAllProductVariant from '../../../hook/useAllProductVariant';
+import useAllProduct from '../../../hook/useAllProduct';
 import './Cart.scss';
 
 
@@ -101,7 +101,7 @@ function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { products, loading, error } = useAllProductVariant(); 
+  const { products, loading, error } = useAllProduct(); 
 
   const cartItems = useSelector((state) => state.cart.items); // Lấy sản phẩm từ Redux
   const [couponCode, setCouponCode] = useState('');

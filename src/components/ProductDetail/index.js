@@ -2,21 +2,18 @@ import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Rate } from 'antd';
-import { Row, Col, Card, Radio, Select, Button, Image, Typography,Divider } from 'antd';
+import { Row, Col, Card, Radio, Button, Image, Typography, Divider } from 'antd';
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { CarOutlined, SyncOutlined } from '@ant-design/icons';
 import { addToCart } from '../../slices/cartSlice';
 import './ProductDetail.scss';
 
-
 const { Title, Link, Text, Paragraph } = Typography;
-const { Option } = Select;
 
-const Rating = ({props}) => {
+const Rating = ({ props }) => {
   const reviewSectionRef = useRef(null);
-  const {rating, reviews, inStock} = props; // Example rating (4 out of 5)
+  const { rating, reviews, inStock } = props;
 
-  // Function to scroll to the review section
   const scrollToReviews = () => {
     if (reviewSectionRef.current) {
       reviewSectionRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -26,16 +23,10 @@ const Rating = ({props}) => {
   return (
     <div className="rating-container">
       <div className="rating-section" onClick={scrollToReviews}>
-        <Rate
-          disabled
-          allowHalf
-          defaultValue={rating}
-          count={5}
-        />
+        <Rate disabled allowHalf defaultValue={rating} count={5} />
         <span className="review-count" onClick={scrollToReviews}>
           ({reviews} Reviews)
         </span>
-
         <span className="stock-status">
           {' | '}
           {inStock > 0 ? (
@@ -44,12 +35,7 @@ const Rating = ({props}) => {
             <span className="out-of-stock">Out of Stock</span>
           )}
         </span>
-
       </div>
-      {/* <div ref={reviewSectionRef} className="review-section">
-        <h2>Reviews Section</h2>
-        <p>This is where the reviews would be displayed.</p>
-      </div> */}
     </div>
   );
 };
@@ -61,34 +47,44 @@ const ProductDetail = ({ product }) => {
     discount,
     imagePaths,
     price,
-    specification ,
+    specification,
     quantityStock,
-    // reviews,
-    // rating,
   } = product;
-  const dispatch = useDispatch(); // Để gửi action đến Redux
-  const navigate = useNavigate(); // Để chuyển hướng
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const [selectedColor, setSelectedColor] = useState(
-    specification.colors?.length > 0 ? specification.color[0] : "defaultColor"
-  );
+  // State để lưu các lựa chọn của từng thông số
+  const [selectedOptions, setSelectedOptions] = useState(() => {
+    const initialOptions = {};
+    Object.keys(specification || {}).forEach((key) => {
+      const value = specification[key];
+      initialOptions[key] = Array.isArray(value) && value.length > 0 ? value[0] : value;
+    });
+    return initialOptions;
+  });
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState(
-    imagePaths?.length > 0 ? imagePaths[0] : "defaultImage.jpg"
+    imagePaths?.length > 0 ? imagePaths[0] : 'defaultImage.jpg'
   );
-  
+
   const handleThumbnailClick = (img) => {
-    setMainImage(img); // Cập nhật ảnh chính khi click vào ảnh phụ
+    setMainImage(img);
   };
 
-  // Hàm xử lý "Mua ngay"
   const handleBuyNow = () => {
-    dispatch(addToCart(product)); // Thêm vào giỏ hàng qua Redux
-    navigate('/billing'); // Chuyển hướng sang trang thanh toán
+    dispatch(addToCart({ ...product, selectedOptions, quantity })); // Thêm thông số đã chọn vào giỏ hàng
+    navigate('/billing');
+  };
+
+  // Hàm xử lý thay đổi lựa chọn thông số
+  const handleOptionChange = (key, value) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
   };
 
   return (
-    <>
     <Row gutter={[16, 16]} className="product-detail">
       {/* Cột trái: Hình ảnh sản phẩm */}
       <Col xs={24} md={12} lg={12}>
@@ -97,7 +93,7 @@ const ProductDetail = ({ product }) => {
             src={mainImage}
             alt={name}
             className="main-image"
-            style={{ width: '100%', height: 400 }} // Đặt chiều cao cố định
+            style={{ width: '100%', height: 400 }}
           />
           <Row gutter={[8, 8]} className="thumbnail-row">
             {imagePaths.slice(0).map((img, index) => (
@@ -125,37 +121,33 @@ const ProductDetail = ({ product }) => {
           </Title>
           <Paragraph className="product-description">{description}</Paragraph>
 
-          {/* Tùy chọn màu sắc */}
-          <div className="color-options">
-            <Text strong className='title-option'>Colors:</Text>
-            <Radio.Group
-              value={selectedColor}
-              onChange={(e) => setSelectedColor(e.target.value)}
-              className="color-radio-group"
-            >
-              {specification.color.map((color) => (
-                <Radio key={color} value={color}>
-                  {color}
-                </Radio>
+          {/* Hiển thị động các thông số từ specification */}
+          {specification && Object.keys(specification).length > 0 && (
+            <div className="specification-options">
+              {Object.entries(specification).map(([key, value]) => (
+                <div key={key} className="option-group">
+                  <Text strong className="title-option">
+                  {key.replace('_', ' ').charAt(0).toUpperCase() + key.replace('_', ' ').slice(1)}                  
+                  </Text>
+                  {Array.isArray(value) ? (
+                    <Radio.Group
+                      value={selectedOptions[key]}
+                      onChange={(e) => handleOptionChange(key, e.target.value)}
+                      className="option-radio-group"
+                    >
+                      {value.map((option) => (
+                        <Radio key={option} value={option}>
+                          {option}
+                        </Radio>
+                      ))}
+                    </Radio.Group>
+                  ) : (
+                    <Text>{value}</Text> // Hiển thị giá trị đơn nếu không phải mảng
+                  )}
+                </div>
               ))}
-            </Radio.Group>
-          </div>
-
-          {/* Số lượng */}
-          <div className="quantity-options">
-            <Text strong className='title-option'>Quantity:</Text>
-            <Button
-              icon={<MinusOutlined />}
-              onClick={() => setQuantity(Math.max(1, quantity - 1))}
-              className="quantity-button"
-            />
-            <span className="quantity-value">{quantity}</span>
-            <Button
-              icon={<PlusOutlined />}
-              onClick={() => setQuantity(quantity + 1)}
-              className="quantity-button"
-            />
-          </div>
+            </div>
+          )}
 
           {/* Nút mua hàng */}
           <Button
@@ -178,24 +170,21 @@ const ProductDetail = ({ product }) => {
                 <Link>Enter your postal code for Delivery Availability</Link>
               </div>
             </div>
-
-            {/* Divider */}
             <Divider className="delivery-divider" />
-
-            {/* Return Delivery Section */}
             <div className="delivery-section">
               <SyncOutlined className="delivery-icon" />
               <div className="delivery-text">
                 <Text strong>Return Delivery</Text>
                 <br />
-                <Text>Free 30 Days Delivery Returns. <Link>Details</Link></Text>
+                <Text>
+                  Free 30 Days Delivery Returns. <Link>Details</Link>
+                </Text>
               </div>
             </div>
           </div>
         </Card>
       </Col>
     </Row>
-    </>
   );
 };
 

@@ -2,10 +2,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  width: 100%; /* Đảm bảo container chiếm toàn bộ chiều rộng */
   .carousel-container {
     width: 100%;
-    margin-bottom: 16px; // Tạo khoảng cách với pagination
+    margin-bottom: 16px;
+  }
+
+  .navigation-items {
+    width: 100%; /* Đảm bảo Row chiếm toàn bộ chiều rộng */
+    display: flex;
+    justify-content: center; /* Căn giữa các sản phẩm */
   }
 
   .pagination-container {

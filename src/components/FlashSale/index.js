@@ -22,7 +22,7 @@ function FlashSale() {
       <div className='flash-sale'>
         <CountdownTimer />
 
-        <PanigationProduct products={products.slice(0, 20)} numOfProduct={4} />
+        <PanigationProduct products={products.slice(0, 20)} />
       </div>
     </>
   );

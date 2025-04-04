@@ -45,6 +45,15 @@
 
 .product-detail {
   padding: 16px;
+  .specification-options {
+    margin-bottom: 5px;
+  }
+  .option-group {
+    margin-bottom: 15px;
+  }
+  .option-radio-group {
+    margin-left: 10px;
+  }
 
   .product-image-card {
     border: none;

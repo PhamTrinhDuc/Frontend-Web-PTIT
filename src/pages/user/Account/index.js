@@ -8,7 +8,6 @@ const Account = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const userInfo = {

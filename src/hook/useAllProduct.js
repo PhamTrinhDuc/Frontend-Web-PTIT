@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {get} from '../utils/requests';
 
 
-const useAllProductVariant = () => {
+const useAllProduct = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -12,8 +12,8 @@ const useAllProductVariant = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await get('product-variant');
-        setProducts(response.data);
+        const response = await get('products');
+        setProducts(response.data.content);
       } catch (err) {
         setError(err.message || 'Failed to fetch products');
       } finally {
@@ -27,4 +27,4 @@ const useAllProductVariant = () => {
   return { products, loading, error };
 };
 
-export default useAllProductVariant;
+export default useAllProduct;

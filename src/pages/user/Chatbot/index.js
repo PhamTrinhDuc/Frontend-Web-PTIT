@@ -13,21 +13,6 @@ import './Chatbot.scss';
 const { TextArea } = Input;
 
 
-const formatMessages = (rawData) => {
-  if (!Array.isArray(rawData) || rawData.length === 0) return [];
-
-  // Lấy mảng tin nhắn đầu tiên từ backend
-  const messagesList = rawData[0] || [];
-
-  // Chuyển đổi sang định dạng phù hợp với frontend
-  return messagesList.map((msg, index) => ({
-    id: index, // Tạo ID tạm thời dựa trên index
-    text: msg.content, // Nội dung tin nhắn
-    sender: msg.role === "user" ? "user" : "bot", // Xác định người gửi
-    timestamp: new Date().toLocaleTimeString(), // Tạo timestamp tạm thời
-  }));
-};
-
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,11 +47,11 @@ const Chatbot = () => {
       const response = await axios.get(`http://127.0.0.1:8000/conversation?user_id=${userId}`);
   
       // Format lại dữ liệu trước khi lưu vào state
-      const formattedMessages = formatMessages(response.data);
+      // const formattedMessages = formatMessages(response.data);
   
       // Cập nhật state
-      setMessages([messages[0], ...formattedMessages]);
-      console.log("Fetched messages:", formattedMessages);
+      setMessages([messages[0], ...response]);
+      console.log("Fetched messages:", response);
     } catch (error) {
       console.error("Error fetching conversation:", error);
     }
@@ -92,8 +77,6 @@ const Chatbot = () => {
         headers: { "Content-Type": "application/json" }
       });
 
-      console.log("Bot response:", response.data);
-    
       // Xử lý phản hồi từ bot
       if (response.status && response.data) {
         const botReply = {

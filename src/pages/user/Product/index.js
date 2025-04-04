@@ -4,14 +4,14 @@ import ProductDetail from '../../../components/ProductDetail';
 import ProductRelated from '../../../components/ProductRelated';
 import Loading from '../../../components/Loading';
 import products from '../../../utils/mock_data';
-import useProductVariantById from '../../../hook/useProductVariantById';
-import useAllProductVariant from '../../../hook/useAllProductVariant';
+import useProductById from '../../../hook/useProductById';
+import useAllProduct from '../../../hook/useAllProduct';
 import './Product.scss';
 
 function Product() {
   const { id } = useParams();
-  const { product, loading, error } = useProductVariantById({ id });
-  const { products } = useAllProductVariant(); 
+  const { product, loading, error } = useProductById({ id });
+  const { products } = useAllProduct(); 
   const navigate = useNavigate();
 
   if (loading) return <Loading loading={loading} />;

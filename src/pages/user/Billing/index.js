@@ -41,9 +41,9 @@ function BillingForm({ onSave, user }) {
           <Input />
         </Form.Item>
 
-        <Form.Item name="companyName" label="Company Name">
+        {/* <Form.Item name="companyName" label="Company Name">
           <Input />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
           name="streetAddress"
@@ -53,17 +53,17 @@ function BillingForm({ onSave, user }) {
           <Input />
         </Form.Item>
 
-        <Form.Item name="apartment" label="Apartment, floor, etc. (optional)">
+        {/* <Form.Item name="apartment" label="Apartment, floor, etc. (optional)">
           <Input />
-        </Form.Item>
+        </Form.Item> */}
 
-        <Form.Item
+        {/* <Form.Item
           name="townCity"
           label="Town/City"
           rules={[{ required: true, message: 'Please input your town/city!' }]}
         >
           <Input />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item
           name="phoneNumber"

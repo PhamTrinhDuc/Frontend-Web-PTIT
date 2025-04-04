@@ -32,8 +32,6 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
-
 
   const showDeleteModal = () => {
     setIsDeleteModalVisible(true);

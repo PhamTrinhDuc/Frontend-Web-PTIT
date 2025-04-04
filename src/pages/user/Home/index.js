@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Layout } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import useAllProductVariant from '../../../hook/useAllProductVariant';
+import useAllProduct from '../../../hook/useAllProduct';
 import Loading from '../../../components/Loading';
 import './Home.scss';
 import Banner from '../../../components/SaleBanner';
@@ -14,6 +14,7 @@ import Service from '../../../components/Service';
 const { Content } = Layout;
 
 const shuffleArray = (array) => {
+
   const newArr = array.slice(); // Tạo bản sao để không thay đổi mảng gốc
   for (let i = newArr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -25,7 +26,7 @@ const shuffleArray = (array) => {
 
 function Home () {
   const navigate = useNavigate();
-  const { products, loading, error } = useAllProductVariant();
+  const { products, loading, error } = useAllProduct();
   if (loading) return <Loading loading={loading} />;
   if (error) {
     navigate("/error");
@@ -33,6 +34,7 @@ function Home () {
   }
 
   const randomSubset = shuffleArray(products).slice(0, 20);
+  console.log(randomSubset);
   
   return (
     <>  
