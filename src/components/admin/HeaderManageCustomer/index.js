@@ -1,44 +1,29 @@
-import React, { useState, useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { Button } from 'antd';
 import { CiFilter } from "react-icons/ci";
 import { TiExportOutline } from "react-icons/ti";
-import { useNavigate } from 'react-router-dom';
 import { Dropdown, Input, Menu } from 'antd';
-import axios from 'axios';
+import useAllUsers from '../../../hook/useAllUsers'; // Sửa typo: userAllUsers -> useAllUsers
 import * as XLSX from 'xlsx';
-import './HeaderManageCustomer.scss'
+import './HeaderManageCustomer.scss';
 
-function HeaderManageCustomer() {       
-  const navigate = useNavigate();
-  const [customers, setCustomers] = useState([]); // Danh sách khách hàng từ API
-  const [filteredCustomers, setFilteredCustomers] = useState([]); // Danh sách đã lọc/tìm kiếm
-  const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(''); // Giá trị tìm kiếm
+function HeaderManageCustomer({ filteredCustomers, setFilteredCustomers, searchTerm, setSearchTerm }) {
+  const { users, loading, error } = useAllUsers();
 
-  // Gọi API để lấy danh sách khách hàng
+  // Cập nhật filteredCustomers khi users từ API thay đổi
   useEffect(() => {
-    const fetchCustomers = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get('YOUR_API_ENDPOINT/customers'); // Thay bằng endpoint API của bạn
-        setCustomers(response.data);
-        setFilteredCustomers(response.data); // Khởi tạo danh sách đã lọc
-      } catch (error) {
-        console.error('Error fetching customers:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCustomers();
-  }, []);
+    if (users && users.length > 0) {
+      setFilteredCustomers(users); // Khởi tạo danh sách ban đầu từ API
+    }
+  }, [users, setFilteredCustomers]);
 
   // Hàm lọc và sắp xếp khách hàng
   const handleFilter = (sortBy) => {
     let sortedCustomers = [...filteredCustomers];
     if (sortBy === 'nameDesc') {
-      sortedCustomers.sort((a, b) => b.name.localeCompare(a.name)); // Sắp xếp tên giảm dần
+      sortedCustomers.sort((a, b) => b.fullname.localeCompare(a.fullname));
     } else if (sortBy === 'orders') {
-      sortedCustomers.sort((a, b) => (b.orderCount || 0) - (a.orderCount || 0)); // Sắp xếp theo số đơn hàng
+      sortedCustomers.sort((a, b) => (b.orderCount || 0) - (a.orderCount || 0));
     }
     setFilteredCustomers(sortedCustomers);
   };
@@ -59,8 +44,8 @@ function HeaderManageCustomer() {
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    const filtered = customers.filter((customer) =>
-      customer.name.toLowerCase().includes(value.toLowerCase())
+    const filtered = users.filter((customer) =>
+      customer.fullname.toLowerCase().includes(value.toLowerCase())
     );
     setFilteredCustomers(filtered);
   };
@@ -69,9 +54,8 @@ function HeaderManageCustomer() {
   const handleExport = () => {
     const data = filteredCustomers.map((customer) => ({
       ID: customer.id,
-      Name: customer.name,
+      Name: customer.fullname,
       'Order Count': customer.orderCount || 0,
-      // Thêm các trường khác nếu cần
     }));
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();

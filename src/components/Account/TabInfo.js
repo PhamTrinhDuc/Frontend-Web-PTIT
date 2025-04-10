@@ -70,7 +70,7 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
                 {userInfo.email}
               </Descriptions.Item>
               <Descriptions.Item label={<PhoneOutlined />}>
-                {userInfo.phone_number}
+                {userInfo.phoneNumber}
               </Descriptions.Item>
               <Descriptions.Item label={<HomeOutlined />}>
                 {userInfo.address}

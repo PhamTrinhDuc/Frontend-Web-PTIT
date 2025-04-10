@@ -1,33 +1,10 @@
 import React, { useState } from 'react';
 import { Table, Button, Popconfirm, message } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
 import { FaBan } from "react-icons/fa6";
-
 import './CardCustomer.scss';
 
-
-const initialCustomers = [
-  {
-    key: '1',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    phone: '123-456-7890',
-    address: '123 Main St, Anytown, USA',
-  },
-  {
-    key: '2',
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',
-    phone: '987-654-3210',
-    address: '456 Elm St, Othertown, USA',
-  },
-  // Add more customers as needed
-];
-
-
-const CardCustomer = () => {
-  const [customers, setCustomers] = useState(initialCustomers);
-
+const CardCustomer = ({ filteredCustomers }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const onSelectChange = (newSelectedRowKeys) => {
@@ -37,20 +14,22 @@ const CardCustomer = () => {
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
-    columnTitle: '', // Bỏ checkbox ở header
+    columnTitle: '',
   };
 
   const handleBanCustomer = (key) => {
-    const newCustomers = customers.filter(customer => customer.key !== key);
-    setCustomers(newCustomers);
-    message.success('Customer ban successfully!');
+    const newCustomers = filteredCustomers.filter(customer => customer.key !== key);
+    // Cập nhật danh sách sau khi xóa (có thể cần callback lên cha nếu muốn đồng bộ)
+    message.success('Customer banned successfully!');
+    // Nếu cần cập nhật lên ManageCustomer, bạn phải truyền setFilteredCustomers xuống đây
+    return newCustomers;
   };
 
   const columns = [
     {
       title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'fullname',
+      key: 'fullname',
     },
     {
       title: 'Email',
@@ -58,9 +37,9 @@ const CardCustomer = () => {
       key: 'email',
     },
     {
-      title: 'Phone',
-      dataIndex: 'phone',
-      key: 'phone',
+      title: 'Phone number',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
     },
     {
       title: 'Address',
@@ -86,18 +65,16 @@ const CardCustomer = () => {
     },
   ];
 
-
   return (
     <div className="customer-management">
       <Table
         columns={columns}
-        dataSource={customers}
+        dataSource={filteredCustomers} // Sử dụng filteredCustomers từ props
         rowSelection={rowSelection}
         pagination={{
           pageSize: 10,
-          style: { alignItems: 'center', justifyContent: 'center' }, // Căn giữa và thêm margin
+          style: { alignItems: 'center', justifyContent: 'center' },
         }}
-      // scroll={{ y: 400 }}
       />
     </div>
   );
