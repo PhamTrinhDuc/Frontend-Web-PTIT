@@ -10,9 +10,8 @@ import Chatbot from '../../pages/user/Chatbot';
 
 function LayoutDefault() {
 
-  // const { isLoggedIn, user } = useSelector((state) => state.auth);
-  // const role = user?.role;
-  const role = "admin"; // Thêm dòng này để test
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const role = user?.role;
 
   return (
     <>
@@ -23,7 +22,7 @@ function LayoutDefault() {
           <Outlet />
           {/* Admin Button */}
           {role === "admin" && <AdminButton />}
-          <Chatbot />
+          {isLoggedIn && <Chatbot /> }
         </main>
         <Footer />
       </div>

@@ -200,10 +200,18 @@ function Billing() {
     }
 
     const orderDataResponse = {
-      userId: user.id,
-      items: orderData.cartItems,
-      paymentMethod: orderData.paymentMethod,
+      userId: user.id, // Kiểm tra xem user.id có đúng kiểu số không
+      items: orderData.cartItems.map(item => ({
+        productId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+        discount: item.discount
+      })),
+      paymentMethod: orderData.paymentMethod
     };
+
+    console.log('Order Data:', orderDataResponse);
+
     try {
       const response = await post('orders', orderDataResponse);
       console.log('Order placed successfully:', response);

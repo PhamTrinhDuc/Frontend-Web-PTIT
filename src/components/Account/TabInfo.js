@@ -49,10 +49,13 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
     setIsLogoutModalVisible(true);
   };
   const handleLogoutAccount = () => {
-    dispatch(logout());
+  dispatch(logout());
+  setIsLogoutModalVisible(false);
+
+  setTimeout(() => {
     navigate('/login');
-    setIsLogoutModalVisible(false);
-  };
+  }, 0);
+};
   const handleCancelLogout = () => {
     setIsLogoutModalVisible(false);
   };

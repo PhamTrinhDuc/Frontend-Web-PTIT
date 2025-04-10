@@ -2,22 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Button, Input } from 'antd';
 import { SendOutlined, CloseOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
-import { BsRobot  } from "react-icons/bs";
+import { BsRobot } from "react-icons/bs";
 import { GoHubot } from "react-icons/go";
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { FaUserSecret } from "react-icons/fa6";
-import { GiRobotAntennas } from "react-icons/gi";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import './Chatbot.scss';
 
 const { TextArea } = Input;
 
-
-
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
-  // const userId  = user?.phoneNumber;
   const userId = "0962741764";
   const [messages, setMessages] = useState([
     {
@@ -28,7 +25,7 @@ const Chatbot = () => {
     }
   ]);
   const [inputValue, setInputValue] = useState('');
-  const [isTyping, setIsTyping] = useState(false); 
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
     if (isOpen && userId) {
@@ -45,13 +42,17 @@ const Chatbot = () => {
   const fetchConversation = async () => {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/conversation?user_id=${userId}`);
-  
-      // Format lại dữ liệu trước khi lưu vào state
-      // const formattedMessages = formatMessages(response.data);
-  
-      // Cập nhật state
-      setMessages([messages[0], ...response]);
-      console.log("Fetched messages:", response);
+      // Format dữ liệu từ API
+      const formattedMessages = response.data.flatMap((messagePair) =>
+        messagePair.map((msg) => ({
+          id: Date.now() + Math.random(), // Tạo ID tạm thời
+          text: msg.content,
+          sender: msg.role === 'user' ? 'user' : 'bot',
+          timestamp: new Date().toLocaleTimeString(),
+        }))
+      );
+      setMessages([messages[0], ...formattedMessages]);
+      console.log("Fetched messages:", formattedMessages);
     } catch (error) {
       console.error("Error fetching conversation:", error);
     }
@@ -69,7 +70,7 @@ const Chatbot = () => {
 
     setMessages([...messages, newMessage]);
     setInputValue('');
-    setIsTyping(true); // Bắt đầu hiển thị trạng thái "đang nhập" của bot
+    setIsTyping(true);
 
     try {
       const response = await axios.get(`http://127.0.0.1:8000/message`, {
@@ -77,22 +78,25 @@ const Chatbot = () => {
         headers: { "Content-Type": "application/json" }
       });
 
-      // Xử lý phản hồi từ bot
-      if (response.status && response.data) {
-        const botReply = {
-          id: Date.now(),
-          text: response.data,
-          sender: "bot",
-          timestamp: new Date().toLocaleTimeString(),
-        };
-        setMessages((prev) => [...prev, botReply]);
+      // Xử lý phản hồi từ API
+      if (response.data && Array.isArray(response.data)) {
+        // Lấy cặp tin nhắn mới nhất (thường là cặp cuối cùng trong mảng)
+        const latestMessagePair = response.data[response.data.length - 1];
+        if (latestMessagePair && latestMessagePair.length === 2) {
+          const botReply = {
+            id: Date.now() + 1, // Đảm bảo ID khác nhau
+            text: latestMessagePair[1].content, // Lấy content của bot
+            sender: "bot",
+            timestamp: new Date().toLocaleTimeString(),
+          };
+          setMessages((prev) => [...prev, botReply]);
+        }
       }
     } catch (error) {
       console.error("Error sending message:", error);
     } finally {
-      setIsTyping(false); // Kết thúc trạng thái "đang nhập" của bot
+      setIsTyping(false);
     }
-    
   };
 
   return (
@@ -107,7 +111,6 @@ const Chatbot = () => {
           >
             <BsRobot size={24} className='chatbot-icon' />
           </Button>
-          {/* Tin nhắn mặc định ở icon */}
           <div className="chatbot-preview-message">
             "Chào bạn! Bạn cần hỗ trợ gì hôm nay?"
           </div>
@@ -142,7 +145,15 @@ const Chatbot = () => {
                   </Avatar>
                 )}
                 <div className="message-content">
-                  <p>{msg.text}</p>
+                  {msg.sender === 'bot' ? (
+                    <div className="markdown-content">
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {msg.text}
+                      </ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p>{msg.text}</p>
+                  )}
                   <span className="message-timestamp">{msg.timestamp}</span>
                 </div>
                 {msg.sender === 'bot' && (
@@ -157,7 +168,6 @@ const Chatbot = () => {
               </div>
             ))}
             
-            {/* Hiển thị dấu ba chấm khi đang đợi bot trả lời */}
             {isTyping && (
               <div className="message bot">
                 <div className="message-content typing-indicator">
@@ -176,7 +186,6 @@ const Chatbot = () => {
             )}
           </div>
 
-          {/* Khu vực nhập tin nhắn */}
           <div className="chatbot-input">
             <TextArea
               value={inputValue}

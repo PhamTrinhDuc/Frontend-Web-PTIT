@@ -11,29 +11,15 @@ import './Card.scss';
 
 const { Text } = Typography;
 
-
-const addToCartDb = async ({product, user}) => {
-  const cartItem = {
-      userId: user.id,
-      variantId: product.id,
-      quantity: product.quantity || 1,
-    };
-  console.log(cartItem);
-
-  await post("cart/add", cartItem);
-};
-
-
 function CardProduct({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  // const { isLoggedIn, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-    addToCartDb({product, user});
     dispatch(addToCart(product));
     setShowAlert(true);
     setTimeout(() => setShowAlert(false), 1500);

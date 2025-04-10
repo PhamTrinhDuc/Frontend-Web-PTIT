@@ -10,9 +10,8 @@ const { Text } = Typography;
 // Tính toán thời gian còn lại (ngày, giờ, phút, giây) và cập nhật mỗi giây.
 // Sử dụng Ant Design Typography.Text để hiển thị các giá trị đếm ngược
 
-
 function CaculateTimeLeft() {
-  const endDate = new Date('2025-03-20T00:00:00');
+  const endDate = new Date('2025-04-30T00:00:00');
   const now = new Date();
   const difference = endDate - now;
 
