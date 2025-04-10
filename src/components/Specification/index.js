@@ -1,6 +1,5 @@
 import React from 'react'; 
 import { Row, Col, Form, Input } from 'antd';
-import { useSelector } from 'react-redux';
 
 
 export const WatchSpecification = () => (

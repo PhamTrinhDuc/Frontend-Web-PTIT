@@ -58,7 +58,6 @@ export const routes = [
     ],
   },
 
-  // Admin Routes - Đã thêm ProtectedAdminRoute
   {
     path: "admin",
     element: <ProtectedAdminRoute />,  // Kiểm tra quyền trước khi vào Admin
@@ -72,7 +71,7 @@ export const routes = [
         { path: "view-order", element: <ViewOrder /> },
         { path: "add-product", element: <AddProduct /> },
         { path: "edit-product/:id", element: <EditProduct /> },
-        { path: "manage-categories", element: <ManageCategories /> },
+        // { path: "manage-categories", element: <ManageCategories /> },
         { path: "manage-product", element: <ManageProduct /> },
         { path: "*", element: <Error /> },
       ]},

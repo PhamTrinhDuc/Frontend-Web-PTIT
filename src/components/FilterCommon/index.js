@@ -9,14 +9,14 @@ const { Title } = Typography;
 
 const FilterSetion = ({ onProductsChange }) => {
   const [priceRange, setPriceRange] = useState(null);
-  const [sortOption, setSortOption] = useState("newest");
+  const [sortOption, setSortOption] = useState();
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [products, setProducts] = useState([]);
 
   // Truyền products ra ngoài khi thay đổi
   useEffect(() => {
     onProductsChange(products);
-  }, [products, onProductsChange]);
+  }, [products]);
 
   // Hàm lấy dữ liệu theo khoảng giá
   const fetchProductsByPriceRange = async () => {
@@ -32,22 +32,19 @@ const FilterSetion = ({ onProductsChange }) => {
         }
       }
 
-      const response = await get(`product-variant/filter/price?${params.toString()}`);
+      const response = await get(`products/filter/price?${params.toString()}`);
       console.log('Price filter response:', response);
-
       // Kiểm tra response có hợp lệ không
       if (!response) {
         throw new Error('No response received from price filter API');
       }
 
-      // Giả định response đã là JSON (hàm get tự parse)
-      const data = response;
-
-      if (data.status) {
-        setFilteredProducts(data.data);
-        setProducts(data.data); // Cập nhật danh sách sản phẩm
+      const data = response.data;
+      if (data) {
+        setFilteredProducts(data);
+        setProducts(data); // Cập nhật danh sách sản phẩm
       } else {
-        console.error('Error from price filter API:', data.message);
+        console.error('Error from price filter API:', response.message);
         setFilteredProducts([]);
         setProducts([]);
       }
@@ -70,7 +67,7 @@ const FilterSetion = ({ onProductsChange }) => {
         return; // Không gọi API nếu sortOption là null
       }
 
-      const response = await get(`product-variant/sort?${params.toString()}`);
+      const response = await get(`products/sort?${params.toString()}`);
       console.log('Sort response:', response);
 
       if (!response) {
@@ -102,15 +99,14 @@ const FilterSetion = ({ onProductsChange }) => {
   useEffect(() => {
     fetchProductsByPriceRange();
   }, [priceRange]);
-
   const handlePriceRangeChange = (value) => {
     setPriceRange(value);
   };
+
   // Xử lý khi chọn tiêu chí sắp xếp
   useEffect(() => {
     fetchProductsBySortOption();
   }, [sortOption]); 
-  
   const handleSortOptionChange = (e) => {
     setSortOption(e.target.value);
   };

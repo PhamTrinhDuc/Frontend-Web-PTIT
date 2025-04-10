@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { Row, Col, Input, Button, Badge } from 'antd';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined, MenuOutlined} from '@ant-design/icons';
 import { FaHome, FaShoppingCart, FaInfoCircle, FaEnvelope } from 'react-icons/fa';
+import { get } from '../../utils/requests';
 import './Header.scss';
 import logo from '../../assets/images/logo.png';
 
@@ -42,16 +43,16 @@ const Header = () => {
   const handleSearchSubmit = async () => {
     if (searchValue.trim()) {
       try {
-        const response = await fetch('YOUR_API_ENDPOINT/search'); // Thay bằng API search nếu cần
-        if (!response.ok) {
+        const response = await get(`products/search?keyword=${searchValue.trim()}`); 
+        if (!response.status) {
           throw new Error('Network response was not ok');
         }
-        const data = await response.json();
-        console.log(data);
+        console.log(response.data);
       } catch (error) {
         console.error('There was a problem with your fetch operation:', error);
       }
     }
+    setSearchValue('');
   };
 
   return (
