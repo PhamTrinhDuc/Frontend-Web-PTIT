@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../../../components/Loading';
 import {useCategories} from '../../../hook/useCategories';
 import { WatchSpecification, PhoneSpecification } from '../../../components/Specification';
+import { post } from '../../../utils/requests';
 import './AddProduct.scss';
-import { useProduct } from '../../../hook/useProduct';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -15,66 +15,146 @@ const AddProduct = () => {
   const [form] = Form.useForm();
   const [categoryForm] = Form.useForm(); // Form cho modal thêm category
   const [fileList, setFileList] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false); // State cho modal
-  const {categoriesList, loading, error } = useCategories();
-  const { productList } = useProduct();
+  const [loading, setLoading] = useState(false);
+  const {categoriesList, loading: categoriesLoading, error } = useCategories();
+  const [imageUrls, setImageUrls] = useState([]);
   const navigate = useNavigate();
 
-  if (loading) return <Loading loading={loading} />;
+  if (categoriesLoading) return <Loading loading={categoriesLoading} />;
   if (error) {
     navigate("/error");
     return null;
   }
 
+  const handleUpload = async ({ file, onSuccess, onError }) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("http://localhost:8080/api/upload/image", {
+        method: "POST",
+        body: formData,
+        // headers: {
+          // 'Content-Type': 'multipart/form-data'
+        // }
+      });
+      if (!res.ok) {
+        throw new Error("Upload failed: " + res.statusText);
+      }
+  
+      const responseData = await res.text(); // Lấy URL ảnh từ response
+      let imageUrl = responseData.data;
+      if (responseData.includes('{') || responseData.includes('[')) {
+        // Có thể response là JSON
+        try {
+          const jsonData = JSON.parse(responseData);
+          imageUrl = jsonData.url || jsonData.path || jsonData.imageUrl || jsonData.data || responseData;
+        } catch (e) {
+          console.log("Error parsing JSON response:", e);
+        }
+      }
+      
+      setImageUrls(prev => [...prev, imageUrl]);
+      onSuccess("ok");
+      message.success(`${file.name} uploaded successfully`);
+    } catch (err) {
+      console.error("Upload error:", err);
+      onError(err);
+      message.error(`${file.name} upload failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Hàm xử lý xóa ảnh
+  const handleRemove = (file) => {
+    const index = fileList.indexOf(file);
+    const newFileList = fileList.filter((_, i) => i !== index);
+    const newImageUrls = imageUrls.filter((_, i) => i !== index);
+    
+    setFileList(newFileList);
+    setImageUrls(newImageUrls);
+    // Có thể gọi API để xóa ảnh từ server nếu cần
+    return true;
+  };
+  const handleUploadChange = ({ fileList: newFileList }) => {
+    // Giới hạn số lượng file tối đa là 5
+    setFileList(newFileList.slice(0, 5));
+  };
   const handleCategoryChange = (value) => {
     setSelectedCategory(value);
   };
-
   const handleDiscard = () => {
     form.resetFields();
+    setFileList([]);
+    setImageUrls([]);
   };
 
-  const handleUploadChange = ({ fileList }) => {
-    setFileList(fileList);
-  };
-
-  const handleTagChange = (value) => {
-    setSelectedProduct(value);
-  };
-
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
+    if (imageUrls.length === 0) {
+      message.warning("Please upload at least one product image.");
+      return;
+    }
+    setLoading(true);
     const productData = {
       ...values,
-      images: fileList,
-      product: selectedProduct,
+      imagePaths: imageUrls,
     };
-    console.log('Product Data:', productData);
-    message.success('Product added successfully!');
-    form.resetFields();
-    setFileList([]);
-    setSelectedProduct([]);
+    console.log("Product data to be sent:", productData);
+    
+    try {
+      const response = await post("products", productData);
+      if (!response.ok) {
+        throw new Error("Failed to add product");
+      }
+      message.success("Product added successfully!");
+      form.resetFields();
+      setFileList([]);
+      setImageUrls([]);
+      // Chuyển hướng đến trang danh sách sản phẩm hoặc trang chi tiết sản phẩm nếu cần
+      // navigate('/admin/products');
+    } catch (err) {
+      console.error("Error adding product:", err);
+      message.error("Failed to add product: " + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Xử lý thêm category
   const showModal = () => {
     setIsModalVisible(true);
   };
-
+  
   const handleAddCategory = () => {
-    categoryForm.validateFields().then((values) => {
-      // Ở đây bạn có thể thêm logic để gửi category mới lên API
-      console.log('New Category:', values);
-      message.success('Category added successfully!');
-      categoryForm.resetFields();
-      setIsModalVisible(false);
-      // Có thể thêm logic để cập nhật categoriesList tại đây
+    categoryForm.validateFields().then(async (values) => {
+      setLoading(true);
+      try {
+        // Gọi API để thêm category mới
+        const response = await post("categories", values);
+        
+        if (!response.ok) {
+          throw new Error("Failed to add category");
+        }
+        
+        message.success('Category added successfully!');
+        categoryForm.resetFields();
+        setIsModalVisible(false);
+        // Cập nhật lại danh sách categories (có thể phải reload trang hoặc fetch lại data)
+      } catch (err) {
+        console.error("Error adding category:", err);
+        message.error("Failed to add category: " + err.message);
+      } finally {
+        setLoading(false);
+      }
     }).catch((error) => {
       console.log('Validation failed:', error);
     });
   };
-
+  
   const handleCancel = () => {
     setIsModalVisible(false);
     categoryForm.resetFields();
@@ -86,20 +166,20 @@ const AddProduct = () => {
         <div className="header">
           <h1>Add Product</h1>
           <Space>
-            <Button danger onClick={handleDiscard}>Discard Changes</Button>
-            <Button type="primary" onClick={() => form.submit()}>
+            <Button danger onClick={handleDiscard} disabled={loading}>Discard Changes</Button>
+            <Button type="primary" onClick={() => form.submit()} loading={loading}>
               Add Product
             </Button>
           </Space>
         </div>
-    
+
         <Form form={form} onFinish={onFinish} layout="vertical">
           <Row gutter={[16, 16]}>
             <Col xs={24} md={16}>
               <Card title="General Information">
                 <Form.Item
-                  label="Product Variant Name"
-                  name="productVariantName"
+                  label="Product Name"
+                  name="productName"
                   rules={[{ required: true, message: 'Please enter product name' }]}
                 >
                   <Input placeholder="Xiaomi Watch 2 Pro" />
@@ -119,20 +199,19 @@ const AddProduct = () => {
                     <Row gutter={[16, 16]}>
                       <Col xs={24} sm={12}>
                         <Form.Item
-                          label="Base Price"
+                          label="Base Price $"
                           name="price"
                           rules={[{ required: true, message: 'Please enter base price' }]}
                         >
                           <InputNumber
                             min={0}
-                            formatter={(value) => `$ ${value}`}
-                            parser={(value) => value.replace('$ ', '')}
+                            formatter={(value) => `${value}`}
                             style={{ width: '100%' }}
                           />
                         </Form.Item>
                       </Col>
                       <Col xs={24} sm={12}>
-                        <Form.Item label="Discount Percentage (%)" name="discount">
+                        <Form.Item label="Discount (%)" name="discount">
                           <InputNumber min={0} max={100} style={{ width: '100%' }} />
                         </Form.Item>
                       </Col>
@@ -140,10 +219,14 @@ const AddProduct = () => {
                   </Card>
                 </Col>
                 <Col xs={24} md={12}>
-                  <Card title="Inventory">
+                  <Card title="Quantity">
                     <Row gutter={[16, 16]}>
                       <Col xs={24}>
-                        <Form.Item label="Quantity" name="quantity_stock">
+                        <Form.Item 
+                          label="Quantity" 
+                          name="quantityStock"
+                          rules={[{ required: true, message: 'Please enter quantity' }]}
+                        >
                           <InputNumber min={0} placeholder="Type product quantity" style={{ width: '100%' }} />
                         </Form.Item>
                       </Col>
@@ -162,27 +245,49 @@ const AddProduct = () => {
     
             <Col xs={24} md={8}>
               <Card title="Product Media" className="product-media-card">
-                <Form.Item label="">
+                <Form.Item 
+                  label="Product Images"
+                  extra="Upload up to 5 product images"
+                >
                   <Upload
                     listType="picture-card"
+                    customRequest={handleUpload}
                     fileList={fileList}
                     onChange={handleUploadChange}
-                    beforeUpload={() => false}
-                  />
-                  {fileList.length < 5 && (
-                    <Button
-                      type="primary"
-                      icon={<UploadOutlined />}
-                      onClick={() => document.querySelector(".ant-upload input").click()}
-                    >
-                      Add More Image
-                    </Button>
-                  )}
+                    onRemove={handleRemove}
+                    accept="image/*"
+                    multiple={false}
+                  >
+                    {fileList.length >= 5 ? null : (
+                      <div>
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>Upload</div>
+                      </div>
+                    )}
+                  </Upload>
                 </Form.Item>
+                
+                {/* Hiển thị danh sách URL ảnh đã tải lên */}
+                {/* {imageUrls.length > 0 && (
+                  <div style={{ marginTop: 16 }}>
+                    <h4>Image URLs:</h4>
+                    <ul>
+                      {imageUrls.map((url, index) => (
+                        <li key={index} style={{ wordBreak: 'break-all' }}>
+                          {url}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )} */}
               </Card>
     
               <Card title="Category" style={{ marginTop: 16 }}>
-                <Form.Item label="Product Category" name="category">
+                <Form.Item 
+                  label="Product Category" 
+                  name="category"
+                  rules={[{ required: true, message: 'Please select a category' }]}
+                >
                   <Select
                     placeholder="Select a category"
                     onChange={handleCategoryChange}
@@ -212,7 +317,11 @@ const AddProduct = () => {
               </Card>
 
               <Card title="Supplier" style={{ marginTop: 16 }}>
-                <Form.Item label="Supplier" name="supplier">
+                <Form.Item 
+                  label="Supplier" 
+                  name="supplier"
+                  rules={[{ required: true, message: 'Please select a supplier' }]}
+                >
                   <Select placeholder="Select supplier">
                     <Option value="Apple">Apple</Option>
                     <Option value="Google">Google</Option>
@@ -226,9 +335,10 @@ const AddProduct = () => {
         {/* Modal để thêm category mới */}
         <Modal
           title="Add New Category"
-          visible={isModalVisible}
+          open={isModalVisible}
           onOk={handleAddCategory}
           onCancel={handleCancel}
+          confirmLoading={loading}
         >
           <Form form={categoryForm} layout="vertical">
             <Form.Item

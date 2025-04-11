@@ -20,17 +20,17 @@ export const WatchSpecification = () => (
 export const PhoneSpecification = () => (
   <Row gutter={16}>
     <Col xs={24} md={8}>
-      <Form.Item label="RAM" name="ram">
+      <Form.Item label="RAM" name={['specification', 'ram']}>
         <Input placeholder="Type RAM" />
       </Form.Item>
     </Col>
     <Col xs={24} md={8}>
-      <Form.Item label="Storage" name="storage">
+      <Form.Item label="Storage" name={['specification', 'storage']}>
         <Input placeholder="Type storage" />
       </Form.Item>
     </Col>
     <Col xs={24} md={8}>
-      <Form.Item label="Color" name="Color">
+      <Form.Item label="Color" name={['specification', 'color']}>
         <Input placeholder="Type colors" />
       </Form.Item>
     </Col>
