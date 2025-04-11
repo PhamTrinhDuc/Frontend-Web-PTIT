@@ -1,107 +1,89 @@
 import React, { useState } from 'react';
-import { Table, Button, Popconfirm, message } from 'antd';
+import { Table, Button, Alert, message, Select } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import useAllOrder from '../../../hook/useAllOrder';
+import { put } from '../../../utils/requests';
+
 import './CardOrder.scss';
 
+const { Option } = Select;
+
 const CardOrder = () => {
-  // Dữ liệu mẫu
-  const [orders, setOrders] = useState([
-    {
-      key: 1,
-      OrderID: '#1',
-      totalPrice: '13.000.000',
-      customer: 'Phạm Trịnh Đức duc78240@gmail.com',
-      paymentStatus: 'PAID V',
-      date: '19-12-2025 10:45 AM',
-      deliveryType: 'Standard Delivery',
-    },
-    {
-      key: 2,
-      OrderID: '#2',
-      totalPrice: '13.000.000',
-      customer: 'Phạm Trịnh Đức duc78240@gmail.com',
-      paymentStatus: 'PAID V',
-      date: '19-12-2025 10:45 AM',
-      deliveryType: 'Standard Delivery',
-    },
-    {
-      key: 3,
-      OrderID: '#3',
-      totalPrice: '13.000.000',
-      customer: 'Phạm Trịnh Đức duc78240@gmail.com',
-      paymentStatus: 'PAID V',
-      date: '19-12-2025 10:45 AM',
-      deliveryType: 'Standard Delivery',
-    },
-    {
-      key: 4,
-      OrderID: '#4',
-      totalPrice: '13.000.000',
-      customer: 'Phạm Trịnh Đức duc78240@gmail.com',
-      paymentStatus: 'PAID V',
-      date: '19-12-2025 10:45 AM',
-      deliveryType: 'Standard Delivery',
-    },
-    {
-      key: 5,
-      OrderID: '#5',
-      totalPrice: '13.000.000',
-      customer: 'Phạm Trịnh Đức duc78240@gmail.com',
-      paymentStatus: 'PAID V',
-      date: '19-12-2025 10:45 AM',
-      deliveryType: 'Standard Delivery',
-    },
-    {
-      key: 6,
-      OrderID: '#6',
-      totalPrice: '13.000.000',
-      customer: 'Phạm Trịnh Đức duc78240@gmail.com',
-      paymentStatus: 'PAID V',
-      date: '19-12-2025 10:45 AM',
-      deliveryType: 'Standard Delivery',
-    },
-    {
-      key: 7,
-      OrderID: '#7',
-      totalPrice: '13.000.000',
-      customer: 'Phạm Trịnh Đức duc78240@gmail.com',
-      paymentStatus: 'PAID V',
-      date: '19-12-2025 10:45 AM',
-      deliveryType: 'Standard Delivery',
-    },
-  ]);
+  const [showAlert, setShowAlert] = useState(false);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const { orders, loading, error, refetch } = useAllOrder({ id: user.id });
 
-  // Quản lý trạng thái chọn sản phẩm
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  // Chuyển orderHistory thành state để cập nhật cục bộ
+  const [orderHistory, setOrderHistory] = useState(
+    orders.flatMap((order) =>
+      order.items.map((item) => ({
+        orderId: order.id,
+        customer: user.fullname,
+        product: item.productName,
+        price: item.unitPrice * item.quantity,
+        status: order.status,
+        date: order.orderDate,
+        paymentMethod: order.paymentMethod.toUpperCase(),
+      }))
+    )
+  );
 
-  const onSelectChange = (newSelectedRowKeys) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
+  // Cập nhật orderHistory khi orders thay đổi (từ API)
+  React.useEffect(() => {
+    setOrderHistory(
+      orders.flatMap((order) =>
+        order.items.map((item) => ({
+          orderId: order.id,
+          customer: user.fullname,
+          product: item.productName,
+          price: item.unitPrice * item.quantity,
+          status: order.status,
+          date: order.orderDate,
+          paymentMethod: order.paymentMethod.toUpperCase(),
+        }))
+      )
+    );
+  }, [orders, user.fullname]);
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    columnTitle: '', // Bỏ checkbox ở header
-  };
+  // Hàm xử lý thay đổi trạng thái
+  const handleStatusChange = async (value, record) => {
+    try {
+      const response = await put(`orders/update/${record.orderId}`, {
+        status: value.toUpperCase(),
+      });
 
-  // Xóa sản phẩm
-  const handleDelete = (key) => {
-    const newData = orders.filter(item => item.key !== key);
-    setOrders(newData);
-    message.success('Product deleted successfully!');
+      if (response) {
+        // Cập nhật trạng thái cục bộ trong orderHistory
+        setOrderHistory((prev) =>
+          prev.map((item) =>
+            item.orderId === record.orderId
+              ? { ...item, status: value.toUpperCase() }
+              : item
+          )
+        );
+
+        // Hiển thị thông báo thành công
+        setShowAlert(true);
+        setTimeout(() => setShowAlert(false), 1500);
+
+        // Tùy chọn: Gọi refetch nếu cần đồng bộ dữ liệu từ server
+        // refetch();
+      } else {
+        throw new Error('Failed to update status');
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      message.error('Failed to update status');
+    }
   };
 
   // Cột của bảng
   const columns = [
     {
       title: 'Order ID',
-      dataIndex: 'OrderID',
-      key: 'OrderID',
-    },
-    {
-      title: 'Total Price',
-      dataIndex: 'totalPrice',
-      key: 'totalPrice',
+      dataIndex: 'orderId',
+      key: 'orderId',
     },
     {
       title: 'Customer',
@@ -109,9 +91,33 @@ const CardOrder = () => {
       key: 'customer',
     },
     {
+      title: 'Product',
+      dataIndex: 'product',
+      key: 'product',
+    },
+    {
+      title: 'Total Price',
+      dataIndex: 'price',
+      key: 'price',
+    },
+    {
       title: 'Payment Status',
-      dataIndex: 'paymentStatus',
-      key: 'paymentStatus',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status, record) => (
+        <Select
+          value={status}
+          style={{ width: 110, height: 25 }}
+          onChange={(value) => handleStatusChange(value, record)}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Option value="pending">Pending</Option>
+          <Option value="processing">Processing</Option>
+          <Option value="shipped">Shipped</Option>
+          <Option value="delivered">Delivered</Option>
+          <Option value="cancelled">Cancelled</Option>
+        </Select>
+      ),
     },
     {
       title: 'Date',
@@ -120,41 +126,33 @@ const CardOrder = () => {
     },
     {
       title: 'Delivery Type',
-      dataIndex: 'deliveryType',
-      key: 'deliveryType',
+      dataIndex: 'paymentMethod',
+      key: 'paymentMethod',
     },
-    // {
-    //   title: 'Actions',
-    //   key: 'actions',
-    //   render: (_, record) => (
-    //     <span>
-    //       <Button type="link" icon={<EditOutlined />} />
-    //       <Popconfirm
-    //         title="Are you sure to delete this product?"
-    //         onConfirm={() => handleDelete(record.key)}
-    //         okText="Yes"
-    //         cancelText="No"
-    //       >
-    //         <Button type="link" danger icon={<DeleteOutlined />} />
-    //       </Popconfirm>
-    //     </span>
-    //   ),
-    // },
   ];
 
   return (
-    <div className="order-management">
-      <Table
-        columns={columns}
-        dataSource={orders}
-        rowSelection={rowSelection}
-        pagination={{
-          pageSize: 10,
-          style: { alignItems: 'center', justifyContent: 'center' }, // Căn giữa và thêm margin
-        }}
-      // scroll={{ y: 400 }}
-      />
-    </div>
+    <>
+      {showAlert && (
+        <Alert
+          message={'Status has been updated successfully!'}
+          type="success"
+          showIcon
+          className="alert"
+        />
+      )}
+      <div className="order-management">
+        <Table
+          columns={columns}
+          dataSource={orderHistory}
+          pagination={{
+            pageSize: 10,
+            style: { alignItems: 'center', justifyContent: 'center' },
+          }}
+          loading={loading}
+        />
+      </div>
+    </>
   );
 };
 

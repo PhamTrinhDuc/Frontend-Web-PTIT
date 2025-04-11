@@ -1,6 +1,23 @@
 @import"../../../utils/colors";
 
 
+.alert {
+  max-width: 300px;
+  padding: 10px;
+  top: 20px;
+  left: 44%;
+  transform: translate(0%, -50%);
+  position: fixed;
+  z-index: 1000;
+  border-radius: 5px;
+  animation: fadeInOut 1.5s ease-in-out;
+
+  .ant-alert-message {
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
+
 .order-management {
   background: $white;
   width: 100%;

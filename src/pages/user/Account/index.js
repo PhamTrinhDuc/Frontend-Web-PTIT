@@ -1,7 +1,6 @@
 import {TabInfo, Header} from '../../../components/Account';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '../../../slices/authSlice';
 import useAllOrder from '../../../hook/useAllOrder';
 import React, {useState} from 'react';
 
@@ -16,7 +15,7 @@ const Account = () => {
     order.items.map((item) => ({
       date: order.orderDate,
       product: item.productName,
-      price: item.unitPrice,
+      price: item.unitPrice * item.quantity,
       quantity: item.quantity,
       status: order.status,
       paymentMethod: order.paymentMethod,
