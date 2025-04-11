@@ -4,6 +4,7 @@ import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../../components/Loading';
 import {useCategories} from '../../../hook/useCategories';
+import useAllSupplier from '../../../hook/useAllSupplier';
 import { WatchSpecification, PhoneSpecification } from '../../../components/Specification';
 import { post } from '../../../utils/requests';
 import './AddProduct.scss';
@@ -19,6 +20,7 @@ const AddProduct = () => {
   const [isModalVisible, setIsModalVisible] = useState(false); // State cho modal
   const [loading, setLoading] = useState(false);
   const {categoriesList, loading: categoriesLoading, error } = useCategories();
+  const {suppliers}  = useAllSupplier();
   const [imageUrls, setImageUrls] = useState([]);
   const navigate = useNavigate();
 
@@ -81,7 +83,6 @@ const AddProduct = () => {
     return true;
   };
   const handleUploadChange = ({ fileList: newFileList }) => {
-    // Giới hạn số lượng file tối đa là 5
     setFileList(newFileList.slice(0, 5));
   };
   const handleCategoryChange = (value) => {
@@ -106,7 +107,7 @@ const AddProduct = () => {
     console.log("Product data to be sent:", productData);
     
     try {
-      const response = await post("products", productData);
+      const response = await post("products/new-product", productData);
       if (!response.ok) {
         throw new Error("Failed to add product");
       }
@@ -118,7 +119,6 @@ const AddProduct = () => {
       // navigate('/admin/products');
     } catch (err) {
       console.error("Error adding product:", err);
-      message.error("Failed to add product: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -323,8 +323,11 @@ const AddProduct = () => {
                   rules={[{ required: true, message: 'Please select a supplier' }]}
                 >
                   <Select placeholder="Select supplier">
-                    <Option value="Apple">Apple</Option>
-                    <Option value="Google">Google</Option>
+                    {suppliers.map((supplier, id) => (
+                      <Option id={id} value={supplier.supplierName}>
+                        {supplier.supplierName}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </Card>
