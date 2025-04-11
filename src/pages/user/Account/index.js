@@ -2,6 +2,7 @@ import {TabInfo, Header} from '../../../components/Account';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../../slices/authSlice';
+import useAllOrder from '../../../hook/useAllOrder';
 import React, {useState} from 'react';
 
 const Account = () => {
@@ -10,6 +11,18 @@ const Account = () => {
   const navigate = useNavigate();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
+  const { orders, loading, error } = useAllOrder({ id: user.id });
+  const orderHistory = orders.flatMap((order) =>
+    order.items.map((item) => ({
+      date: order.orderDate,
+      product: item.productName,
+      price: item.unitPrice,
+      quantity: item.quantity,
+      status: order.status,
+      paymentMethod: order.paymentMethod,
+    }))
+  );
+
   const userInfo = {
     fullName: user.fullname,
     email: user.email,
@@ -17,15 +30,12 @@ const Account = () => {
     address: user.address,
     avatar: user.avatar,
     memberSince: user.createdAt,
-    orders: 25,
+    orders: orders.length,
     points: 1500,
   };
 
-  const orderHistory = [
-    { id: 1, date: '2025-03-10', product: 'Áo thun nam', price: 150000, status: 'Delivered' },
-    { id: 2, date: '2025-02-25', product: 'Quần jeans nữ', price: 350000, status: 'Shipped' },
-    { id: 3, date: '2025-01-30', product: 'Giày thể thao', price: 500000, status: 'Delivered' },
-  ];
+
+  console.log("order history: ", orderHistory)
 
   const vouchers = [
     { id: 1, name: 'Giảm 10% đơn từ 500k', expiry: '2025-04-01' },

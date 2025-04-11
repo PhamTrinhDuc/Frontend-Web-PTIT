@@ -221,7 +221,6 @@ function Billing() {
       return response; // Trả về dữ liệu nếu cần
     } catch (error) {
       console.error("Error placing order:", error.response?.data || error.message);
-      throw error; // Ném lỗi để xử lý ở nơi gọi hàm
     }
   };
 

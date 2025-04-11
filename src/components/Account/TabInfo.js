@@ -86,12 +86,23 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
                 <Timeline.Item
                   key={order.id}
                   label={order.date}
-                  color={order.status === 'Delivered' ? 'green' : 'blue'}
+                  color='green'
                 >
-                  <p>
-                    <strong>{order.product}</strong> - {order.price.toLocaleString()} VNĐ
-                  </p>
-                  <p>Trạng thái: <Badge status={order.status === 'Delivered' ? 'success' : 'processing'} text={order.status} /></p>
+                  <ul>
+                    <li><strong>Product name:</strong> {order.product}</li>
+                    <li><strong>Payment method:</strong> {order.paymentMethod}</li>
+                    <li><strong>Total price:</strong> {order.price.toLocaleString()} VNĐ</li>
+                    <li><strong>Quantity:</strong> {order.quantity}</li>
+                    <li><strong>Status:</strong> <Badge status={
+                    order.status === "COMPLETED"
+                      ? "success"
+                      : order.status === "PENDING"
+                      ? "error"
+                      : order.status === "CANCELLED"
+                      ? "default"
+                      : "processing"
+                  } text={order.status} /></li>
+                  </ul>
                 </Timeline.Item>
               ))}
             </Timeline>
