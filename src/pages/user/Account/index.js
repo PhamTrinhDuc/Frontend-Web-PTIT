@@ -5,12 +5,16 @@ import useAllOrder from '../../../hook/useAllOrder';
 import React, {useState} from 'react';
 
 const Account = () => {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const { orders, loading, error } = useAllOrder(
+    isLoggedIn && user ? { id: user.id } : { skip: true }
+  );
+  if (!isLoggedIn || !user) {
+    navigate('/login');
+  }
 
-  const { orders, loading, error } = useAllOrder({ id: user.id });
   const orderHistory = orders.flatMap((order) =>
     order.items.map((item) => ({
       date: order.orderDate,
@@ -21,20 +25,16 @@ const Account = () => {
       paymentMethod: order.paymentMethod,
     }))
   );
-
   const userInfo = {
     fullName: user.fullname,
     email: user.email,
-    phone_number: user.phoneNumber,
+    phoneNumber: user.phoneNumber,
     address: user.address,
     avatar: user.avatar,
     memberSince: user.createdAt,
     orders: orders.length,
     points: 1500,
   };
-
-
-  console.log("order history: ", orderHistory)
 
   const vouchers = [
     { id: 1, name: 'Giảm 10% đơn từ 500k', expiry: '2025-04-01' },

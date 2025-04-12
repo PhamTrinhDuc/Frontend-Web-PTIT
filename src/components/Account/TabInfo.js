@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { 
-  Card, 
+  Card,
   Descriptions, 
   Timeline, 
   List, 
@@ -23,14 +23,11 @@ import EditProfile from './EditProfile';
 import './TabInfo.scss';
 
 // https:grok.com/chat/a6a948f6-554e-4712-b6e9-8e7023d5434c
-
 function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-
 
   const showDeleteModal = () => {
     setIsDeleteModalVisible(true);
@@ -50,7 +47,6 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
   const handleLogoutAccount = () => {
   dispatch(logout());
   setIsLogoutModalVisible(false);
-
   setTimeout(() => {
     navigate('/login');
   }, 0);
