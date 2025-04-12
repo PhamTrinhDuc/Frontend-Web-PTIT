@@ -20,7 +20,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../slices/authSlice';
 import EditProfile from './EditProfile';
-
 import './TabInfo.scss';
 
 // https:grok.com/chat/a6a948f6-554e-4712-b6e9-8e7023d5434c
@@ -179,7 +178,6 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
       >
         <p>Are you sure you want to delete this item? This action cannot be reversed!</p>
       </Modal>
-
       <Modal
         title="Confirm logout action"
         visible={isLogoutModalVisible}

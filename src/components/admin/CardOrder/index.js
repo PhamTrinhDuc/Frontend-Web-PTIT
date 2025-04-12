@@ -12,7 +12,9 @@ const { Option } = Select;
 const CardOrder = () => {
   const [showAlert, setShowAlert] = useState(false);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
-  const { orders, loading, error } = useAllOrder({ id: user.id });
+  const { orders, loading, error } = useAllOrder(
+    isLoggedIn && user ? { id: user.id } : { skip: true }
+  );
 
   // Chuyển orderHistory thành state để cập nhật cục bộ
   const [orderHistory, setOrderHistory] = useState(

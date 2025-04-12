@@ -268,7 +268,7 @@ const AddProduct = () => {
                 </Form.Item>
                 
                 {/* Hiển thị danh sách URL ảnh đã tải lên */}
-                {/* {imageUrls.length > 0 && (
+                {imageUrls.length > 0 && (
                   <div style={{ marginTop: 16 }}>
                     <h4>Image URLs:</h4>
                     <ul>
@@ -279,7 +279,7 @@ const AddProduct = () => {
                       ))}
                     </ul>
                   </div>
-                )} */}
+                )}
               </Card>
     
               <Card title="Category" style={{ marginTop: 16 }}>
