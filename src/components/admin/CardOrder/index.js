@@ -9,12 +9,10 @@ import './CardOrder.scss';
 
 const { Option } = Select;
 
-const CardOrder = () => {
+const CardOrder = ({orders}) => {
+  console.log('orders', orders);
   const [showAlert, setShowAlert] = useState(false);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
-  const { orders, loading, error } = useAllOrder(
-    isLoggedIn && user ? { id: user.id } : { skip: true }
-  );
 
   // Chuyển orderHistory thành state để cập nhật cục bộ
   const [orderHistory, setOrderHistory] = useState(
@@ -30,6 +28,8 @@ const CardOrder = () => {
       }))
     )
   );
+
+  console.log('orderHistory', orderHistory);
 
   // Cập nhật orderHistory khi orders thay đổi (từ API)
   React.useEffect(() => {
@@ -151,7 +151,6 @@ const CardOrder = () => {
             pageSize: 10,
             style: { alignItems: 'center', justifyContent: 'center' },
           }}
-          loading={loading}
         />
       </div>
     </>

@@ -16,7 +16,6 @@ const Header = () => {
   const cartItems = useSelector((state) => state.cart.items);
   const totalQuantityProduct = isLoggedIn ? cartItems.reduce((sum, item) => sum + item.quantity, 0) : 0;
   const [menuVisible, setMenuVisible] = useState(false); // State để toggle menu
-
   // Logic cho cart
   const handleAddToCart = () => {
     if (isLoggedIn) {
@@ -25,7 +24,6 @@ const Header = () => {
       navigate('/login');
     }
   };
-
   // Logic cho user button
   const handleUserClick = () => {
     if (isLoggedIn) {
@@ -34,23 +32,17 @@ const Header = () => {
       navigate('/login'); // Chưa đăng nhập thì dẫn đến trang login
     }
   };
-
-  // Logic cho search
   const handleSearch = (e) => {
     setSearchValue(e.target.value);
   };
 
-  const handleSearchSubmit = async () => {
+  const handleSearchSubmit = () => {
     if (searchValue.trim()) {
-      try {
-        const response = await get(`products/search?keyword=${searchValue.trim()}`); 
-        if (!response.status) {
-          throw new Error('Network response was not ok');
-        }
-        console.log(response.data);
-      } catch (error) {
-        console.error('There was a problem with your fetch operation:', error);
-      }
+      // Navigate to /products with search keyword as query parameter
+      navigate(`/products?search=${encodeURIComponent(searchValue.trim())}`);
+    } else {
+      // If search is empty, navigate to /products without query
+      navigate('/products');
     }
     setSearchValue('');
   };

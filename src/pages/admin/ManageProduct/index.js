@@ -9,17 +9,15 @@ function ManageProduct({ numOfProduct = 4 }) {
   const { allProducts, loading, error } = useAllProduct();
   const [products, setProducts] = useState([]);
 
-  // Cập nhật products ban đầu từ allProducts
   React.useEffect(() => {
     if (allProducts) {
       setProducts(allProducts);
     }
   }, [allProducts]);
-  // Hàm lọc sản phẩm theo category bằng API
   const filterProductsByCategory = async (category) => {
     try {
-      const response = await get(`products/${category}`); // Gọi API với categorySlug
-      setProducts(response.data || []); // Cập nhật danh sách sản phẩm
+      const response = await get(`products/${category}`);
+      setProducts(response.data || []);
     } catch (err) {
       setProducts([]);
     }
