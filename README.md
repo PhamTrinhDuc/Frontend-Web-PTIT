@@ -17,3 +17,8 @@ You may also see any lint errors in the console.
 ### Figma design
 
 [https://www.figma.com/design/HrxNCebPDt4B8G36iTzd5J/E-Commerce-Website-PTIT?node-id=1-3&t=aH8m0yBNlpfjQIpu-1](https://www.figma.com/design/HrxNCebPDt4B8G36iTzd5J/E-Commerce-Website-PTIT?node-id=1-3&t=aH8m0yBNlpfjQIpu-1)
+
+
+### System Diagram
+
+[https://docs.google.com/document/d/1DwZR4n2H7jUxvFYMu4vhqzcdnjls4QRVEE3J07sQSV8/edit?usp=drive_link](https://docs.google.com/document/d/1DwZR4n2H7jUxvFYMu4vhqzcdnjls4QRVEE3J07sQSV8/edit?usp=drive_link)
