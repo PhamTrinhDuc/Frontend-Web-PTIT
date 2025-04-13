@@ -111,10 +111,6 @@ const AddProduct = () => {
       if (!response) {
         throw new Error("Failed to add product");
       }
-      // form.resetFields();
-      // setFileList([]);
-      // setImageUrls([]);
-      // navigate('/products');
     } catch (err) {
       console.error("Error adding product:", err);
     } finally {

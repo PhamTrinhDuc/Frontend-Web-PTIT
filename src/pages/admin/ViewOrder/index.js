@@ -33,7 +33,6 @@ function ViewOrder() {
   // Hàm lọc đơn hàng theo trạng thái
   const filterOrdersByStatus = (status) => {
     const filteredOrders = orders.filter((order) => order.status === status.toUpperCase());
-    console.log('filteredOrders', filteredOrders);
     setOrders(filteredOrders);
   };
 

@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Row, Col, Card, Form, Input, InputNumber, Select, Button, Upload, message, Space, Spin } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { get } from '../../../utils/requests';
+import React, { useState } from 'react';
+import { Row, Col, Card, Form, Input, InputNumber, Select, Button, Upload, message, Space, Modal } from 'antd';
+import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router-dom";
+import Loading from '../../../components/Loading';
+import {useCategories} from '../../../hook/useCategories';
+import useAllSupplier from '../../../hook/useAllSupplier';
+import { WatchSpecification, PhoneSpecification } from '../../../components/Specification';
+import { post, get } from '../../../utils/requests';
+import useProductById from '../../../hook/useProductById';
 import './EditProduct.scss';
 
 const { Option } = Select;
@@ -10,202 +16,278 @@ const { TextArea } = Input;
 
 const EditProduct = () => {
   const [form] = Form.useForm();
-  const { id } = useParams();
+  const [categoryForm] = Form.useForm(); // Form cho modal thêm category
+  const [fileList, setFileList] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false); // State cho modal
+  const [loading, setLoading] = useState(false);
+  const {categoriesList, loading: categoriesLoading, error } = useCategories();
+  const {suppliers}  = useAllSupplier();
+  const [imageUrls, setImageUrls] = useState([]);
   const navigate = useNavigate();
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [fileList, setFileList] = useState([
-    // Dữ liệu ảnh mẫu, có thể lấy từ API
-    { uid: '-1', name: 'image1.png', status: 'done', url: 'https://via.placeholder.com/100' },
-    { uid: '-2', name: 'image2.png', status: 'done', url: 'https://via.placeholder.com/100' },
-  ]);
-  const [selectedTags, setSelectedTags] = useState(['Internet of Things']);
-  const productData = {
-    productVariantName: 'Xiaomi Watch 2 Pro',
-    description: 'Xiaomi Watch 2 Pro supports 19 professional fitness modes...',
-    basePrice: 188.89,
-    discountPercentage: 25,
-    discountType: 'percentage',
-    quantity: '100',
-    category: 'electronics',
-    tags: ['Internet of Things'],
-  };
 
-  // Điền dữ liệu vào form khi component mount
-  useEffect(() => {
-    form.setFieldsValue(productData);
-    setSelectedTags(productData.tags);
-  }, [form]);
+  const { id } = useParams(); 
+  const { product: productResponse } = useProductById({ id });
+  const product = productResponse?.data;
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const data = await get(`products/${id}`);
-        setProduct(data);
-      } catch (error) {
-        console.error('Error fetching product:', error);
-      } finally {
-        setLoading(false);
+  console.log("Product data:", product);
+
+  if (categoriesLoading) return <Loading loading={categoriesLoading} />;
+  if (error) {
+    navigate("/error");
+    return null;
+  }
+
+  const handleUpload = async ({ file, onSuccess, onError }) => {
+    setLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("http://localhost:8080/api/upload/image", {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) {
+        throw new Error("Upload failed: " + res.statusText);
       }
-    };
-    fetchProduct();
-  }, [id]);
-
-  if (loading) {
-    return <div className="spin-container">
-            <Spin spinning={loading} size="large" />
-          </div>
-  }
-  if (!product) {
-    navigate('*')
-  }
-
-  // Xử lý upload ảnh
-  const handleUploadChange = ({ fileList }) => {
-    setFileList(fileList);
+  
+      const responseData = await res.text(); // Lấy URL ảnh từ response
+      let imageUrl = responseData.data;
+      if (responseData.includes('{') || responseData.includes('[')) {
+        // Có thể response là JSON
+        try {
+          const jsonData = JSON.parse(responseData);
+          imageUrl = jsonData.url || jsonData.path || jsonData.imageUrl || jsonData.data || responseData;
+        } catch (e) {
+          console.log("Error parsing JSON response:", e);
+        }
+      }
+      
+      setImageUrls(prev => [...prev, imageUrl]);
+      onSuccess("ok");
+      message.success(`${file.name} uploaded successfully`);
+    } catch (err) {
+      console.error("Upload error:", err);
+      onError(err);
+      message.error(`${file.name} upload failed: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
-  // Xử lý chọn tags
-  const handleTagChange = (value) => {
-    setSelectedTags(value);
+  // Hàm xử lý xóa ảnh
+  const handleRemove = (file) => {
+    const index = fileList.indexOf(file);
+    const newFileList = fileList.filter((_, i) => i !== index);
+    const newImageUrls = imageUrls.filter((_, i) => i !== index);
+    
+    setFileList(newFileList);
+    setImageUrls(newImageUrls);
+    // Có thể gọi API để xóa ảnh từ server nếu cần
+    return true;
   };
-  // Xử lý submit form
-  const onFinish = (values) => {
-    const updatedProductData = {
+  const handleUploadChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList.slice(0, 5));
+  };
+  const handleCategoryChange = (value) => {
+    setSelectedCategory(value);
+  };
+  const handleDiscard = () => {
+    form.resetFields();
+    setFileList([]);
+    setImageUrls([]);
+  };
+
+  const onFinish = async (values) => {
+    if (imageUrls.length === 0) {
+      message.warning("Please upload at least one product image.");
+      return;
+    }
+    setLoading(true);
+    const productData = {
       ...values,
-      images: fileList,
-      tags: selectedTags,
+      imagePaths: imageUrls || product.imagePaths,
     };
-    // Gửi dữ liệu cập nhật lên API (ở đây chỉ log ra để kiểm tra)
-    console.log('Updated Product Data:', updatedProductData);
-    message.success('Product updated successfully!');
+    console.log("Product data to be sent:", productData);
+    
+    try {
+      const response = await post("products/update-product", productData);
+      if (!response) {
+        throw new Error("Failed to add product");
+      }
+    } catch (err) {
+      console.error("Error adding product:", err);
+    } finally {
+      form.resetFields();
+      setFileList([]);
+      setImageUrls([]);
+      navigate('/products');
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="edit-product">
-      <div className="header">
-        <h1>Edit Product</h1>
-        <Space>
-          <Button danger>Discard Changes</Button>
-          <Button type="primary" onClick={() => form.submit()}>
-            Save Changes
-          </Button>
-        </Space>
-      </div>
+    <>
+      <div className="add-product">
+        <div className="header">
+          <h1>Update Product</h1>
+          <Space>
+            <Button danger onClick={handleDiscard} disabled={loading}>Discard Changes</Button>
+            <Button type="primary" onClick={() => form.submit()} loading={loading}>
+              Update Product
+            </Button>
+          </Space>
+        </div>
 
-      <Form form={form} onFinish={onFinish} layout="vertical">
-        <Row gutter={[16, 16]}>
-          {/* General Information */}
-          <Col xs={24} md={16}>
-            <Card title="General Information">
-              <Form.Item
-                label="Product Variant Name"
-                name="productVariantName"
-                rules={[{ required: true, message: 'Please enter product name' }]}
-              >
-                <Input placeholder="Iphone 14 promax" />
-              </Form.Item>
-              <Form.Item
-                label="Description"
-                name="description"
-                rules={[{ required: true, message: 'Please enter description' }]}
-              >
-                <TextArea
-                  rows={4}
-                  placeholder="Xiaomi Watch 2 Pro supports 19 professional fitness modes..."
-                />
-              </Form.Item>
-            </Card>
-
-            {/* Pricing */}
-            <Card title="Pricing" className="pricing" style={{ marginTop: 16 }}>
-              <Row gutter={16} className="pricing-row">
-                <Col xs={24} md={8}>
-                  <Form.Item
-                    label="Base Price"
-                    name="basePrice"
-                    rules={[{ required: true, message: 'Please enter base price' }]}
-                  >
-                    <InputNumber
-                      min={0}
-                      formatter={(value) => `$ ${value}`}
-                      parser={(value) => value.replace('$ ', '')}
-                      style={{ width: '100%' }}
-                    />
-                  </Form.Item>
+        <Form form={form} 
+        onFinish={onFinish} 
+        layout="vertical"
+        initialValues={{
+          productName: product.name,
+          description: product.description,
+          price: product.price,
+          discount: product.discount,
+          quantityStock: product.quantityStock,
+          // category: product.categoryId,
+          // supplier: product.supplier,
+          specification: product.specification,
+          imagePaths: product.imagePaths,
+        }}>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} md={16}>
+              <Card title="General Information">
+                <Form.Item
+                  label="Product Name"
+                  name="productName"
+                  rules={[{message: 'Please enter product name' }]}
+                >
+                  <Input placeholder="Xiaomi Watch 2 Pro" />
+                </Form.Item>
+                <Form.Item
+                  label="Description"
+                  name="description"
+                  rules={[{message: 'Please enter description' }]}
+                >
+                  <TextArea rows={4} placeholder="Xiaomi Watch 2 Pro supports 19 professional fitness modes..." />
+                </Form.Item>
+              </Card>
+    
+              <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+                <Col xs={24} md={12}>
+                  <Card title="Pricing" className="pricing">
+                    <Row gutter={[16, 16]}>
+                      <Col xs={24} sm={12}>
+                        <Form.Item
+                          label="Base Price $"
+                          name="price"
+                          rules={[{message: 'Please enter base price' }]}
+                        >
+                          <InputNumber
+                            min={0}
+                            formatter={(value) => `${value}`}
+                            style={{ width: '100%' }}
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} sm={12}>
+                        <Form.Item label="Discount (%)" name="discount">
+                          <InputNumber min={0} max={100} style={{ width: '100%' }} />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </Card>
                 </Col>
-                <Col xs={24} md={8}>
-                  <Form.Item label="Discount Percentage (%)" name="discountPercentage">
-                    <InputNumber min={0} max={100} style={{ width: '100%' }} />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={8}>
-                  <Form.Item label="Discount Type" name="discountType">
-                    <Select placeholder="Select a discount type" style={{ width: '100%' }}>
-                      <Option value="percentage">Percentage</Option>
-                      <Option value="fixed">Fixed Amount</Option>
-                    </Select>
-                  </Form.Item>
+                <Col xs={24} md={12}>
+                  <Card title="Quantity">
+                    <Row gutter={[16, 16]}>
+                      <Col xs={24}>
+                        <Form.Item 
+                          label="Quantity" 
+                          name="quantityStock"
+                          rules={[{message: 'Please enter quantity' }]}
+                        >
+                          <InputNumber min={0} placeholder="Type product quantity" style={{ width: '100%' }} />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </Card>
                 </Col>
               </Row>
-            </Card>
-          </Col>
-
-          {/* Product Media & Category */}
-          <Col xs={24} md={8}>
-            <Card title="Product Media" className="product-media-card">
-              <Form.Item label="">
-                <Upload
-                  listType="picture-card"
-                  fileList={fileList}
-                  onChange={handleUploadChange}
-                  beforeUpload={() => false} // Không upload ngay, chỉ chọn file
-                />
-                {/* Đưa nút ra bên dưới Upload */}
-                {fileList.length < 5 && (
-                  <Button
-                    type='primary'
-                    icon={<UploadOutlined />}
-                    onClick={() => document.querySelector(".ant-upload input").click()}
+    
+              {selectedCategory && (
+                <Card title="Specification" style={{ marginTop: 16 }}>
+                  {selectedCategory === 'smart-watches' && <WatchSpecification />}
+                  {selectedCategory === 'phone' && <PhoneSpecification />}
+                </Card>
+              )}
+            </Col>
+    
+            <Col xs={24} md={8}>
+              <Card title="Product Media" className="product-media-card">
+                <Form.Item 
+                  label="Product Images"
+                  extra="Upload up to 5 product images"
+                >
+                  <Upload
+                    listType="picture-card"
+                    customRequest={handleUpload}
+                    fileList={fileList}
+                    onChange={handleUploadChange}
+                    onRemove={handleRemove}
+                    accept="image/*"
+                    multiple={false}
                   >
-                    Add More Image
-                  </Button>
-                )}
-              </Form.Item>
-            </Card>
-
-              <Card title="Category" style={{ marginTop: 16 }}>
-                <Form.Item label="Product Category" name="category">
-                  <Select placeholder="Electronics">
-                    <Option value="electronics">Electronics</Option>
-                    <Option value="clothing">Clothing</Option>
-                    <Option value="toys">Toys</Option>
-                    <Option value="books">Books & Stationery</Option>
-                    <Option value="art">Art Supplies</Option>
-                  </Select>
+                    {fileList.length >= 5 ? null : (
+                      <div>
+                        <PlusOutlined />
+                        <div style={{ marginTop: 8 }}>Upload</div>
+                      </div>
+                    )}
+                  </Upload>
                 </Form.Item>
-                <Form.Item label="Product Tags" name="tags">
-                  <Select
-                    mode="multiple"
-                    value={selectedTags}
-                    onChange={handleTagChange}
-                    placeholder="Select tags"
-                  >
-                    <Option value="Clothing">Clothing</Option>
-                    <Option value="Toys">Toys</Option>
-                    <Option value="Internet of Things">Internet of Things</Option>
-                    <Option value="Books & Stationery">Books & Stationery</Option>
-                    <Option value="Art Supplies">Art Supplies</Option>
-                  </Select>
-                </Form.Item>
-                <Button type="primary" style={{ width: '100%' }}>
-                  Select Tags
-                </Button>
+                
               </Card>
-          </Col>
-        </Row>
-      </Form>
-    </div>
+    
+              <Card title="Category" style={{ marginTop: 16 }}>
+                <Form.Item 
+                  label="Product Category" 
+                  name="category"
+                  rules={[{message: 'Please select a category' }]}
+                >
+                  <Select
+                    placeholder="Select a category"
+                    onChange={handleCategoryChange}
+                  >
+                    {categoriesList.map((category) => (
+                      <Option key={category.id} value={category.slug}>
+                        {category.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Card>
+
+              <Card title="Supplier" style={{ marginTop: 16 }}>
+                <Form.Item 
+                  label="Supplier" 
+                  name="supplier"
+                  rules={[{message: 'Please select a supplier' }]}
+                >
+                  <Select placeholder="Select supplier">
+                    {suppliers.map((supplier, id) => (
+                      <Option id={id} value={supplier.supplierName}>
+                        {supplier.supplierName}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Card>
+            </Col>
+          </Row>
+        </Form>
+
+      </div>
+    </>
   );
 };
-
 export default EditProduct;

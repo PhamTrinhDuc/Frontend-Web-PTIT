@@ -10,7 +10,6 @@ import './CardOrder.scss';
 const { Option } = Select;
 
 const CardOrder = ({orders}) => {
-  console.log('orders', orders);
   const [showAlert, setShowAlert] = useState(false);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
@@ -28,8 +27,6 @@ const CardOrder = ({orders}) => {
       }))
     )
   );
-
-  console.log('orderHistory', orderHistory);
 
   // Cập nhật orderHistory khi orders thay đổi (từ API)
   React.useEffect(() => {
