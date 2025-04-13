@@ -108,18 +108,20 @@ const AddProduct = () => {
     
     try {
       const response = await post("products/new-product", productData);
-      if (!response.ok) {
+      if (!response) {
         throw new Error("Failed to add product");
       }
-      message.success("Product added successfully!");
-      form.resetFields();
-      setFileList([]);
-      setImageUrls([]);
-      // Chuyển hướng đến trang danh sách sản phẩm hoặc trang chi tiết sản phẩm nếu cần
-      // navigate('/admin/products');
+      // form.resetFields();
+      // setFileList([]);
+      // setImageUrls([]);
+      // navigate('/products');
     } catch (err) {
       console.error("Error adding product:", err);
     } finally {
+      form.resetFields();
+      setFileList([]);
+      setImageUrls([]);
+      navigate('/products');
       setLoading(false);
     }
   };
@@ -268,7 +270,7 @@ const AddProduct = () => {
                 </Form.Item>
                 
                 {/* Hiển thị danh sách URL ảnh đã tải lên */}
-                {imageUrls.length > 0 && (
+                {/* {imageUrls.length > 0 && (
                   <div style={{ marginTop: 16 }}>
                     <h4>Image URLs:</h4>
                     <ul>
@@ -279,7 +281,7 @@ const AddProduct = () => {
                       ))}
                     </ul>
                   </div>
-                )}
+                )} */}
               </Card>
     
               <Card title="Category" style={{ marginTop: 16 }}>
