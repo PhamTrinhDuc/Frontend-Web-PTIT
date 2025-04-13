@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button, Input } from 'antd';
 import { SendOutlined, CloseOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
@@ -15,7 +15,8 @@ const { TextArea } = Input;
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const userId = "0962741764";
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const userId = isLoggedIn && user ? user.phoneNumber : null;
   const [messages, setMessages] = useState([
     {
       id: 0,
@@ -26,26 +27,29 @@ const Chatbot = () => {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null); // Thêm ref để cuộn
+
+  // Cuộn xuống cuối danh sách tin nhắn
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     if (isOpen && userId) {
       fetchConversation();
     }
-  }, [isOpen, userId]);
+  }, [isOpen, userId, messages]);
 
   useEffect(() => {
-    if (userId) {
-      fetchConversation();
-    }
-  }, [userId]);
+    scrollToBottom(); // Cuộn xuống cuối mỗi khi messages thay đổi
+  }, [messages]);
 
   const fetchConversation = async () => {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/conversation?user_id=${userId}`);
-      // Format dữ liệu từ API
       const formattedMessages = response.data.flatMap((messagePair) =>
         messagePair.map((msg) => ({
-          id: Date.now() + Math.random(), // Tạo ID tạm thời
+          id: Date.now() + Math.random(),
           text: msg.content,
           sender: msg.role === 'user' ? 'user' : 'bot',
           timestamp: new Date().toLocaleTimeString(),
@@ -68,7 +72,8 @@ const Chatbot = () => {
       timestamp: new Date().toLocaleTimeString(),
     };
 
-    setMessages([...messages, newMessage]);
+    // Thêm tin nhắn người dùng
+    setMessages((prev) => [...prev, newMessage]);
     setInputValue('');
     setIsTyping(true);
 
@@ -80,15 +85,15 @@ const Chatbot = () => {
 
       // Xử lý phản hồi từ API
       if (response.data && Array.isArray(response.data)) {
-        // Lấy cặp tin nhắn mới nhất (thường là cặp cuối cùng trong mảng)
         const latestMessagePair = response.data[response.data.length - 1];
         if (latestMessagePair && latestMessagePair.length === 2) {
           const botReply = {
-            id: Date.now() + 1, // Đảm bảo ID khác nhau
-            text: latestMessagePair[1].content, // Lấy content của bot
+            id: Date.now() + 1,
+            text: latestMessagePair[1].content,
             sender: "bot",
             timestamp: new Date().toLocaleTimeString(),
           };
+          // Thêm câu trả lời bot ngay lập tức
           setMessages((prev) => [...prev, botReply]);
         }
       }
@@ -184,6 +189,7 @@ const Chatbot = () => {
                 </Avatar>
               </div>
             )}
+            <div ref={messagesEndRef} /> {/* Điểm neo để cuộn */}
           </div>
 
           <div className="chatbot-input">
