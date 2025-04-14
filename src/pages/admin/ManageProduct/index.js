@@ -5,7 +5,7 @@ import HeaderMangeProduct from '../../../components/admin/HeaderManageProduct';
 import useAllProduct from '../../../hook/useAllProduct';
 import {get} from '../../../utils/requests';
 
-function ManageProduct({ numOfProduct = 4 }) {
+function ManageProduct() {
   const { allProducts, loading, error } = useAllProduct();
   const [products, setProducts] = useState([]);
 
@@ -14,6 +14,7 @@ function ManageProduct({ numOfProduct = 4 }) {
       setProducts(allProducts);
     }
   }, [allProducts]);
+
   const filterProductsByCategory = async (category) => {
     try {
       const response = await get(`products/${category}`);
@@ -31,7 +32,7 @@ function ManageProduct({ numOfProduct = 4 }) {
       />
       <div className="navigation-container">
         <div className="carousel-container">
-          <CardProduct products={products.slice(0, numOfProduct)} />
+          <CardProduct products={products} />
         </div>
       </div>
     </>

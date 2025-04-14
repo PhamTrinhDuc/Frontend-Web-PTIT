@@ -3,10 +3,13 @@ import { Table, Button, Popconfirm, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import './CardProduct.scss';
+import { remove } from '../../../utils/requests';
+import { useSelector } from 'react-redux';
 
 const CardProduct = ({ products }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const navigate = useNavigate();
+  const { token } = useSelector((state => state.auth));
 
   const onSelectChange = (newSelectedRowKeys) => {
     setSelectedRowKeys(newSelectedRowKeys);
@@ -18,11 +21,12 @@ const CardProduct = ({ products }) => {
     columnTitle: '',
   };
 
-  const handleDelete = (id) => {
-    // Logic xóa có thể truyền callback lên ManageProduct nếu cần cập nhật danh sách chính
-    const newData = products.filter((item) => item.id !== id);
-    message.success('Product deleted successfully!');
-    return newData; // Trả về danh sách mới nếu cần
+  const handleDelete = async (id) => {
+    const response = await remove(`products/${id}`, token);
+    console.log("result: ", response)
+    if (!response.ok) {
+      throw new Error(response.message || 'Failed to delete product');
+    }
   };
 
   const columns = [

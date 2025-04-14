@@ -27,9 +27,8 @@ const Chatbot = () => {
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef(null); // Thêm ref để cuộn
+  const messagesEndRef = useRef(null);
 
-  // Cuộn xuống cuối danh sách tin nhắn
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -38,15 +37,16 @@ const Chatbot = () => {
     if (isOpen && userId) {
       fetchConversation();
     }
-  }, [isOpen, userId, messages]);
+  }, [isOpen, userId]);
 
   useEffect(() => {
-    scrollToBottom(); // Cuộn xuống cuối mỗi khi messages thay đổi
+    scrollToBottom();
   }, [messages]);
 
   const fetchConversation = async () => {
     try {
       const response = await axios.get(`http://127.0.0.1:8000/conversation?user_id=${userId}`);
+      console.log("API /conversation response:", response.data);
       const formattedMessages = response.data.flatMap((messagePair) =>
         messagePair.map((msg) => ({
           id: Date.now() + Math.random(),
@@ -56,7 +56,7 @@ const Chatbot = () => {
         }))
       );
       setMessages([messages[0], ...formattedMessages]);
-      console.log("Fetched messages:", formattedMessages);
+      console.log("Formatted messages:", formattedMessages);
     } catch (error) {
       console.error("Error fetching conversation:", error);
     }
@@ -83,19 +83,20 @@ const Chatbot = () => {
         headers: { "Content-Type": "application/json" }
       });
 
-      // Xử lý phản hồi từ API
-      if (response.data && Array.isArray(response.data)) {
-        const latestMessagePair = response.data[response.data.length - 1];
-        if (latestMessagePair && latestMessagePair.length === 2) {
-          const botReply = {
-            id: Date.now() + 1,
-            text: latestMessagePair[1].content,
-            sender: "bot",
-            timestamp: new Date().toLocaleTimeString(),
-          };
-          // Thêm câu trả lời bot ngay lập tức
-          setMessages((prev) => [...prev, botReply]);
-        }
+      // Xử lý phản hồi API
+      if (response.data) {
+        const botReply = {
+          id: Date.now() + 1,
+          text: response.data, // Lấy trực tiếp câu trả lời từ response.data
+          sender: "bot",
+          timestamp: new Date().toLocaleTimeString(),
+        };
+        setMessages((prev) => {
+          console.log("Adding bot reply:", botReply);
+          return [...prev, botReply];
+        });
+      } else {
+        console.warn("No valid bot reply found in response:", response.data);
       }
     } catch (error) {
       console.error("Error sending message:", error);
@@ -103,7 +104,6 @@ const Chatbot = () => {
       setIsTyping(false);
     }
   };
-
   return (
     <div className="chatbot-container">
       {!isOpen && (
@@ -189,7 +189,7 @@ const Chatbot = () => {
                 </Avatar>
               </div>
             )}
-            <div ref={messagesEndRef} /> {/* Điểm neo để cuộn */}
+            <div ref={messagesEndRef} />
           </div>
 
           <div className="chatbot-input">

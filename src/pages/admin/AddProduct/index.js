@@ -132,7 +132,7 @@ const AddProduct = () => {
       setLoading(true);
       try {
         // Gọi API để thêm category mới
-        const response = await post("categories", values);
+        const response = await post("category", values);
         
         if (!response.ok) {
           throw new Error("Failed to add category");

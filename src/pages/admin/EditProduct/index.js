@@ -29,8 +29,8 @@ const EditProduct = () => {
   const { id } = useParams(); 
   const { product: productResponse } = useProductById({ id });
   const product = productResponse?.data;
-
   console.log("Product data:", product);
+  if (!product) return <Loading loading={true} />;
 
   if (categoriesLoading) return <Loading loading={categoriesLoading} />;
   if (error) {
@@ -106,10 +106,11 @@ const EditProduct = () => {
     setLoading(true);
     const productData = {
       ...values,
+      category: product.categoryId,
+      supplier: product.supplier,
       imagePaths: imageUrls || product.imagePaths,
     };
     console.log("Product data to be sent:", productData);
-    
     try {
       const response = await post("products/update-product", productData);
       if (!response) {
