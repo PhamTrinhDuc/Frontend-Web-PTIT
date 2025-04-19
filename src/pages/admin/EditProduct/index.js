@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { Row, Col, Card, Form, Input, InputNumber, Select, Button, Upload, message, Space, Modal } from 'antd';
 import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -18,20 +19,34 @@ const EditProduct = () => {
   const [form] = Form.useForm();
   const [categoryForm] = Form.useForm(); // Form cho modal thêm category
   const [fileList, setFileList] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false); // State cho modal
+  const [imageUrls, setImageUrls] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState();
   const [loading, setLoading] = useState(false);
   const {categoriesList, loading: categoriesLoading, error } = useCategories();
   const {suppliers}  = useAllSupplier();
-  const [imageUrls, setImageUrls] = useState([]);
   const navigate = useNavigate();
 
   const { id } = useParams(); 
   const { product: productResponse } = useProductById({ id });
   const product = productResponse?.data;
-  console.log("Product data:", product);
-  if (!product) return <Loading loading={true} />;
 
+  useEffect(() => {
+    if (product) {
+      const category = categoriesList[product.categoryId];
+      if (category) {
+        setSelectedCategory(category.slug);
+      }
+    }
+  }, [product, categoriesList]);
+  console.log("category:", selectedCategory)
+
+  useEffect(() => {
+    if (product?.imagePaths) {
+      setImageUrls(product.imagePaths);
+    }
+  }, [product]);
+
+  if (!product) return <Loading loading={true} />;
   if (categoriesLoading) return <Loading loading={categoriesLoading} />;
   if (error) {
     navigate("/error");
@@ -100,19 +115,19 @@ const EditProduct = () => {
 
   const onFinish = async (values) => {
     if (imageUrls.length === 0) {
-      message.warning("Please upload at least one product image.");
+      console.log("Please upload at least one product image.");
       return;
     }
     setLoading(true);
     const productData = {
       ...values,
-      category: product.categoryId,
-      supplier: product.supplier,
+      productId: product.id,
       imagePaths: imageUrls || product.imagePaths,
     };
     console.log("Product data to be sent:", productData);
     try {
-      const response = await post("products/update-product", productData);
+      // const response = await post("products/update-product", productData);
+      const response = null;
       if (!response) {
         throw new Error("Failed to add product");
       }
@@ -149,8 +164,8 @@ const EditProduct = () => {
           price: product.price,
           discount: product.discount,
           quantityStock: product.quantityStock,
-          // category: product.categoryId,
-          // supplier: product.supplier,
+          category: categoriesList[product?.categoryId].name,
+          supplier: suppliers[product?.supplierId].supplierName,
           specification: product.specification,
           imagePaths: product.imagePaths,
         }}>
@@ -181,7 +196,7 @@ const EditProduct = () => {
                         <Form.Item
                           label="Base Price $"
                           name="price"
-                          rules={[{message: 'Please enter base price' }]}
+                          // rules={[{message: 'Please enter base price' }]}
                         >
                           <InputNumber
                             min={0}
@@ -205,7 +220,7 @@ const EditProduct = () => {
                         <Form.Item 
                           label="Quantity" 
                           name="quantityStock"
-                          rules={[{message: 'Please enter quantity' }]}
+                          // rules={[{message: 'Please enter quantity' }]}
                         >
                           <InputNumber min={0} placeholder="Type product quantity" style={{ width: '100%' }} />
                         </Form.Item>

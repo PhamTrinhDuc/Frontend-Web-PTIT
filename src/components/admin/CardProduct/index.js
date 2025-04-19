@@ -24,7 +24,8 @@ const CardProduct = ({ products }) => {
   const handleDelete = async (id) => {
     const response = await remove(`products/${id}`, token);
     console.log("result: ", response)
-    if (!response.ok) {
+    window.location.reload();
+    if (!response) {
       throw new Error(response.message || 'Failed to delete product');
     }
   };
