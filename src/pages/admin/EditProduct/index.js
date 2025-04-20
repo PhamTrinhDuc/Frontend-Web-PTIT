@@ -17,7 +17,6 @@ const { TextArea } = Input;
 
 const EditProduct = () => {
   const [form] = Form.useForm();
-  const [categoryForm] = Form.useForm(); // Form cho modal thêm category
   const [fileList, setFileList] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState();
@@ -32,7 +31,7 @@ const EditProduct = () => {
 
   useEffect(() => {
     if (product) {
-      const category = categoriesList[product.categoryId];
+      const category = categoriesList[product?.categoryId-1];
       if (category) {
         setSelectedCategory(category.slug);
       }
@@ -122,12 +121,12 @@ const EditProduct = () => {
     const productData = {
       ...values,
       productId: product.id,
-      imagePaths: imageUrls || product.imagePaths,
+      imagePaths: imageUrls || [],
     };
     console.log("Product data to be sent:", productData);
     try {
-      // const response = await post("products/update-product", productData);
-      const response = null;
+      const response = await post("products/update", productData);
+      console.log("Response from server:", response);
       if (!response) {
         throw new Error("Failed to add product");
       }
@@ -164,7 +163,7 @@ const EditProduct = () => {
           price: product.price,
           discount: product.discount,
           quantityStock: product.quantityStock,
-          category: categoriesList[product?.categoryId].name,
+          category: categoriesList[product?.categoryId-1].name.toLowerCase(),
           supplier: suppliers[product?.supplierId].supplierName,
           specification: product.specification,
           imagePaths: product.imagePaths,

@@ -8,43 +8,46 @@ import {
   Modal,
   message,
 } from 'antd';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { post } from '../../utils/requests';
 import './ChangePassword.scss';
 
 const ChangePassword = () => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const { isLoggedIn, user, token } = useSelector((state) => state.auth);
   const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
-  const [isCancelModalVisible, setIsCancelModalVisible] = useState(false);
 
-  const onFinish = (values) => {
-    if (values.currentPassword !== 'password123') {
-      message.error('Current password is incorrect!');
-      return;
+  const onFinish = async (values) => {
+    try {
+      // Gọi API đổi mật khẩu
+      const payload = {
+        userId: user.id,
+        currentPassword: values.currentPassword,
+        newPassword: values.newPassword,
+        confirmPassword: values.confirmPassword,
+      };
+
+      const response = await post('users/change-password', payload, token);
+      // Kiểm tra phản hồi từ server
+      console.log('Response:', response);
+      // navigate('/login');
+      if (response) {
+        message.success('Password updated successfully!');
+      } else {
+        message.error(response.data.message || 'Failed to update password');
+      }
+    } catch (error) {
+      message.error(
+        error.response?.data?.message || 'An error occurred while updating password'
+      );
     }
+  };
 
-    if (values.newPassword && values.newPassword === values.confirmPassword) {
-      console.log('Update password:', values.newPassword);
-    } else {
-      message.error('New password and confirmation do not match!');
-      return;
-    }
 
-    message.success('Password updated successfully!');
+  const handleCancel = () => {
     form.resetFields();
-  };
-
-  const showCancelModal = () => {
-    setIsCancelModalVisible(true);
-  };
-
-  const handleCancelAccount = () => {
-    console.log('Cancel password change');
-    setIsCancelModalVisible(false);
-    message.success('Password change canceled!');
-    form.resetFields();
-  };
-
-  const handleCancelCancel = () => {
-    setIsCancelModalVisible(false);
   };
 
   const showConfirmModal = () => {
@@ -52,7 +55,6 @@ const ChangePassword = () => {
   };
 
   const handleConfirmAccount = () => {
-    console.log('Confirm password change');
     form.submit();
     setIsConfirmModalVisible(false);
   };
@@ -96,7 +98,7 @@ const ChangePassword = () => {
           </div>
           <Form.Item>
             <div className="button-group">
-              <Button className="button-item" type="default" onClick={showCancelModal}>
+              <Button className="button-item" type="default" onClick={handleCancel}>
                 Cancel
               </Button>
               <Button
@@ -110,16 +112,6 @@ const ChangePassword = () => {
           </Form.Item>
         </Form>
       </Card>
-      <Modal
-        title="Cancel password change"
-        visible={isCancelModalVisible}
-        onOk={handleCancelAccount}
-        onCancel={handleCancelCancel}
-        okText="Confirm"
-        cancelText="Cancel"
-      >
-        <p>Are you sure you want to cancel the password change? This cannot be undone!</p>
-      </Modal>
       <Modal
         title="Confirm password change"
         visible={isConfirmModalVisible}

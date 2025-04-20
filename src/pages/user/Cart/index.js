@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, InputNumber, Input } from 'antd';
+import { Button, InputNumber, Input, Checkbox } from 'antd'; // Added Checkbox import
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons';
@@ -12,21 +12,23 @@ import useAllProduct from '../../../hook/useAllProduct';
 import './Cart.scss';
 
 
-const CartItem = ({ item, onQuantityChange, onRemove }) => {
+const CartItem = ({ item, onQuantityChange, onRemove, onSelectChange, isSelected }) => {
   const handleDecrease = () => {
-    // Giảm số lượng, nhưng không để nhỏ hơn 1
     const newQuantity = Math.max(1, item.quantity - 1);
     onQuantityChange(item.id, newQuantity);
   };
 
   const handleIncrease = () => {
-    // Tăng số lượng
     const newQuantity = item.quantity + 1;
     onQuantityChange(item.id, newQuantity);
   };
 
   return (
     <div className="cart-item">
+      <Checkbox
+        checked={isSelected}
+        onChange={(e) => onSelectChange(item.id, e.target.checked)}
+      />
       <div className='item-image'>
         <img src={item.imagePaths?.[0] || "default-image.jpg"} alt={item.name} />
       </div>
@@ -56,13 +58,11 @@ const CartItem = ({ item, onQuantityChange, onRemove }) => {
 };
 
 
-const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode }) => {
-
+const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode, selectedItems }) => {
   const navigate = useNavigate();
   const handlePay = () => {
-    navigate('/billing', { state: { cartTotal } });  
-  
-}
+    navigate('/billing', { state: { cartTotal, selectedItems } });  
+  }
 
   return (
     <div className="cart-summary">
@@ -103,26 +103,24 @@ function Cart() {
 
   const { products, loading, error } = useAllProduct(); 
 
-  const cartItems = useSelector((state) => state.cart.items); // Lấy sản phẩm từ Redux
+  const cartItems = useSelector((state) => state.cart.items);
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
+  const [selectedItems, setSelectedItems] = useState([]); // State for selected items
 
-  // Xử lý thay đổi số lượng
   const handleQuantityChange = (id, quantity) => {
-    dispatch(updateQuantity({ id, quantity })); // Dispatch action để cập nhật số lượng
+    dispatch(updateQuantity({ id, quantity }));
   };
 
-  // Xử lý xóa sản phẩm
   const handleRemove = (id) => {
-    dispatch(removeFromCart(id)); // Dispatch action để xóa sản phẩm
+    dispatch(removeFromCart(id));
+    setSelectedItems(selectedItems.filter(itemId => itemId !== id)); // Remove from selected items
   };
 
-  // xử lý chuyển hướng về trang sản phẩm
   const handleReturnShop = () => {
     navigate('/products');
   };
 
-  // Logic áp dụng coupon
   const applyCoupon = (code) => {
     if (code === 'DISCOUNT10') {
       setDiscount(cartTotal * 0.1);
@@ -133,8 +131,18 @@ function Cart() {
     }
   };
 
-  // Tính tổng giá từ cartItems của Redux
-  const cartTotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0) - discount;
+  // Handle checkbox change
+  const handleSelectChange = (id, checked) => {
+    if (checked) {
+      setSelectedItems([...selectedItems, id]);
+    } else {
+      setSelectedItems(selectedItems.filter(itemId => itemId !== id));
+    }
+  };
+
+  // Calculate total based on selected items only
+  const selectedCartItems = cartItems.filter(item => selectedItems.includes(item.id));
+  const cartTotal = selectedCartItems.reduce((total, item) => total + item.price * item.quantity, 0) - discount;
 
   if (loading) return <Loading loading={loading} />;
   if (error) {
@@ -148,10 +156,12 @@ function Cart() {
         <div className="cart-items">
           {cartItems.map(item => (
             <CartItem
-              key={item.id}
-              item={item}
+              key = {item.id}
+              item = {item}
               onQuantityChange={handleQuantityChange}
               onRemove={handleRemove}
+              onSelectChange={handleSelectChange}
+              isSelected={selectedItems.includes(item.id)}
             />
           ))}
           <Button type="link" className="return-shop" onClick={handleReturnShop}>
@@ -163,6 +173,7 @@ function Cart() {
           applyCoupon={applyCoupon}
           couponCode={couponCode}
           setCouponCode={setCouponCode}
+          selectedItems={selectedCartItems} // Pass selected items
         />
       </div>
       <ProductRelated products={products} />

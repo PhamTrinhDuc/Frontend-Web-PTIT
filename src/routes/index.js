@@ -42,7 +42,6 @@ export const routes = [
       { path: "product-detail/:id", element: <Product /> },
       { path: "products/:categorySlug", element: <ProductIdentify />},
       // { path: 'chatbot', element: <Chatbot /> },
-      { path: "cart", element: <Cart /> },
       { path: "*", element: <Error /> },
 
       // Private Route cho user
@@ -51,6 +50,7 @@ export const routes = [
         children: [
           { path: "account", element: <Account /> },
           { path: "billing", element: <Billing />},
+          { path: "cart", element: <Cart /> },
           { path: "edit-profile", element: <EditProfile /> },
           { path: "order-success", element: <SuccessOrder />},
         ],

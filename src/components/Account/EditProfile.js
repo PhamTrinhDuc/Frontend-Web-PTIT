@@ -36,15 +36,17 @@ const EditProfile = () => {
     try {
       const payload = {
         id: user.id,
-        fullName: `${values.firstName} ${values.lastName}`.trim() || user.fullname,
-        email: values.email || user.email,
-        address: values.address || user.address,
-        phoneNumber: values.phone || user.phoneNumber,
-        gender: values.gender || user.gender,
+        fullName: `${values.firstName} ${values.lastName}`.trim() || null,
+        email: values.email || null,
+        address: values.address || null,
+        phoneNumber: values.phone || null,
+        gender: values.gender || null,
       };
 
+      console.log('Payload:', payload);
+
       const response = await post('users/me/profile', payload, token)
-      console.log('Response:', response);
+      navigate(0);
 
       if (!response) {
         const errText = await response.text();

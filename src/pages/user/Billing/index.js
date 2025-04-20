@@ -165,9 +165,9 @@ function Billing() {
    const location = useLocation();
    const navigate = useNavigate();
    const dispatch = useDispatch();
-   const { cartTotal } = location.state || { cartTotal: 0 }; // Fallback nếu state không có
+  const { cartTotal, selectedItems } = location.state || { cartTotal: 0, selectedItems: [] }; // Default values
    // Lấy danh sách sản phẩm từ Redux
-   const cartItems = useSelector((state) => state.cart.items); // Lấy sản phẩm từ Redux
+  //  const cartItems = useSelector((state) => state.cart.items); // Lấy sản phẩm từ Redux
    // Lấy thông tin người dùng để fill vào billing form
    const { isLoggedIn, user } = useSelector((state) => state.auth);
 
@@ -212,7 +212,7 @@ function Billing() {
     <div className="checkout-container">
       <Outlet />
       <BillingForm onSave={handleSaveBilling} user={user} />
-      <OrderSummary cartItems={cartItems} onPlaceOrder={handlePlaceOrder} />
+      <OrderSummary cartItems={selectedItems} onPlaceOrder={handlePlaceOrder} />
     </div>
   )
 }
