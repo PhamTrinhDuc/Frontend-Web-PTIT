@@ -100,6 +100,7 @@ const EditProduct = () => {
     // Có thể gọi API để xóa ảnh từ server nếu cần
     return true;
   };
+
   const handleUploadChange = ({ fileList: newFileList }) => {
     setFileList(newFileList.slice(0, 5));
   };

@@ -2,15 +2,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './FlashSale.scss';
-import useProductByOrderDesc from '../../hook/useProductByOrderDesc';
+import useProductByDiscountDesc from '../../hook/useProductByDiscountDesc';
 import CountdownTimer from './CountdownTimer';
 import PanigationProduct from '../PanigationProduct';
 import Loading from '../../components/Loading';
 
-
 function FlashSale() {
   const navigate = useNavigate();
-  const { products, loading, error } = useProductByOrderDesc();
+  const { products, loading, error } = useProductByDiscountDesc();
   if (loading) return <Loading loading={loading} />;
   if (error) {
     navigate("/error");

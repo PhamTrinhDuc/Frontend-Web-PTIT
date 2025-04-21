@@ -3,43 +3,32 @@ import { Row, Col, Pagination, Empty } from 'antd';
 import CardProduct from '../CardProduct';
 import './PanigationProduct.scss';
 
-const PanigationProduct = ({ products = [], numOfProduct = 4 }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = numOfProduct;
-
-  const totalProducts = products.length;
-  const currentProducts = products.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
+const PanigationProduct = ({ products = [], pageSize, currentPage, totalPages, onPageChange, loading }) => {
   return (
     <div className="navigation-container">
-      <div className="carousel-container">
-        {currentProducts.length > 0 ? (
-          <Row gutter={[16, 16]} className="navigation-items">
-            {currentProducts.map((product) => (
-              <Col key={product.id} xs={24} sm={12} md={6}>
-                <CardProduct product={product} />
+      <Row gutter={[16, 16]} className="navigation-items">
+        {loading
+          ? Array(pageSize).fill(0).map((_, idx) => (
+              <Col key={idx} xs={24} sm={12} md={6}>
+                <div className="skeleton-card" /> {/* hoặc dùng Skeleton AntD */}
               </Col>
-            ))}
-          </Row>
-        ) : (
-          <Empty description="No products available" />
-        )}
-      </div>
+            ))
+          : products.length > 0
+            ? products.map((product) => (
+                <Col key={product.id} xs={24} sm={12} md={6}>
+                  <CardProduct product={product} />
+                </Col>
+              ))
+            : <Empty description="No products available" />}
+      </Row>
 
-      {totalProducts > 0 && (
+      {totalPages > 1 && (
         <div className="pagination-container">
           <Pagination
             current={currentPage}
-            total={totalProducts}
+            total={totalPages * pageSize}
             pageSize={pageSize}
-            onChange={handlePageChange}
+            onChange={onPageChange}
             showSizeChanger={false}
           />
         </div>

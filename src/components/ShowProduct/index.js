@@ -5,13 +5,14 @@ import {Row, Col} from 'antd';
 import PanigationProduct from "../PanigationProduct";
 
 
-function ShowProduct({products}) {
+function ShowProduct({products, numOfProduct}) {
+  
 
   return (
     <>
       <div className='products-container'>
 
-        <PanigationProduct products={products} numOfProduct={16} />
+        <PanigationProduct products={products} numOfProduct={numOfProduct} />
       </div>
     </>
   );

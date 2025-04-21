@@ -77,7 +77,7 @@ const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode, select
       </div>
       <div className="summary-row total">
         <span>Total:</span>
-        <span>{cartTotal.toLocaleString()}đ</span>
+        <span>{cartTotal.toLocaleString()}$</span>
       </div>
       <Button type="default" block onClick={handlePay}>
         Process to checkout

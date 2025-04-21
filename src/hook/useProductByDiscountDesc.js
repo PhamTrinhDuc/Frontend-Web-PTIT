@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {get} from '../utils/requests';
 
 
-const useProductByOrderDesc = () => {
+const useProductByDiscountDesc = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ const useProductByOrderDesc = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await get('products/by-discount');
+        const response = await get('products/filter/by-discount');
         setProducts(response.data);
       } catch (err) {
         setError(err.message || 'Failed to fetch products');
@@ -27,4 +27,4 @@ const useProductByOrderDesc = () => {
   return { products, loading, error };
 };
 
-export default useProductByOrderDesc;
+export default useProductByDiscountDesc;

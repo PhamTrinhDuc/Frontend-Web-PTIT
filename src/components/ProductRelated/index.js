@@ -6,7 +6,7 @@ import PaginationProduct from '../../components/PanigationProduct';
 import CardProduct from '../CardProduct'; // Giả định bạn đã có component này
 import './ProductRelated.scss';
 
-const ProductRelated = ({products}) => {
+const ProductRelated = ({products, numOfProduct, onPaginationChange}) => {
 
   return (
     <div className="related-container">
@@ -14,7 +14,7 @@ const ProductRelated = ({products}) => {
           <TbRectangleVerticalFilled className="icon"/>
           <h1>Related Products</h1>
       </div>
-      <PaginationProduct products={products} numOfProduct={4}/>
+      <PaginationProduct products={products} numOfProduct={numOfProduct} onPaginationChange={onPaginationChange}/>
     </div>
   );
 };

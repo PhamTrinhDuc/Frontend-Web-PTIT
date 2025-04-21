@@ -119,14 +119,14 @@ const AdminMenu = () => {
         onClick={() => navigate('/admin/manage-customer')}>
           Customer
         </Menu.Item>
-        <Menu.Item key="5" icon={<HiSpeakerWave style={{ fontSize: '24px' }} />}
+        {/* <Menu.Item key="5" icon={<HiSpeakerWave style={{ fontSize: '24px' }} />}
         onClick={() => navigate('/admin/promotion')}>
           Promotion
         </Menu.Item>
         <Menu.Item key="6" icon={<MdInventory style={{ fontSize: '24px' }} />}
         onClick={() => navigate('/admin/inventory')}>
           Inventory
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
     </div>
   )

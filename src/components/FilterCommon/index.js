@@ -59,7 +59,7 @@ const FilterSetion = ({ onProductsChange }) => {
       const params = new URLSearchParams();
       params.append('sortBy', sortOption);
 
-      const response = await get(`products/sort?${params.toString()}`);
+      const response = await get(`products/filter/sort?${params.toString()}`);
       console.log('Sort response:', response);
 
       if (response && response.status && response.data) {
