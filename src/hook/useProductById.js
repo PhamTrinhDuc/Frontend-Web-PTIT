@@ -12,7 +12,7 @@ const useProductById = ({id}) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const data = await get(`products/id/${id}`);
+        const data = await get(`products/by-id/${id}`);
         setProduct(data);
       } catch (error) {
         setError(error.message || 'Failed to fetch products');

@@ -3,42 +3,34 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import FilterSetion from '../../../components/FilterCommon';
 import CategoriesHeader from '../../../components/CategoriesHeader';
-import ShowProduct from '../../../components/ShowProduct';
 import Loading from '../../../components/Loading';
-import { get } from '../../../utils/requests';
+import { numPageProduct } from '../../../utils/variable';
+import PanigationProduct from '../../../components/PanigationProduct';
 import './AllProduct.scss';
+import useSearchProduct from '../../../hook/useSearchProduct';
 
 function AllProduct() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [searchParams] = useSearchParams();
+  const keyword = searchParams.get('search') || '';
 
+  const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = numPageProduct;
+  
+  const { products: productsSearch, loading, error, totalPages } = useSearchProduct({ page, pageSize, keyword });
+  console.log('productsSearch', productsSearch);
   useEffect(() => {
-    const fetchProducts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const keyword = searchParams.get('search') || '';
-        const response = await get(`products/search?keyword=${keyword}`);
-        if (response && response.status) {
-          setProducts(response.data || []);
-        } else {
-          throw new Error('Không tìm thấy sản phẩm');
-        }
-      } catch (err) {
-        setError(err.message);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (productsSearch) {
+      setProducts(productsSearch);
+    }
+  }, [productsSearch]);
 
-    fetchProducts();
-  }, [searchParams]);
+  const handlePaginationChange = (newPage) => {
+    setPage(newPage);
+  };
 
   const handleProductsChange = (newProducts) => {
-    if (newProducts && newProducts.length >= 0) {
+    if (Array.isArray(newProducts)) {
       setProducts(newProducts);
     }
   };
@@ -47,14 +39,18 @@ function AllProduct() {
   if (error) return <div>Lỗi: {error}</div>;
 
   return (
-    <>
-      <div className="products-container">
-        <CategoriesHeader />
-        <FilterSetion onProductsChange={handleProductsChange} />
-        <ShowProduct products={products} />
-        <div className="product-container"></div>
-      </div>
-    </>
+    <div className="products-container">
+      <CategoriesHeader />
+      <FilterSetion onProductsChange={handleProductsChange} />
+      <PanigationProduct
+        products={products}
+        pageSize={pageSize}
+        totalPages={totalPages}
+        currentPage={page}
+        loading={loading}
+        onPageChange={handlePaginationChange}
+      />
+    </div>
   );
 }
 

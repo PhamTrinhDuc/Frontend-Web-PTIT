@@ -1,45 +1,53 @@
 import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import PanigationProduct from '../../../components/PanigationProduct';
 import { useParams } from "react-router-dom";
-import { useSearchParams } from 'react-router-dom';
 import ProductDetail from '../../../components/ProductDetail';
-import ProductRelated from '../../../components/ProductRelated';
 import Loading from '../../../components/Loading';
 import useProductById from '../../../hook/useProductById';
 import useAllProduct from '../../../hook/useAllProduct';
-import { numPageProduct } from '../../../utils/variable';
+import { numPageProductHeader } from '../../../utils/variable';
 import './Product.scss';
+import ProductRelated from '../../../components/ProductRelated';
 
 function Product() {
   const { id } = useParams();
   const { product, loading, error } = useProductById({ id });
-  const navigate = useNavigate();
+  console.log('product', product);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const page = parseInt(searchParams.get('page') || '1');
-  const pageSize = numPageProduct;
-  const { products: defaultProducts } = useAllProduct({
-    page,
-    pageSize,
-  });
+  const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = numPageProductHeader;
+  
+  const { products: productsSearch, totalPages } = useAllProduct({ page, pageSize });
+  useEffect(() => {
+    if (productsSearch) {
+      setProducts(productsSearch);
+    }
+  }, [productsSearch]);
 
-  const handlePaginationChange = (newPage, newPageSize) => {
-    setSearchParams({ page: newPage.toString(), pageSize: newPageSize.toString() });
+  const handlePaginationChange = (newPage) => {
+    setPage(newPage);
   };
 
   if (loading) return <Loading loading={loading} />;
-  if (error) {
-    navigate("/error");
-    return null;
-  }
+  // if (error) {
+  //   navigate("/error");
+  //   return null;
+  // }
 
   return (
     <>
       <ProductDetail product={product.data} />
 
-      <ProductRelated 
-        products={defaultProducts}
-        numOfProduct={pageSize}
-        onPaginationChange={handlePaginationChange} />
+      <ProductRelated
+        products={products}
+        pageSize={pageSize}
+        totalPages={totalPages}
+        currentPage={page}
+        loading={loading}
+        onPageChange={handlePaginationChange}
+      />
     </>
   )
 }

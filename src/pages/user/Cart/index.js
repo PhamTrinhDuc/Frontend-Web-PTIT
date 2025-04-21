@@ -1,15 +1,18 @@
 import React from 'react';
+import { useEffect } from 'react';
+import PanigationProduct from '../../../components/PanigationProduct';
 import { Button, InputNumber, Input, Checkbox } from 'antd'; // Added Checkbox import
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import { FaTrashAlt } from "react-icons/fa";
 import { useState } from 'react';
-import ProductRelated from '../../../components/ProductRelated';
 import { updateQuantity, removeFromCart } from '../../../slices/cartSlice';
 import Loading from '../../../components/Loading';
 import useAllProduct from '../../../hook/useAllProduct';
+import { numPageProductHeader } from '../../../utils/variable';
 import './Cart.scss';
+import ProductRelated from '../../../components/ProductRelated';
 
 
 const CartItem = ({ item, onQuantityChange, onRemove, onSelectChange, isSelected }) => {
@@ -101,7 +104,20 @@ function Cart() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { products, loading, error } = useAllProduct(); 
+  const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = numPageProductHeader;
+  
+  const { products: productsSearch, loading, error, totalPages } = useAllProduct({ page, pageSize });
+  useEffect(() => {
+    if (productsSearch) {
+      setProducts(productsSearch);
+    }
+  }, [productsSearch]);
+
+  const handlePaginationChange = (newPage) => {
+    setPage(newPage);
+  };
 
   const cartItems = useSelector((state) => state.cart.items);
   const [couponCode, setCouponCode] = useState('');
@@ -111,12 +127,10 @@ function Cart() {
   const handleQuantityChange = (id, quantity) => {
     dispatch(updateQuantity({ id, quantity }));
   };
-
   const handleRemove = (id) => {
     dispatch(removeFromCart(id));
     setSelectedItems(selectedItems.filter(itemId => itemId !== id)); // Remove from selected items
   };
-
   const handleReturnShop = () => {
     navigate('/products');
   };
@@ -130,7 +144,6 @@ function Cart() {
       alert('Invalid coupon code.');
     }
   };
-
   // Handle checkbox change
   const handleSelectChange = (id, checked) => {
     if (checked) {
@@ -139,16 +152,11 @@ function Cart() {
       setSelectedItems(selectedItems.filter(itemId => itemId !== id));
     }
   };
-
   // Calculate total based on selected items only
   const selectedCartItems = cartItems.filter(item => selectedItems.includes(item.id));
   const cartTotal = selectedCartItems.reduce((total, item) => total + item.price * item.quantity, 0) - discount;
 
   if (loading) return <Loading loading={loading} />;
-  if (error) {
-    navigate("/error");
-    return null;
-  }
 
   return (
     <>
@@ -176,7 +184,15 @@ function Cart() {
           selectedItems={selectedCartItems} // Pass selected items
         />
       </div>
-      <ProductRelated products={products} />
+
+      <ProductRelated
+        products={products}
+        pageSize={pageSize}
+        totalPages={totalPages}
+        currentPage={page}
+        loading={loading}
+        onPageChange={handlePaginationChange}
+      />
     </>
   );
 }
