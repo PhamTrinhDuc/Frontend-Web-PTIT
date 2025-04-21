@@ -1,14 +1,14 @@
 import { useState } from "react";
-import useAllProduct from "../../hook/useAllProduct";
-import BestSellingBanner from "../BestSellingBanner";
+import useProductByDiscountDesc from "../../hook/useProductByDiscountDesc";
+import FlashSale from "../FlashSale";
 import { numPageProductHeader } from "../../utils/variable";
 import Loading from "../Loading";
 
-const BestSellingSection = () => {
+const FlashSaleSection = () => {
   const [page, setPage] = useState(1);
   const pageSize = numPageProductHeader;
 
-  const { products, totalPages, loading, error } = useAllProduct({ page, pageSize });
+  const { products, loading, error, totalPages } = useProductByDiscountDesc({page, pageSize});
 
   const handlePaginationChange = (newPage) => {
     setPage(newPage);
@@ -18,7 +18,7 @@ const BestSellingSection = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <BestSellingBanner
+    <FlashSale
       products={products}
       pageSize={pageSize}
       currentPage={page}
@@ -29,4 +29,4 @@ const BestSellingSection = () => {
   );
 };
 
-export default BestSellingSection;
+export default FlashSaleSection;

@@ -43,8 +43,6 @@ function ProductIdentify() {
 
   // Chọn danh sách sản phẩm để hiển thị
   const displayProducts = filters.priceRange || filters.sortOption ? filteredProducts : products;
-  console.log('displayProducts', displayProducts);
-  console.log('totalPages', totalPages);
 
   return (
     <div className="products-container">
