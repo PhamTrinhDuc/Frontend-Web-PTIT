@@ -9,8 +9,8 @@ export const priceRanges = [
 
 export const sortOptions = [
   { value: 'newest', label: 'Newest' },
-  { value: 'price_asc', label: 'Price: Low to High' },
-  { value: 'price_desc', label: 'Price: High to Low' },
-  { value: 'name_asc', label: 'Name: A-Z' },
+  { value: 'price-asc', label: 'Price: Low to High' },
+  { value: 'price-desc', label: 'Price: High to Low' },
+  { value: 'name-asc', label: 'Name: A-Z' },
   { value: 'rating', label: 'Rating' },
 ];

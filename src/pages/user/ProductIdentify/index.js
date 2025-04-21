@@ -21,11 +21,19 @@ function ProductIdentify() {
   const [filters, setFilters] = useState({ priceRange: null, sortOption: null });
 
   // Gọi hook ở cấp cao nhất
+  console.log('categorySlug', categorySlug);
+  console.log('page', page);
+  console.log('pageSize', pageSize);
+  console.log('filters', filters);
   const { products, loading, error, totalPages} = useProductsByCategory({
     categorySlug,
     page,
     pageSize,
+    priceRange: filters.priceRange,
+    sortOption: filters.sortOption,
   });
+  // console.log('products', products);
+  // console.log('filteredProducts', filters);
   if (loading) return <Loading loading={loading} />;
   if (error) return <Navigate to="/error" />;
 
@@ -44,16 +52,15 @@ function ProductIdentify() {
   // Chọn danh sách sản phẩm để hiển thị
   const displayProducts = filters.priceRange || filters.sortOption ? filteredProducts : products;
 
-  return (
+  return (  
     <div className="products-container">
       <CategoriesHeader />
       <FilterSection
         onProductsChange={handleProductsChange}
         onFilterChange={handleFilterChange}
-        categorySlug={categorySlug}
       />
       <PanigationProduct
-        products={displayProducts}
+        products={products}
         pageSize={pageSize}
         totalPages={totalPages}
         currentPage={page}

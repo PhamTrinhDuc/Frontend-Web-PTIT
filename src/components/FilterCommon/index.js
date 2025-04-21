@@ -7,7 +7,7 @@ import './FilterCommon.scss';
 const { Option } = Select;
 const { Title } = Typography;
 
-const FilterSetion = ({ onProductsChange }) => {
+const FilterSetion = ({ onProductsChange, onFilterChange }) => {
   const [priceRange, setPriceRange] = useState(null);
   const [sortOption, setSortOption] = useState(null); // Đặt mặc định là null
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -90,6 +90,7 @@ const FilterSetion = ({ onProductsChange }) => {
 
   const handlePriceRangeChange = (value) => {
     setPriceRange(value);
+    onFilterChange({ priceRange: value, sortOption });
   };
 
   // Xử lý khi chọn tiêu chí sắp xếp
@@ -98,7 +99,9 @@ const FilterSetion = ({ onProductsChange }) => {
   }, [sortOption]);
 
   const handleSortOptionChange = (e) => {
+    const value = e.target.value;
     setSortOption(e.target.value);
+    onFilterChange?.({ priceRange, sortOption: value });
   };
 
   return (

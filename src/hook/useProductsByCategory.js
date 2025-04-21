@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import {get} from '../utils/requests';
 
 
-const useProductsByCategory = ({categorySlug, page, pageSize}) => {
-  const [products, setProducts] = useState([]);
+const useProductsByCategory = ({ categorySlug, page, pageSize, priceRange, sortOption }) => {  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [totalPages, setTotalPages] = useState();
@@ -11,10 +10,30 @@ const useProductsByCategory = ({categorySlug, page, pageSize}) => {
   useEffect(() => {
     if (!categorySlug) return;
 
+    const params = new URLSearchParams();
+    params.append('page', page - 1); // Backend dùng 0-based
+    params.append('size', pageSize);
+  
+    if (priceRange) {
+      if (priceRange === '>2000') {
+        params.append('minPrice', 2000);
+      } else {
+        const [min, max] = priceRange.split('-').map(Number);
+        params.append('minPrice', min);
+        params.append('maxPrice', max);
+      }
+    }
+
+    // Xử lý sortOption
+    if (sortOption) {
+      params.append('sortBy', sortOption);
+    }
+
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await get(`products/${categorySlug}?page=${page - 1}&size=${pageSize}`);
+        const response = await get(`products/${categorySlug}?${params.toString()}`);
+        console.log('Products response:', response);
         if (!response.status) {
           throw new Error('Failed to fetch products');
         }
@@ -28,7 +47,7 @@ const useProductsByCategory = ({categorySlug, page, pageSize}) => {
     };
 
     fetchProducts();
-  }, [categorySlug, page, pageSize]);
+  }, [categorySlug, page, pageSize, priceRange, sortOption]);
 
   return { products, loading, error, totalPages};
 };
