@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import {get} from '../utils/requests';
 
 
-const useProductsByCategory = ({ categorySlug, page, pageSize, priceRange, sortOption }) => {  const [products, setProducts] = useState([]);
+const useProductsByCategory = ({ categorySlug, page, pageSize, priceRange, sortOption }) => {  
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [totalPages, setTotalPages] = useState();
@@ -33,7 +34,6 @@ const useProductsByCategory = ({ categorySlug, page, pageSize, priceRange, sortO
       setLoading(true);
       try {
         const response = await get(`products/${categorySlug}?${params.toString()}`);
-        console.log('Products response:', response);
         if (!response.status) {
           throw new Error('Failed to fetch products');
         }

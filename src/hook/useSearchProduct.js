@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {get} from '../utils/requests';
 
 
-const useSearchProduct = ({page, pageSize, keyword}) => {
+const useSearchProduct = ({page, pageSize, keyword, priceRange, sortOption}) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -11,12 +11,27 @@ const useSearchProduct = ({page, pageSize, keyword}) => {
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
+      const params = new URLSearchParams();
+        params.append('keyword', keyword);
+        params.append('page', page - 1);
+        params.append('size', pageSize);
+      
+        if (priceRange) {
+          if (priceRange === '>2000') {
+            params.append('minPrice', 2000);
+          } else {
+            const [min, max] = priceRange.split('-').map(Number);
+            params.append('minPrice', min);
+            params.append('maxPrice', max);
+          }
+        }
+        // Xử lý sortOption
+        if (sortOption) {
+          params.append('sortBy', sortOption);
+        }
       try {
-
-        // const url = keyword
-        //   ? `products/search?keyword=${keyword}&page=${page - 1}&size=${pageSize}`
-        //   : `products?page=${page - 1}&size=${pageSize}`; // fallback API nếu không search
-        const response = await get(`products/search?keyword=${keyword}&page=${page - 1}&size=${pageSize}`);
+        console.log('params:', params.toString())
+        const response = await get(`products/search?${params.toString()}`);
         if (!response.status) {
           throw new Error('Failed to fetch products');
         }
@@ -29,7 +44,7 @@ const useSearchProduct = ({page, pageSize, keyword}) => {
       }
     };
     fetchProducts();
-  }, [page, pageSize, keyword]); 
+  }, [page, pageSize, keyword, priceRange, sortOption]); 
   return { products, loading, error, totalPages };
 };
 

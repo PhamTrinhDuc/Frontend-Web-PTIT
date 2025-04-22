@@ -16,9 +16,16 @@ function AllProduct() {
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const pageSize = numPageProduct;
+  const [filters, setFilters] = useState({ priceRange: null, sortOption: null });
   
-  const { products: productsSearch, loading, error, totalPages } = useSearchProduct({ page, pageSize, keyword });
-  console.log('productsSearch', productsSearch);
+  const { products: productsSearch, loading, error, totalPages } = useSearchProduct({ 
+    page, 
+    pageSize, 
+    keyword, 
+    priceRange: filters.priceRange,
+    sortOption: filters.sortOption,
+  });
+  
   useEffect(() => {
     if (productsSearch) {
       setProducts(productsSearch);
@@ -29,11 +36,10 @@ function AllProduct() {
     setPage(newPage);
   };
 
-  const handleProductsChange = (newProducts) => {
-    if (Array.isArray(newProducts)) {
-      setProducts(newProducts);
-    }
+  const handleFilterChange = ({ priceRange, sortOption }) => {
+    setFilters({ priceRange, sortOption });
   };
+
 
   if (loading) return <Loading loading={loading} />;
   if (error) return <div>Lỗi: {error}</div>;
@@ -41,7 +47,7 @@ function AllProduct() {
   return (
     <div className="products-container">
       <CategoriesHeader />
-      <FilterSetion onProductsChange={handleProductsChange} />
+      <FilterSetion onFilterChange={handleFilterChange} />
       <PanigationProduct
         products={products}
         pageSize={pageSize}
