@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import './CardProduct.scss';
 import { remove } from '../../../utils/requests';
+import { numPageProduct } from '../../../utils/variable';
 import { useSelector } from 'react-redux';
 
-const CardProduct = ({ products }) => {
+const CardProduct = ({ products, onPaginationChange}) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const navigate = useNavigate();
   const { token } = useSelector((state => state.auth));
@@ -28,6 +29,11 @@ const CardProduct = ({ products }) => {
     if (!response) {
       throw new Error(response.message || 'Failed to delete product');
     }
+  };
+
+  const handlePaginationChange = (pagination) => {
+    const { current, pageSize } = pagination;
+    onPaginationChange?.(current);
   };
 
   const columns = [
@@ -81,9 +87,10 @@ const CardProduct = ({ products }) => {
         dataSource={products}
         rowSelection={rowSelection}
         pagination={{
-          pageSize: 10,
-          style: { alignItems: 'center', justifyContent: 'center' },
+          pageSize: numPageProduct,
+          style: { display: 'flex', justifyContent: 'center' },
         }}
+        onChange={handlePaginationChange}
       />
     </div>
   );

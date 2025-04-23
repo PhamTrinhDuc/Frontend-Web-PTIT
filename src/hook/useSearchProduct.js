@@ -30,7 +30,6 @@ const useSearchProduct = ({page, pageSize, keyword, priceRange, sortOption}) => 
           params.append('sortBy', sortOption);
         }
       try {
-        console.log('params:', params.toString())
         const response = await get(`products/search?${params.toString()}`);
         if (!response.status) {
           throw new Error('Failed to fetch products');

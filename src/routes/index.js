@@ -28,6 +28,7 @@ import AdminLayout from '../Layout/AdminLayout';
 import AddProduct from '../pages/admin/AddProduct';
 import EditProduct from '../pages/admin/EditProduct';
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
+import ManageCategoriesSuppliers from '../pages/admin/Category_Supplier';
 export const routes = [
   {
     path: "/",
@@ -73,6 +74,7 @@ export const routes = [
         { path: "edit-product/:id", element: <EditProduct /> },
         // { path: "manage-categories", element: <ManageCategories /> },
         { path: "manage-product", element: <ManageProduct /> },
+        {path: "manage-categories-supplier", element: <ManageCategoriesSuppliers /> },
         { path: "*", element: <Error /> },
       ]},
     ],

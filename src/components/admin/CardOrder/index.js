@@ -9,7 +9,7 @@ import './CardOrder.scss';
 
 const { Option } = Select;
 
-const CardOrder = ({orders}) => {
+const CardOrder = ({orders, onPaginationChange}) => {
   const [showAlert, setShowAlert] = useState(false);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
@@ -44,6 +44,11 @@ const CardOrder = ({orders}) => {
       )
     );
   }, [orders, user.fullname]);
+
+  const handlePaginationChange = (pagination) => {
+    const { current, pageSize } = pagination;
+    onPaginationChange?.(current);
+  };
 
   // Hàm xử lý thay đổi trạng thái
   const handleStatusChange = async (value, record) => {
@@ -148,6 +153,7 @@ const CardOrder = ({orders}) => {
             pageSize: 10,
             style: { alignItems: 'center', justifyContent: 'center' },
           }}
+          onChange={handlePaginationChange}
         />
       </div>
     </>

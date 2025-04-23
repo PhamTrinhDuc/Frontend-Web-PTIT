@@ -33,7 +33,10 @@ const useProductsByCategory = ({ categorySlug, page, pageSize, priceRange, sortO
     const fetchProducts = async () => {
       setLoading(true);
       try {
+        console.log('categorySlug', categorySlug);
+        console.log('Fetching products with params:', params.toString());
         const response = await get(`products/${categorySlug}?${params.toString()}`);
+        console.log('Response:', response);
         if (!response.status) {
           throw new Error('Failed to fetch products');
         }

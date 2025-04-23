@@ -6,6 +6,7 @@ import CardOrder from '../../../components/admin/CardOrder';
 import useAllOrder from '../../../hook/useAllOrder';
 import Loading from '../../../components/Loading';
 import HeaderManageOrder from '../../../components/admin/HeaderManageOrder';
+import { numPageProduct } from '../../../utils/variable';
 import './ViewOrder.scss';
 
 
@@ -13,10 +14,22 @@ function ViewOrder() {
   const navigate = useNavigate();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [allOrders, setOrders] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = numPageProduct;
 
-  const { orders, loading, error } = useAllOrder(
-    isLoggedIn && user ? { id: user.id } : { skip: true }
-  );
+  const shouldFetch = isLoggedIn && user;
+
+  const { orders, loading, error } = useAllOrder({
+    id: user?.id,
+    page,
+    pageSize,
+    skip: !shouldFetch,
+  });
+
+
+  const handlePaginationChange = (newPage) => {
+    setPage(newPage);
+  };
 
   React.useEffect(() => {
     if (orders) {
@@ -32,6 +45,10 @@ function ViewOrder() {
 
   // Hàm lọc đơn hàng theo trạng thái
   const filterOrdersByStatus = (status) => {
+    if (status === 'ALL') {
+      setOrders(orders);
+      return;
+    }
     const filteredOrders = orders.filter((order) => order.status === status.toUpperCase());
     setOrders(filteredOrders);
   };
@@ -39,7 +56,7 @@ function ViewOrder() {
   return (
     <>
       <HeaderManageOrder orders={orders} onFilterByStatus={filterOrdersByStatus}/>
-      <CardOrder orders={allOrders}/>
+      <CardOrder orders={allOrders} onPaginationChange = {handlePaginationChange}/>
     </>
   );
 }

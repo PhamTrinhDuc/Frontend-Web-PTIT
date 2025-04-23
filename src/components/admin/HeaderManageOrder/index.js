@@ -8,12 +8,23 @@ import * as XLSX from 'xlsx';
 import './HeaderManageOrder.scss'
 
 function HeaderManageOrder({orders, onFilterByStatus}) {
-  const navigate = useNavigate();
 
   const filterMenu = (
     <Menu
       onClick={(e) => onFilterByStatus(e.key)}
       items={[
+        {
+          key: 'ALL',
+          label: 'All',
+        },
+        {
+          key: 'completed',
+          label: 'Completed',
+        },
+        {
+          key: 'cancelled',
+          label: 'Cancelled',
+        },
         {
           key: 'pending',
           label: 'Pending',

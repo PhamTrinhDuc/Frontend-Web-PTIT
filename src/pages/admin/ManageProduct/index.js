@@ -1,28 +1,46 @@
 import React, { useState, useNavigate } from 'react';
+import { useEffect } from 'react';
 import CardProduct from '../../../components/admin/CardProduct';
 import './ManageProduct.scss';
 import HeaderMangeProduct from '../../../components/admin/HeaderManageProduct';
 import useAllProduct from '../../../hook/useAllProduct';
-import {get} from '../../../utils/requests';
+import useProductByCategory from '../../../hook/useProductsByCategory';
+import { numPageProduct } from '../../../utils/variable';
+import Loading from '../../../components/Loading';
 
 function ManageProduct() {
-  const { allProducts, loading, error } = useAllProduct();
   const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
+  const pageSize = numPageProduct;
+  const [filters, setFilters] = useState({ priceRange: null, sortOption: null });
+  const [category, setCategory] = useState(null);
+  
+  const { products: productsSearch, loading, error, totalPages } = useProductByCategory({ 
+    categorySlug: category,
+    page: page, 
+    pageSize: pageSize, 
+    priceRange: filters.priceRange,
+    sortOption: filters.sortOption,
+  });
 
-  React.useEffect(() => {
-    if (allProducts) {
-      setProducts(allProducts);
+  useEffect(() => {
+    if (productsSearch) {
+      setProducts(productsSearch);
     }
-  }, [allProducts]);
+  }, [productsSearch]);
 
   const filterProductsByCategory = async (category) => {
     try {
-      const response = await get(`products/${category}`);
-      setProducts(response.data || []);
+      setCategory(category);
     } catch (err) {
       setProducts([]);
     }
   };
+  const handlePaginationChange = (newPage) => {
+    setPage(newPage);
+  };
+  if (loading) return <Loading loading={loading} />;
+  if (error) return <div>Lỗi: {error}</div>;
 
   return (
     <>
@@ -32,7 +50,7 @@ function ManageProduct() {
       />
       <div className="navigation-container">
         <div className="carousel-container">
-          <CardProduct products={products} />
+          <CardProduct products={products} onPaginationChange = {handlePaginationChange} />
         </div>
       </div>
     </>

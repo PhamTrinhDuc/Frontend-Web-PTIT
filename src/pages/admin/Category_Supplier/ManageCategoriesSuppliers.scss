@@ -1,0 +1,60 @@
+@import "../../../utils/colors";
+
+.manage-container {
+  padding: 24px;
+  background: $white;
+  border-radius: 8px;
+  box-shadow: $box-shadow;
+
+  .ant-tabs {
+    margin-bottom: 16px;
+
+    .ant-tabs-nav {
+      margin-bottom: 24px;
+    }
+
+    .ant-tabs-tab {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .ant-btn-primary {
+    background-color: $hover-bg;
+    border-color: $hover-bg;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: $hover-bg;
+      border-color: $hover-bg;
+    }
+  }
+
+  .ant-btn-danger {
+    border-radius: 4px;
+  }
+
+  .ant-table {
+    border-radius: 4px;
+    overflow: hidden;
+
+    .ant-table-thead > tr > th {
+      background: $white;
+      font-weight: 600;
+    }
+  }
+
+  .ant-modal {
+    .ant-modal-content {
+      border-radius: 8px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 16px;
+    }
+
+    .ant-input {
+      border-radius: 4px;
+    }
+  }
+}
