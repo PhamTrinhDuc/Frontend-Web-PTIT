@@ -17,17 +17,17 @@ import {
   HomeOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
+import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../slices/authSlice';
 import EditProfile from './EditProfile';
 import './TabInfo.scss';
+import { put } from '../../utils/requests';
 
 function TabInfo({
   userInfo,
   orderHistory,
-  vouchers,
-  wishlist,
   currentPage,
   pageSize,
   setCurrentPage,
@@ -36,15 +36,31 @@ function TabInfo({
   const navigate = useNavigate();
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
-
-  const showDeleteModal = () => {
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const showDeleteModal = useCallback((id) => {
+    setSelectedOrderId(id);
     setIsDeleteModalVisible(true);
-  };
-  const handleDeleteItem = () => {
-    // Logic xóa item (giả định gọi API)
-    setIsDeleteModalVisible(false);
-    // Thêm logic redirect hoặc logout sau khi xóa
-  };
+  }, []);
+
+  const handleDeleteItem = useCallback(async () => {
+    try {
+      // Gọi API PUT để hủy đơn hàng
+      const response = await put(`orders/cancel/${selectedOrderId}`);
+      if (response?.status === 200) {
+        // Nếu hủy thành công, đóng modal và reset selectedOrderId
+        setIsDeleteModalVisible(false);
+        setSelectedOrderId(null);
+        console.log('Order cancelled successfully:', response.data);
+      } else {
+        // Nếu không thành công, log thông báo lỗi
+        console.error('Failed to cancel order:', response?.data || response);
+      }
+    } catch (error) {
+      // Xử lý lỗi nếu API call gặp sự cố
+      console.error('Error cancelling order:', error);
+    }
+  }, [selectedOrderId]);
+
   const handleCancelDelete = () => {
     setIsDeleteModalVisible(false);
   };
@@ -57,7 +73,7 @@ function TabInfo({
     setIsLogoutModalVisible(false);
     setTimeout(() => {
       navigate('/login');
-    }, 0);
+    }, 100);
   };
   const handleCancelLogout = () => {
     setIsLogoutModalVisible(false);
@@ -91,32 +107,45 @@ function TabInfo({
             <Timeline mode="left">
               {orderHistory.map((order, index) => (
                 <Timeline.Item
-                  key={`${order.date}-${index}`} // Đảm bảo key duy nhất
-                  label={order.date}
-                  color="green"
-                >
-                  <ul>
-                    <li><strong>Product name:</strong> {order.product}</li>
-                    <li><strong>Payment method:</strong> {order.paymentMethod}</li>
-                    <li><strong>Total price:</strong> {order.price.toLocaleString()} VNĐ</li>
-                    <li><strong>Quantity:</strong> {order.quantity}</li>
+                key={`${order.date}-${index}`}
+                label={order.date}
+                color="green"
+              >
+                <ul>
+                  <li><strong>Product name:</strong> {order.product}</li>
+                  <li><strong>Payment method:</strong> {order.paymentMethod}</li>
+                  <li><strong>Total price:</strong> {order.price.toLocaleString()} VNĐ</li>
+                  <li><strong>Quantity:</strong> {order.quantity}</li>
+                  <li>
+                    <strong>Status:</strong>{' '}
+                    <Badge
+                      status={
+                        order.status === 'COMPLETED'
+                          ? 'success'
+                          : order.status === 'PENDING'
+                          ? 'error'
+                          : order.status === 'CANCELLED'
+                          ? 'default'
+                          : 'processing'
+                      }
+                      text={order.status}
+                    />
+                  </li>
+                  {(order.status==='PENDING' || order.status==='PROCESSING') && (
                     <li>
-                      <strong>Status:</strong>{' '}
-                      <Badge
-                        status={
-                          order.status === 'COMPLETED'
-                            ? 'success'
-                            : order.status === 'PENDING'
-                            ? 'error'
-                            : order.status === 'CANCELLED'
-                            ? 'default'
-                            : 'processing'
-                        }
-                        text={order.status}
-                      />
+                      <Button
+                        type="primary"
+                        danger
+                        size="small"
+                        onClick={() => showDeleteModal(order.id)}
+                        style={{ marginTop: '8px' }} // Add spacing
+                      >
+                        Cancel Order
+                      </Button>
                     </li>
-                  </ul>
-                </Timeline.Item>
+                  )}
+                </ul>
+              </Timeline.Item>
               ))}
             </Timeline>
             {/* Component Pagination */}
@@ -124,7 +153,7 @@ function TabInfo({
               <Pagination
                 current={currentPage}
                 pageSize={pageSize}
-                total={orderHistory.length} // Cần cập nhật từ API nếu server-side
+                total={2 * pageSize}
                 onChange={handlePageChange}
                 showSizeChanger={false}
               />
@@ -132,7 +161,7 @@ function TabInfo({
           </Card>
         </Tabs.TabPane>
 
-        <Tabs.TabPane tab="Promotion" key="3">
+        {/* <Tabs.TabPane tab="Promotion" key="3">
           <Card className="profile-card">
             <List
               dataSource={vouchers}
@@ -173,7 +202,7 @@ function TabInfo({
               )}
             />
           </Card>
-        </Tabs.TabPane>
+        </Tabs.TabPane> */}
 
         <Tabs.TabPane tab="Logout" key="5">
           <Card className="profile-card logout-card">
@@ -200,14 +229,14 @@ function TabInfo({
       </Tabs>
 
       <Modal
-        title="Confirm item deletion"
+        title="Confirm item cancellation"
         visible={isDeleteModalVisible}
         onOk={handleDeleteItem}
         onCancel={handleCancelDelete}
         okText="Confirm"
         cancelText="Cancel"
       >
-        <p>Are you sure you want to delete this item? This action cannot be reversed!</p>
+        <p>Are you sure you want to cancel this item? This action cannot be reversed!</p>
       </Modal>
       <Modal
         title="Confirm logout action"

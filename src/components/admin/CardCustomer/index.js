@@ -1,28 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Popconfirm, message } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
 import { FaBan } from "react-icons/fa6";
+import { remove } from '../../../utils/requests';
 import './CardCustomer.scss';
 
 const CardCustomer = ({ filteredCustomers }) => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const token = useSelector((state) => state.auth.token);
+  const [customers, setCustomers] = useState(filteredCustomers);
 
-  const onSelectChange = (newSelectedRowKeys) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
+  useEffect(() => {
+    setCustomers(filteredCustomers);
+  }, [filteredCustomers]);
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    columnTitle: '',
-  };
-
-  const handleBanCustomer = (key) => {
-    const newCustomers = filteredCustomers.filter(customer => customer.key !== key);
-    // Cập nhật danh sách sau khi xóa (có thể cần callback lên cha nếu muốn đồng bộ)
-    message.success('Customer banned successfully!');
-    // Nếu cần cập nhật lên ManageCustomer, bạn phải truyền setFilteredCustomers xuống đây
-    return newCustomers;
+  const handleBanCustomer = async (id) => {
+    try {
+      const response = await remove(`users/me/${id}`, token); // Gọi API xoá user
+  
+      if (response && response.status) {
+        message.success('Customer banned successfully!');
+      } else {
+        message.error('Failed to ban customer');
+      }
+    } catch (error) {
+      console.error(error);
+      message.error('An error occurred while banning the customer');
+    }
+    finally {
+      const newCustomers = customers.filter(customer => customer.id !== id);
+      setCustomers(newCustomers); // Cập nhật danh sách sau khi xoá
+    }
   };
 
   const columns = [
@@ -51,10 +59,10 @@ const CardCustomer = ({ filteredCustomers }) => {
       key: 'actions',
       render: (_, record) => (
         <span>
-          <Button type="link" icon={<EditOutlined />} />
+          {/* <Button type="link" icon={<EditOutlined />} /> */}
           <Popconfirm
             title="Are you sure to ban this account?"
-            onConfirm={() => handleBanCustomer(record.key)}
+            onConfirm={() => handleBanCustomer(record.id)}
             okText="Yes"
             cancelText="No"
           >
@@ -69,8 +77,7 @@ const CardCustomer = ({ filteredCustomers }) => {
     <div className="customer-management">
       <Table
         columns={columns}
-        dataSource={filteredCustomers} // Sử dụng filteredCustomers từ props
-        rowSelection={rowSelection}
+        dataSource={customers} // Sử dụng filteredCustomers từ props
         pagination={{
           pageSize: 10,
           style: { alignItems: 'center', justifyContent: 'center' },

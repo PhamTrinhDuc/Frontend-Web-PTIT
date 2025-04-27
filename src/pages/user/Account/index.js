@@ -23,6 +23,7 @@ const Account = () => {
 
   const orderHistory = orders.flatMap((order) =>
     order.items.map((item) => ({
+      id: order.id,
       date: order.orderDate,
       product: item.productName,
       price: item.unitPrice * item.quantity,
@@ -60,8 +61,6 @@ const Account = () => {
       <TabInfo 
         userInfo={userInfo} 
         orderHistory={orderHistory} 
-        vouchers={vouchers} 
-        wishlist={wishlist}
         currentPage={currentPage}
         pageSize={pageSize}
         setCurrentPage={setCurrentPage} />
