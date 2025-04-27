@@ -1,13 +1,14 @@
-import React, {useState} from 'react';
-import { 
+import React, { useState } from 'react';
+import {
   Card,
-  Descriptions, 
-  Timeline, 
-  List, 
+  Descriptions,
+  Timeline,
+  List,
   Badge,
   Tabs,
   Button,
-  Modal
+  Modal,
+  Pagination,
 } from 'antd';
 import {
   DeleteOutlined,
@@ -22,8 +23,15 @@ import { logout } from '../../slices/authSlice';
 import EditProfile from './EditProfile';
 import './TabInfo.scss';
 
-// https:grok.com/chat/a6a948f6-554e-4712-b6e9-8e7023d5434c
-function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
+function TabInfo({
+  userInfo,
+  orderHistory,
+  vouchers,
+  wishlist,
+  currentPage,
+  pageSize,
+  setCurrentPage,
+}) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
@@ -45,17 +53,21 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
     setIsLogoutModalVisible(true);
   };
   const handleLogoutAccount = () => {
-  dispatch(logout());
-  setIsLogoutModalVisible(false);
-  setTimeout(() => {
-    navigate('/login');
-  }, 0);
-};
+    dispatch(logout());
+    setIsLogoutModalVisible(false);
+    setTimeout(() => {
+      navigate('/login');
+    }, 0);
+  };
   const handleCancelLogout = () => {
     setIsLogoutModalVisible(false);
   };
 
-  return(
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  return (
     <>
       <Tabs defaultActiveKey="1" centered className="profile-tabs">
         <Tabs.TabPane tab="Profile" key="1">
@@ -77,30 +89,46 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
         <Tabs.TabPane tab="History orders" key="2">
           <Card className="profile-card">
             <Timeline mode="left">
-              {orderHistory.map((order) => (
+              {orderHistory.map((order, index) => (
                 <Timeline.Item
-                  key={order.id}
+                  key={`${order.date}-${index}`} // Đảm bảo key duy nhất
                   label={order.date}
-                  color='green'
+                  color="green"
                 >
                   <ul>
                     <li><strong>Product name:</strong> {order.product}</li>
                     <li><strong>Payment method:</strong> {order.paymentMethod}</li>
                     <li><strong>Total price:</strong> {order.price.toLocaleString()} VNĐ</li>
                     <li><strong>Quantity:</strong> {order.quantity}</li>
-                    <li><strong>Status:</strong> <Badge status={
-                    order.status === "COMPLETED"
-                      ? "success"
-                      : order.status === "PENDING"
-                      ? "error"
-                      : order.status === "CANCELLED"
-                      ? "default"
-                      : "processing"
-                  } text={order.status} /></li>
+                    <li>
+                      <strong>Status:</strong>{' '}
+                      <Badge
+                        status={
+                          order.status === 'COMPLETED'
+                            ? 'success'
+                            : order.status === 'PENDING'
+                            ? 'error'
+                            : order.status === 'CANCELLED'
+                            ? 'default'
+                            : 'processing'
+                        }
+                        text={order.status}
+                      />
+                    </li>
                   </ul>
                 </Timeline.Item>
               ))}
             </Timeline>
+            {/* Component Pagination */}
+            <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+              <Pagination
+                current={currentPage}
+                pageSize={pageSize}
+                total={orderHistory.length} // Cần cập nhật từ API nếu server-side
+                onChange={handlePageChange}
+                showSizeChanger={false}
+              />
+            </div>
           </Card>
         </Tabs.TabPane>
 
@@ -114,7 +142,9 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
                     title={voucher.name}
                     description={`Hết hạn: ${voucher.expiry}`}
                   />
-                  <Button type="primary" onClick={() => navigate('/products')} >Sử dụng</Button>
+                  <Button type="primary" onClick={() => navigate('/products')}>
+                    Sử dụng
+                  </Button>
                 </List.Item>
               )}
             />
@@ -128,7 +158,13 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
               renderItem={(item) => (
                 <List.Item>
                   <List.Item.Meta
-                    avatar={<img src={item.image} alt={item.name} style={{ width: 50, height: 50, objectFit: 'cover' }} />}
+                    avatar={
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        style={{ width: 50, height: 50, objectFit: 'cover' }}
+                      />
+                    }
                     title={item.name}
                     description={`${item.price.toLocaleString()} VNĐ`}
                   />
@@ -157,11 +193,10 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
             </div>
           </Card>
         </Tabs.TabPane>
-        
+
         <Tabs.TabPane tab="Edit Profile" key="6">
           <EditProfile />
-        </Tabs.TabPane >
-
+        </Tabs.TabPane>
       </Tabs>
 
       <Modal
@@ -185,7 +220,6 @@ function TabInfo({ userInfo, orderHistory, vouchers, wishlist }) {
         <p>Are you sure you want to log out? This action cannot be reversed!</p>
       </Modal>
     </>
-      
   );
 }
 

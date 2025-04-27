@@ -119,10 +119,17 @@ const AdminMenu = () => {
         onClick={() => navigate('/admin/manage-customer')}>
           Customer
         </Menu.Item>
-        <Menu.Item key="5" icon={<HiSpeakerWave style={{ fontSize: '24px' }} />}
-        onClick={() => navigate('/admin/manage-categories-supplier')}>
-          Cagegory & Supplier
+        <Menu.Item 
+          key="5" 
+          icon={<HiSpeakerWave style={{ fontSize: '24px' }} />} 
+          onClick={() => navigate('/admin/manage-categories-supplier')}
+          style={{ height: '60px', display: 'flex', alignItems: 'center' }}
+        >
+          <span style={{ lineHeight: '1', whiteSpace: 'normal' }}>
+            Category &<br />Supplier
+          </span>
         </Menu.Item>
+
         {/* <Menu.Item key="6" icon={<MdInventory style={{ fontSize: '24px' }} />}
         onClick={() => navigate('/admin/inventory')}>
           Inventory

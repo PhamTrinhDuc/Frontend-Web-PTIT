@@ -14,21 +14,18 @@ function ViewOrder() {
   const navigate = useNavigate();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const [allOrders, setOrders] = useState([]);
-  const [page, setPage] = useState(1);
   const pageSize = numPageProduct;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const shouldFetch = isLoggedIn && user;
-
-  const { orders, loading, error } = useAllOrder({
-    id: user?.id,
-    page,
-    pageSize,
-    skip: !shouldFetch,
-  });
+  const { orders, loading, error } = useAllOrder(
+    isLoggedIn && user
+      ? { id: user.id, currentPage, pageSize }
+      : { skip: true }
+  );
 
 
   const handlePaginationChange = (newPage) => {
-    setPage(newPage);
+    setCurrentPage(newPage);
   };
 
   React.useEffect(() => {

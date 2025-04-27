@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Modal, Form, Input, Tabs, message } from 'antd';
-import { get, post, del } from '../../../utils/requests';
+import { get, post, put, remove } from '../../../utils/requests';
 import { numPageProduct } from '../../../utils/variable';
 import axios from 'axios';
 import './ManageCategoriesSuppliers.scss';
@@ -33,7 +33,13 @@ const ManageCategoriesSuppliers = () => {
   const fetchSuppliers = async () => {
     try {
       const response = await get('suppliers');
-      setSuppliers(response);
+      const suppliersData = response.data.map((supplier) => ({
+        id: supplier.id,
+        name: supplier.supplierName,
+        contactInfo: supplier.contactInfo,
+        active: supplier.active,
+      }));
+      setSuppliers(suppliersData);
     } catch (error) {
       message.error('Failed to fetch suppliers');
     }
@@ -44,7 +50,11 @@ const ManageCategoriesSuppliers = () => {
     setModalType(type);
     setEditingItem(item);
     if (item) {
-      form.setFieldsValue(item);
+      form.setFieldsValue(
+        type === 'category'
+          ? { id: item.id, name: item.name, slug: item.slug }
+          : { id: item.id, name: item.name, contactInfo: item.contactInfo, activate: item.active ? 'Activate' : 'InActivate' }
+      );
     } else {
       form.resetFields();
     }
@@ -59,19 +69,34 @@ const ManageCategoriesSuppliers = () => {
         : `${modalType}`;
       const method = editingItem ? 'put' : 'post';
 
-      await axios[method](url, values);
+      let data = null;
+      if (modalType === 'category') {
+        data = { ...values };
+      } else {
+        data = { contactInfo: values.contactInfo, supplierName: values.name };
+      }
+      if (method === 'put') {
+        const response = await put(url, {
+          ...data,
+        });
+      }
+      else {
+        const response = await post(url, {
+          ...data,
+        });
+      }
+
       message.success(`${modalType} ${editingItem ? 'updated' : 'added'} successfully`);
       modalType === 'category' ? fetchCategories() : fetchSuppliers();
       setIsModalVisible(false);
-
     } catch (error) {
       message.error(`Failed to ${editingItem ? 'update' : 'add'} ${modalType}`);
     }
-  };  
+  };
 
   const handleDelete = async (type, id) => {
     try {
-      await axios.delete(`${type}s/${id}`);
+      const response = await remove(`${type}/${id}`);
       message.success(`${type} deleted successfully`);
       type === 'category' ? fetchCategories() : fetchSuppliers();
     } catch (error) {
@@ -98,21 +123,15 @@ const ManageCategoriesSuppliers = () => {
   ];
 
   const supplierColumns = [
-    { title: 'Name', dataIndex: 'supplierName', key: 'supplierName' },
+    { title: 'Name', dataIndex: 'name', key: 'name' },
     { title: 'Contact', dataIndex: 'contactInfo', key: 'contactInfo' },
-    {
-      title: 'Active',
-      dataIndex: 'active',
-      key: 'active',
-      render: (active) => (active ? 'Activate' : 'InActivate'),
-    },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
         <>
-          <Button onClick={() => showModal('supplier', record)}>Edit</Button>
-          <Button danger onClick={() => handleDelete('supplier', record.id)} style={{ marginLeft: 8 }}>
+          <Button onClick={() => showModal('suppliers', record)}>Edit</Button>
+          <Button danger onClick={() => handleDelete('suppliers', record.id)} style={{ marginLeft: 8 }}>
             Delete
           </Button>
         </>
@@ -123,7 +142,7 @@ const ManageCategoriesSuppliers = () => {
   return (
     <div className="manage-container">
       <Tabs defaultActiveKey="1">
-        <TabPane tab="Categories" key="1" style={{fontSize: '20px', fontWeight: 'bold'}}>
+        <TabPane tab="Categories" key="1" style={{ fontSize: '20px', fontWeight: 'bold' }}>
           <Button
             type="primary"
             onClick={() => showModal('category')}
@@ -131,16 +150,18 @@ const ManageCategoriesSuppliers = () => {
           >
             Add Category
           </Button>
-          <Table 
-            columns={categoryColumns} 
-            dataSource={categories} 
+          <Table
+            columns={categoryColumns}
+            dataSource={categories}
             rowKey="id"
             pagination={{
               pageSize: numPageProduct,
               style: { alignItems: 'center', justifyContent: 'center' },
-            }}/>
+            }}
+          />
         </TabPane>
-        <TabPane tab="Suppliers" key="2" style={{fontSize: '20px', fontWeight: 'bold'}}>
+
+        <TabPane tab="Suppliers" key="2" style={{ fontSize: '20px', fontWeight: 'bold' }}>
           <Button
             type="primary"
             onClick={() => showModal('suppliers')}
@@ -148,14 +169,15 @@ const ManageCategoriesSuppliers = () => {
           >
             Add Supplier
           </Button>
-          <Table 
-          columns={supplierColumns} 
-          dataSource={suppliers} 
-          rowKey="id" 
-          pagination={{
-            pageSize: numPageProduct,
-            style: { alignItems: 'center', justifyContent: 'center' },
-          }}/>
+          <Table
+            columns={supplierColumns}
+            dataSource={suppliers}
+            rowKey="id"
+            pagination={{
+              pageSize: numPageProduct,
+              style: { alignItems: 'center', justifyContent: 'center' },
+            }}
+          />
         </TabPane>
       </Tabs>
 
@@ -169,35 +191,23 @@ const ManageCategoriesSuppliers = () => {
           <Form.Item
             name="name"
             label="Name"
-            // rules={[{ required: true, message: 'Please input the name!' }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="activate"
-            label="Activate"
-            // rules={[{ required: true, message: 'Please input the name!' }]}
-          >
-            <Input />
-          </Form.Item>
-
           {modalType === 'category' ? (
             <Form.Item
               name="slug"
               label="Slug"
-              // rules={[{ required: true, message: 'Please input the slug!' }]}
             >
               <Input />
             </Form.Item>
           ) : (
             <Form.Item
-              name="contact"
+              name="contactInfo"
               label="Contact"
-              // rules={[{ required: true, message: 'Please input the contact!' }]}
             >
               <Input />
             </Form.Item>
-            
           )}
         </Form>
       </Modal>
