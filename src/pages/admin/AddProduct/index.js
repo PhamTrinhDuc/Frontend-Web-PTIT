@@ -20,15 +20,23 @@ const AddProduct = () => {
   const [isModalVisible, setIsModalVisible] = useState(false); // State cho modal
   const [loading, setLoading] = useState(false);
   const {categoriesList, loading: categoriesLoading, error } = useCategories();
-  const {suppliers}  = useAllSupplier();
+  const { suppliers, loading: suppliersLoading, error: suppliersError } = useAllSupplier();
+
   const [imageUrls, setImageUrls] = useState([]);
   const navigate = useNavigate();
 
-  if (categoriesLoading) return <Loading loading={categoriesLoading} />;
+  if (categoriesLoading || suppliersLoading) return <Loading loading={categoriesLoading || suppliersLoading} />;
   if (error) {
     navigate("/error");
     return null;
   }
+  if (suppliersError) {
+    console.error("Error loading suppliers:", suppliersError);
+    message.error("Failed to load suppliers");
+  }
+
+  // Ensure suppliers is an array
+  const suppliersList = Array.isArray(suppliers) ? suppliers : (suppliers?.data ? suppliers.data : []);
 
   const handleUpload = async ({ file, onSuccess, onError }) => {
     setLoading(true);
@@ -111,8 +119,10 @@ const AddProduct = () => {
       if (!response) {
         throw new Error("Failed to add product");
       }
+      message.success("Product added successfully!");
     } catch (err) {
       console.error("Error adding product:", err);
+      message.error("Failed to add product: " + err.message);
     } finally {
       form.resetFields();
       setFileList([]);
@@ -157,6 +167,8 @@ const AddProduct = () => {
     setIsModalVisible(false);
     categoryForm.resetFields();
   };
+
+  if (!suppliersList || suppliersList.length === 0) return <p>No suppliers available</p>;
 
   return (
     <>
@@ -321,8 +333,8 @@ const AddProduct = () => {
                   rules={[{ required: true, message: 'Please select a supplier' }]}
                 >
                   <Select placeholder="Select supplier">
-                    {suppliers.map((supplier, id) => (
-                      <Option id={id} value={supplier.supplierName}>
+                    {suppliersList.map((supplier, id) => (
+                      <Option key={id} value={supplier.supplierName}>
                         {supplier.supplierName}
                       </Option>
                     ))}

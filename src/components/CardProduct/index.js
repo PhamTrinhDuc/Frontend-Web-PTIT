@@ -19,7 +19,7 @@ function CardProduct({ product }) {
   const navigate = useNavigate();
 
   const handleAddToCart = (e) => {
-    e.stopPropagation();
+    e.stopPropagation(); // Ngăn chặn sự kiện click lan truyền (bubbling) lên các thành phần cha.
     dispatch(addToCart(product));
     setShowAlert(true);
     setTimeout(() => setShowAlert(false), 1500);

@@ -65,11 +65,11 @@ function BillingForm({ onSave, user }) {
           <Input />
         </Form.Item>
 
-        <Form.Item name="saveInfo" valuePropName="checked">
+        {/* <Form.Item name="saveInfo" valuePropName="checked">
           <Checkbox onChange={(e) => console.log('Save info:', e.target.checked)}>
             Save this information for faster check-out next time
           </Checkbox>
-        </Form.Item>
+        </Form.Item> */}
       </Form>
     </div>
     </>
@@ -86,15 +86,15 @@ const OrderSummary = ({ cartItems, onPlaceOrder }) => {
   const shipping = 0; // Free shipping
   const total = subtotal - discount;
 
-  const applyCoupon = () => {
-    if (couponCode === 'DISCOUNT10') {
-      setDiscount(subtotal * 0.1);
-      message.success('Coupon applied! 10% discount.');
-    } else {
-      setDiscount(0);
-      message.error('Invalid coupon code.');
-    }
-  };
+  // const applyCoupon = () => {
+  //   if (couponCode === 'DISCOUNT10') {
+  //     setDiscount(subtotal * 0.1);
+  //     message.success('Coupon applied! 10% discount.');
+  //   } else {
+  //     setDiscount(0);
+  //     message.error('Invalid coupon code.');
+  //   }
+  // };
 
   const handlePlaceOrder = () => {
     if (total > 0) {
@@ -142,7 +142,7 @@ const OrderSummary = ({ cartItems, onPlaceOrder }) => {
         </div>
         <Radio value="cash">Cash on delivery</Radio>
       </Radio.Group>
-      <div className="coupon-section">
+      {/* <div className="coupon-section">
         <Input
           placeholder="Coupon Code"
           value={couponCode}
@@ -151,7 +151,7 @@ const OrderSummary = ({ cartItems, onPlaceOrder }) => {
         <Button type="default" onClick={applyCoupon}>
           Apply Coupon
         </Button>
-      </div>
+      </div> */}
       <Button type="primary" block onClick={handlePlaceOrder}>
         Place Order
       </Button>

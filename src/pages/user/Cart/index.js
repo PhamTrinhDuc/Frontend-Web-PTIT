@@ -85,7 +85,7 @@ const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode, select
       <Button type="default" block onClick={handlePay}>
         Process to checkout
       </Button>
-      <div className="coupon-section">
+      {/* <div className="coupon-section">
         <Input
           placeholder="Coupon Code"
           value={couponCode}
@@ -94,7 +94,7 @@ const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode, select
         <Button type="default" onClick={() => applyCoupon(couponCode)}>
           Apply Coupon
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

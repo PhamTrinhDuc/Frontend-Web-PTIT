@@ -9,6 +9,7 @@ import {
   Button,
   Modal,
   Pagination,
+  Divider,
 } from 'antd';
 import {
   DeleteOutlined,
@@ -107,53 +108,73 @@ function TabInfo({
             <Timeline mode="left">
               {orderHistory.map((order, index) => (
                 <Timeline.Item
-                key={`${order.date}-${index}`}
-                label={order.date}
-                color="green"
-              >
-                <ul>
-                  <li><strong>Product name:</strong> {order.product}</li>
-                  <li><strong>Payment method:</strong> {order.paymentMethod}</li>
-                  <li><strong>Total price:</strong> {order.price.toLocaleString()} VNĐ</li>
-                  <li><strong>Quantity:</strong> {order.quantity}</li>
-                  <li>
-                    <strong>Status:</strong>{' '}
-                    <Badge
-                      status={
-                        order.status === 'COMPLETED'
-                          ? 'success'
-                          : order.status === 'PENDING'
-                          ? 'error'
-                          : order.status === 'CANCELLED'
-                          ? 'default'
-                          : 'processing'
-                      }
-                      text={order.status}
-                    />
-                  </li>
-                  {(order.status==='PENDING' || order.status==='PROCESSING') && (
-                    <li>
-                      <Button
-                        type="primary"
-                        danger
-                        size="small"
-                        onClick={() => showDeleteModal(order.id)}
-                        style={{ marginTop: '8px' }} // Add spacing
-                      >
-                        Cancel Order
-                      </Button>
-                    </li>
-                  )}
-                </ul>
-              </Timeline.Item>
+                  key={`${order.id}-${index}`}
+                  label={order.orderDate}
+                  color="green"
+                >
+                  <div>
+                    <ul>
+                      {Array.isArray(order.items) && order.items.length > 0 ? (
+                        order.items.map((item, itemIndex) => (
+                          <li key={`${order.id}-item-${itemIndex}`}>
+                            <strong>Product name:</strong> {item.productName} <br />
+                            <strong>Price:</strong> {item.unitPrice.toLocaleString()} VNĐ <br />
+                            <strong>Quantity:</strong> {item.quantity}
+                            <hr></hr>
+                          </li>
+                        ))
+                      ) : (
+                        <li>No items in this order</li>
+                      )}
+                      <li><strong>Payment method:</strong> {order.paymentMethod}</li>
+                      <li>
+                        <strong>Total price:</strong>{' '}
+                        {order.items
+                          .reduce((total, item) => total + item.unitPrice * item.quantity, 0)
+                          .toLocaleString()}{' '}
+                        VNĐ
+                      </li>
+                      <li>
+                        <strong>Status:</strong>{' '}
+                        <Badge
+                          status={
+                            order.status === 'COMPLETED'
+                              ? 'success'
+                              : order.status === 'PENDING'
+                                ? 'error'
+                                : order.status === 'CANCELLED'
+                                  ? 'default'
+                                  : 'processing'
+                          }
+                          text={order.status}
+                        />
+                      </li>
+                      {(order.status === 'PENDING' || order.status === 'PROCESSING') && (
+                        <li>
+                          <Button
+                            type="primary"
+                            danger
+                            size="small"
+                            onClick={() => showDeleteModal(order.id)}
+                            style={{ marginTop: '8px' }}
+                          >
+                            Cancel Order
+                          </Button>
+                        </li>
+                      )}
+                    </ul>
+                    {index < orderHistory.length - 1 && <Divider />}
+                  </div>
+                </Timeline.Item>
               ))}
             </Timeline>
+
             {/* Component Pagination */}
             <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
               <Pagination
                 current={currentPage}
                 pageSize={pageSize}
-                total={2 * pageSize}
+                total={orderHistory.length}
                 onChange={handlePageChange}
                 showSizeChanger={false}
               />

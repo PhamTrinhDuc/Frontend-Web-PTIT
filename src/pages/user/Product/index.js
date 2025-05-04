@@ -13,7 +13,6 @@ import ProductRelated from '../../../components/ProductRelated';
 function Product() {
   const { id } = useParams();
   const { product, loading, error } = useProductById({ id });
-  console.log('product', product);
 
   const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);

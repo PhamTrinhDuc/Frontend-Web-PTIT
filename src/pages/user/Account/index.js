@@ -12,9 +12,9 @@ const Account = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = numPageProductHeader;
   // Truyền currentPage và pageSize vào useAllOrder
-  const { orders, loading, error } = useAllOrder(
+  const { orders, loading, error, totalPages} = useAllOrder(
     isLoggedIn && user
-      ? { id: user.id, currentPage, pageSize }
+      ? { currentPage, pageSize }
       : { skip: true }
   );
   if (!isLoggedIn || !user) {
@@ -60,7 +60,7 @@ const Account = () => {
 
       <TabInfo 
         userInfo={userInfo} 
-        orderHistory={orderHistory} 
+        orderHistory={orders} 
         currentPage={currentPage}
         pageSize={pageSize}
         setCurrentPage={setCurrentPage} />
