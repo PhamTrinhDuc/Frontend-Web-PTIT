@@ -10,10 +10,10 @@ import './ProductDetail.scss';
 
 const { Title, Link, Text, Paragraph } = Typography;
 
-const Rating = ({ props }) => {
+const Rating = ({ quantityStock }) => {
   const reviewSectionRef = useRef(null);
-  const { rating, reviews, inStock } = props;
-
+  const rating = 4.5; // Giá trị đánh giá mặc định
+  const reviews = 120; // Số lượng đánh giá mặc định
   const scrollToReviews = () => {
     if (reviewSectionRef.current) {
       reviewSectionRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -29,7 +29,7 @@ const Rating = ({ props }) => {
         </span>
         <span className="stock-status">
           {' | '}
-          {inStock > 0 ? (
+          {quantityStock > 0 ? (
             <span className="in-stock">In Stock</span>
           ) : (
             <span className="out-of-stock">Out of Stock</span>
@@ -44,7 +44,6 @@ const ProductDetail = ({ product }) => {
   const {
     name,
     description,
-    discount,
     imagePaths,
     price,
     specification,
@@ -73,7 +72,7 @@ const ProductDetail = ({ product }) => {
 
   const handleBuyNow = () => {
     dispatch(addToCart({ ...product, selectedOptions, quantity })); // Thêm thông số đã chọn vào giỏ hàng
-    navigate('/billing');
+    navigate('/cart');
   };
 
   // Hàm xử lý thay đổi lựa chọn thông số
@@ -115,7 +114,7 @@ const ProductDetail = ({ product }) => {
       <Col xs={24} md={12} lg={12}>
         <Card className="product-info-card">
           <Title level={3}>{name}</Title>
-          <Rating props={product} />
+          <Rating  quantityStock={quantityStock} />
           <Title level={2} className="product-price">
             {price.toLocaleString()} $
           </Title>

@@ -21,7 +21,7 @@ const AddProduct = () => {
   const [loading, setLoading] = useState(false);
   const {categoriesList, loading: categoriesLoading, error } = useCategories();
   const { suppliers, loading: suppliersLoading, error: suppliersError } = useAllSupplier();
-
+  const { token } = useSelector((state) => state.auth);
   const [imageUrls, setImageUrls] = useState([]);
   const navigate = useNavigate();
 
@@ -115,7 +115,10 @@ const AddProduct = () => {
     console.log("Product data to be sent:", productData);
     
     try {
-      const response = await post("products/new-product", productData);
+      const response = await post("products/new-product", {
+        body: productData,
+        token: token
+      });
       if (!response) {
         throw new Error("Failed to add product");
       }

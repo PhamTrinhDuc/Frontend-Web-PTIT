@@ -7,20 +7,10 @@ import { remove } from '../../../utils/requests';
 import { numPageProduct } from '../../../utils/variable';
 import { useSelector } from 'react-redux';
 
+
 const CardProduct = ({ products, onPaginationChange}) => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const navigate = useNavigate();
   const { token } = useSelector((state => state.auth));
-
-  const onSelectChange = (newSelectedRowKeys) => {
-    setSelectedRowKeys(newSelectedRowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-    columnTitle: '',
-  };
 
   const handleDelete = async (id) => {
     const response = await remove(`products/${id}`, token);
@@ -85,7 +75,6 @@ const CardProduct = ({ products, onPaginationChange}) => {
       <Table
         columns={columns}
         dataSource={products}
-        rowSelection={rowSelection}
         pagination={{
           pageSize: numPageProduct,
           style: { display: 'flex', justifyContent: 'center' },

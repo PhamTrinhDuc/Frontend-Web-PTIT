@@ -22,12 +22,13 @@ const EditProduct = () => {
   const [selectedCategory, setSelectedCategory] = useState();
   const [loading, setLoading] = useState(false);
   const {categoriesList, loading: categoriesLoading, error } = useCategories();
-  const {suppliers}  = useAllSupplier();
+  const {suppliers, loading: suppliersLoading, error: suppliersError}  = useAllSupplier();
   const navigate = useNavigate();
 
   const { id } = useParams(); 
   const { product: productResponse } = useProductById({ id });
   const product = productResponse?.data;
+
 
   useEffect(() => {
     if (product) {
@@ -37,7 +38,6 @@ const EditProduct = () => {
       }
     }
   }, [product, categoriesList]);
-  console.log("category:", selectedCategory)
 
   useEffect(() => {
     if (product?.imagePaths) {
@@ -46,8 +46,9 @@ const EditProduct = () => {
   }, [product]);
 
   if (!product) return <Loading loading={true} />;
-  if (categoriesLoading) return <Loading loading={categoriesLoading} />;
-  if (error) {
+  if (categoriesLoading || suppliersLoading) return <Loading loading={true} />;
+  if (error || suppliersError) {
+    console.error("Error loading data:", error || suppliersError);
     navigate("/error");
     return null;
   }
@@ -164,8 +165,10 @@ const EditProduct = () => {
           price: product.price,
           discount: product.discount,
           quantityStock: product.quantityStock,
-          category: categoriesList[product?.categoryId-1].name.toLowerCase(),
-          supplier: suppliers[product?.supplierId].supplierName,
+          category: categoriesList[product?.categoryId-1]?.name.toLowerCase(),
+          supplier: product?.supplierId !== undefined && suppliers.data[product.supplierId] 
+            ? suppliers.data[product.supplierId].supplierName 
+            : undefined,
           specification: product.specification,
           imagePaths: product.imagePaths,
         }}>
@@ -290,10 +293,12 @@ const EditProduct = () => {
                   rules={[{message: 'Please select a supplier' }]}
                 >
                   <Select placeholder="Select supplier">
-                    {suppliers.map((supplier, id) => (
-                      <Option id={id} value={supplier.supplierName}>
-                        {supplier.supplierName}
-                      </Option>
+                    {suppliers.data && suppliers.data.map((supplier, index) => (
+                      supplier && supplier.supplierName ? (
+                        <Option key={index} value={supplier.supplierName}>
+                          {supplier.supplierName}
+                        </Option>
+                      ) : null
                     ))}
                   </Select>
                 </Form.Item>

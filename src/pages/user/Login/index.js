@@ -6,7 +6,6 @@ import { FcGoogle } from "react-icons/fc";
 import './Login.scss';
 import {login} from '../../../slices/authSlice';
 import {post} from '../../../utils/requests';
-import { setCookie } from '../../../utils/cookie';
 
 
 const { Item } = Form;

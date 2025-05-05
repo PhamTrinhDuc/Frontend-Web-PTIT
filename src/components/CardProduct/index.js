@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { Typography } from 'antd';
 import { HeartOutlined, EyeOutlined } from '@ant-design/icons';
 import { addToCart } from '../../slices/cartSlice';
-import {post} from '../../utils/requests';
 import './Card.scss';
 
 const { Text } = Typography;

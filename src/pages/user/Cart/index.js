@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from 'react';
 import PanigationProduct from '../../../components/PanigationProduct';
-import { Button, InputNumber, Input, Checkbox } from 'antd'; // Added Checkbox import
+import { Button, InputNumber, Alert, Checkbox } from 'antd'; // Added Checkbox import
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons';
@@ -61,11 +61,16 @@ const CartItem = ({ item, onQuantityChange, onRemove, onSelectChange, isSelected
 };
 
 
-const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode, selectedItems }) => {
+const CartSummary = ({ cartTotal, selectedItems, onEmptyCart }) => {
   const navigate = useNavigate();
+
   const handlePay = () => {
-    navigate('/billing', { state: { cartTotal, selectedItems } });  
-  }
+    if (selectedItems.length === 0) {
+      onEmptyCart(); // gọi về component cha để hiện alert
+      return;
+    }
+    navigate('/billing', { state: { cartTotal, selectedItems } });
+  };
 
   return (
     <div className="cart-summary">
@@ -85,16 +90,6 @@ const CartSummary = ({ cartTotal, applyCoupon, couponCode, setCouponCode, select
       <Button type="default" block onClick={handlePay}>
         Process to checkout
       </Button>
-      {/* <div className="coupon-section">
-        <Input
-          placeholder="Coupon Code"
-          value={couponCode}
-          onChange={(e) => setCouponCode(e.target.value)}
-        />
-        <Button type="default" onClick={() => applyCoupon(couponCode)}>
-          Apply Coupon
-        </Button>
-      </div> */}
     </div>
   );
 };
@@ -119,10 +114,16 @@ function Cart() {
     setPage(newPage);
   };
 
+  const handleEmptyCart = () => {
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000); // ẩn sau 3s
+  };
+
   const cartItems = useSelector((state) => state.cart.items);
   const [couponCode, setCouponCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [selectedItems, setSelectedItems] = useState([]); // State for selected items
+  const [showAlert, setShowAlert] = useState(false);
 
   const handleQuantityChange = (id, quantity) => {
     dispatch(updateQuantity({ id, quantity }));
@@ -135,15 +136,6 @@ function Cart() {
     navigate('/products');
   };
 
-  const applyCoupon = (code) => {
-    if (code === 'DISCOUNT10') {
-      setDiscount(cartTotal * 0.1);
-      alert('Coupon applied! 10% discount.');
-    } else {
-      setDiscount(0);
-      alert('Invalid coupon code.');
-    }
-  };
   // Handle checkbox change
   const handleSelectChange = (id, checked) => {
     if (checked) {
@@ -160,6 +152,14 @@ function Cart() {
 
   return (
     <>
+      {showAlert && (
+        <Alert
+          message="Please select at least one item to proceed to checkout."
+          type="warning"
+          showIcon
+          className="cart-alert"
+        />
+      )}
       <div className="cart-container">
         <div className="cart-items">
           {cartItems.map(item => (
@@ -178,10 +178,10 @@ function Cart() {
         </div>
         <CartSummary
           cartTotal={cartTotal}
-          applyCoupon={applyCoupon}
           couponCode={couponCode}
           setCouponCode={setCouponCode}
           selectedItems={selectedCartItems} // Pass selected items
+          onEmptyCart={handleEmptyCart} // Pass the function to handle empty cart
         />
       </div>
 
