@@ -2,6 +2,9 @@ import { Form, Input, message, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import './SignUp.scss';
 import { FcGoogle } from "react-icons/fc";
+import { post } from '../../../utils/requests';
+import { useNavigate } from 'react-router-dom';
+import Password from 'antd/es/input/Password';
 
 
 const { Item } = Form;
@@ -9,12 +12,15 @@ const { Item } = Form;
 function SignUp() {
 
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const onFinish = async (values) => {
     try {
       // Gửi dữ liệu đến backend
-      const response = await fetch.post('YOUR_BACKEND_API_URL', values);
-      message.success('Login successful!'); // Thông báo thành công
+      console.log('Form values:', values);
+      const response = await post('auth/register', values);
+      console.log('Response:', response);
+      navigate('/login');
       form.resetFields(); // Xóa form (tùy chọn, tùy thuộc vào logic)
       // Thêm logic chuyển hướng sau khi đăng nhập thành công (ví dụ: useHistory từ react-router)
     } catch (error) {
@@ -49,23 +55,33 @@ function SignUp() {
               <Input placeholder='Enter your username'/>
             </Item>
 
-            <Item
+            {/* <Item
               name="address"
               label="Email or Phone Number"
               className='item'
               rules={[{ required: true, message: 'Please input your email or phone number!' }]}
             >
               <Input placeholder='Enter your email or phone number'/>
-            </Item>
+            </Item> */}
 
             <Item
               name="password"
               label="Password"
               className='item'
-              rules={[{ required: true, message: 'Please input your password!' }]}
+              rules={[{ required: true, type: Password, message: 'Please input your password!' }]}
             >
-              <Input placeholder='Enter your password'/>
+              <Input.Password placeholder='Enter your password'/>
             </Item>
+
+            <Item
+              name="confirmPassword"
+              label="Confirm Password"
+              className='item'
+              rules={[{ required: true, type: Password, message: 'Please confirm your password' }]}
+            >
+              <Input.Password placeholder='Enter your password'/>
+            </Item>
+
 
             <Item>
               <Button type="primary" htmlType="submit" className="login-btn">
@@ -73,7 +89,7 @@ function SignUp() {
               </Button>
             </Item>
 
-            <Item>
+            {/* <Item>
               <Button type="primary" 
                 className="login-btn"
                 icon={<FcGoogle />}
@@ -81,7 +97,7 @@ function SignUp() {
               >
                 Sign up with Google
               </Button>
-            </Item>
+            </Item> */}
 
             <div className='login-link'>
               <span>Already have an account?</span>

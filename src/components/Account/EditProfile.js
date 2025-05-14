@@ -24,12 +24,12 @@ const EditProfile = () => {
   const [showAlert, setShowAlert] = useState(false);
   
   const initialValues = {
-    firstName: user.fullname.split(' ')[0] || '',
-    lastName: user.fullname.split(' ').slice(1).join(' ') || '',
-    email: user.email,
-    address: user.address,
-    phone: user.phoneNumber || '',
-    gender: user.gender || '',
+    firstName: user?.fullname?.split(' ')[0] || '',
+    lastName: user?.fullname?.split(' ').slice(1).join(' ') || '',
+    email: user?.email || '',
+    address: user?.address || '',
+    phone: user?.phoneNumber || '',
+    gender: user?.gender || '',
   };
 
   const handleSave = async (values) => {

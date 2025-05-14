@@ -19,7 +19,7 @@ function ViewOrder() {
 
   const { orders, loading, error } = useAllOrder(
     isLoggedIn && user
-      ? { id: user.id, currentPage, pageSize }
+      ? { currentPage, pageSize }
       : { skip: true }
   );
 

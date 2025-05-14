@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Table, Button, Alert, message, Select } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
-import useAllOrder from '../../../hook/useAllOrder';
 import { put } from '../../../utils/requests';
 
 import './CardOrder.scss';
@@ -12,13 +11,14 @@ const { Option } = Select;
 const CardOrder = ({orders, onPaginationChange}) => {
   const [showAlert, setShowAlert] = useState(false);
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const token = useSelector((state) => state.auth.token);
 
   // Chuyển orderHistory thành state để cập nhật cục bộ
   const [orderHistory, setOrderHistory] = useState(
     orders.flatMap((order) =>
       order.items.map((item) => ({
         orderId: order.id,
-        customer: user.fullname,
+        customer: order.userName,
         product: item.productName,
         price: item.unitPrice * item.quantity,
         status: order.status,
@@ -34,7 +34,7 @@ const CardOrder = ({orders, onPaginationChange}) => {
       orders.flatMap((order) =>
         order.items.map((item) => ({
           orderId: order.id,
-          customer: user.fullname,
+          customer: order.userName,
           product: item.productName,
           price: item.unitPrice * item.quantity,
           status: order.status,
@@ -54,8 +54,8 @@ const CardOrder = ({orders, onPaginationChange}) => {
   const handleStatusChange = async (value, record) => {
     try {
       const response = await put(`orders/update/${record.orderId}`, {
-        status: value.toUpperCase(),
-      });
+        status: value.toUpperCase()
+      }, token);
 
       if (response) {
         // Cập nhật trạng thái cục bộ trong orderHistory
@@ -66,13 +66,9 @@ const CardOrder = ({orders, onPaginationChange}) => {
               : item
           )
         );
-
         // Hiển thị thông báo thành công
         setShowAlert(true);
         setTimeout(() => setShowAlert(false), 1500);
-
-        // Tùy chọn: Gọi refetch nếu cần đồng bộ dữ liệu từ server
-        // refetch();
       } else {
         throw new Error('Failed to update status');
       }

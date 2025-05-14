@@ -136,10 +136,11 @@ const OrderSummary = ({ cartItems, onPlaceOrder }) => {
 
 
 function Billing() {
-   // Lấy cartTotal từ state
-   const location = useLocation();
-   const navigate = useNavigate();
-   const dispatch = useDispatch();
+  // Lấy cartTotal từ state
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
   const { cartTotal, selectedItems } = location.state || { cartTotal: 0, selectedItems: [] }; // Default values
    // Lấy danh sách sản phẩm từ Redux
   //  const cartItems = useSelector((state) => state.cart.items); // Lấy sản phẩm từ Redux
@@ -170,7 +171,7 @@ function Billing() {
     };
 
     try {
-      const response = await post('orders', orderDataResponse);
+      const response = await post('orders', orderDataResponse, token);
       console.log('Order placed successfully:', response);
       dispatch(clearCart());
       navigate('/order-success');

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
+
 import {
   Card,
   Descriptions,
@@ -23,6 +24,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../slices/authSlice';
 import EditProfile from './EditProfile';
+import { clearCart } from '../../slices/cartSlice';
 import './TabInfo.scss';
 import { put } from '../../utils/requests';
 
@@ -34,6 +36,7 @@ function TabInfo({
   setCurrentPage,
 }) {
   const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -69,13 +72,18 @@ function TabInfo({
   const showLogoutModal = () => {
     setIsLogoutModalVisible(true);
   };
+  useEffect(() => {
+    if (!user && !isLogoutModalVisible) {
+      navigate('/login');
+    }
+  }, [user, isLogoutModalVisible, navigate]);
+
   const handleLogoutAccount = () => {
     dispatch(logout());
+    dispatch(clearCart());
     setIsLogoutModalVisible(false);
-    setTimeout(() => {
-      navigate('/login');
-    }, 100);
   };
+
   const handleCancelLogout = () => {
     setIsLogoutModalVisible(false);
   };
