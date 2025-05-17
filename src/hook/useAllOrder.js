@@ -8,6 +8,7 @@ const useAllOrder = ({currentPage, pageSize}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const token = useSelector((state) => state.auth.token);
+  console.log("token", token);
   const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {

@@ -41,6 +41,7 @@ function TabInfo({
   const [isLogoutModalVisible, setIsLogoutModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const token = useSelector((state) => state.auth.token);
   const showDeleteModal = useCallback((id) => {
     setSelectedOrderId(id);
     setIsDeleteModalVisible(true);
@@ -49,8 +50,9 @@ function TabInfo({
   const handleDeleteItem = useCallback(async () => {
     try {
       // Gọi API PUT để hủy đơn hàng
-      const response = await put(`orders/cancel/${selectedOrderId}`);
-      if (response?.status === 200) {
+      const response = await put(`orders/cancel/${selectedOrderId}`, null, token);
+      console.log('response', response);
+      if (response.status) {
         // Nếu hủy thành công, đóng modal và reset selectedOrderId
         setIsDeleteModalVisible(false);
         setSelectedOrderId(null);
