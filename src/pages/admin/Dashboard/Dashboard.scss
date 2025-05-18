@@ -62,8 +62,7 @@
 
     .upcoming-schedules {
       width: 100%;
-      height: 100%;
-
+      height: 100%;      
       .schedule-item {
         display: flex;
         justify-content: space-between;
@@ -81,6 +80,18 @@
         .amount {
           color: $button;
         }
+      }
+      
+      .loading-container {
+        padding: 20px;
+        text-align: center;
+        color: $ribbon-card;
+      }
+      
+      .error-container {
+        padding: 20px;
+        text-align: center;
+        color: $ribbon-card;
       }
     }
 

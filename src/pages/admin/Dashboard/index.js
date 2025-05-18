@@ -1,10 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { Row, Col, Card, Table, List, Modal, Button} from 'antd';
+import { Row, Col, Card, Table, List, Modal, Button, Empty } from 'antd';
+import { SyncOutlined, PlusOutlined } from '@ant-design/icons';
 import { Bar, Doughnut, Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, LineElement, PointElement } from 'chart.js';
 import AddScheduleForm from './AddScheduleForm';
+import useSchedules from '../../../hook/useSchedules';
 import './Dashboard.scss';
+import useTopOrder from '../../../hook/useTopOrder';
 
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, LineElement, PointElement);
@@ -47,47 +50,38 @@ const salesData = {
       data: [20, 30, 25, 40, 35, 50],
       borderColor: '#1890ff',
       fill: false,
-    },
-  ],
+    },  ],
 };
-
-// Dữ liệu cho Upcoming Schedules
-const schedules = [
-  { time: '09:30 am', description: 'Payment received from John', amount: '$188.90' },
-  { time: '10:00 am', description: 'New sale recorded', amount: '#ML-5467' },
-  { time: '11:00 am', description: 'Payment was made of $44.95 to Michael' },
-  { time: '12:00 am', description: 'New sale recorded', amount: '#ML-5467' },
-  { time: '12:30 am', description: 'New arrival recorded' },
-];
 
 // Dữ liệu cho Top Paying Clients
 const columns = [
   { title: '', dataIndex: 'id', key: 'id', width: 50 },
-  { title: 'Name', dataIndex: 'name', key: 'name' },
-  { title: 'Priority', dataIndex: 'priority', key: 'priority', render: (text) => <span className={`priority ${text.toLowerCase()}`}>{text}</span> },
-  { title: 'Budget', dataIndex: 'budget', key: 'budget' },
+  { title: 'Name', dataIndex: 'fullname', key: 'fullname' },
+  // { title: 'Priority', dataIndex: 'priority', key: 'priority', render: (text) => <span className={`priority ${text.toLowerCase()}`}>{text}</span> },
+  { title: 'Budget', dataIndex: 'totalSpending', key: 'totalSpending' },
 ];
 
-const clientsData = [
-  { id: 1, name: 'Sunil Joshi', priority: 'Low', budget: '$3.9' },
-  { id: 2, name: 'Andrew McDownland', priority: 'Medium', budget: '$24.5k' },
-  { id: 3, name: 'Christopher Jamil', priority: 'High', budget: '$12.8k' },
-  { id: 4, name: 'Niwel Joshi', priority: 'Low', budget: '$2.4k' },
-  { id: 5, name: 'Tim Geroge', priority: 'Critical', budget: '$5.4k' },
-];
+// const clientsData = [
+//   { id: 1, name: 'Sunil Joshi', priority: 'Low', budget: '$3.9' },
+//   { id: 2, name: 'Andrew McDownland', priority: 'Medium', budget: '$24.5k' },
+//   { id: 3, name: 'Christopher Jamil', priority: 'High', budget: '$12.8k' },
+//   { id: 4, name: 'Niwel Joshi', priority: 'Low', budget: '$2.4k' },
+//   { id: 5, name: 'Tim Geroge', priority: 'Critical', budget: '$5.4k' },
+// ];
 
 
 const Dashboard = () => {
-
-  const [upcomingSchedules, setUpcomingSchedules] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const { schedules, loading, error, refreshSchedules } = useSchedules(true); // Get only active schedules
 
-  // Fetch danh sách lịch trình
-  // useEffect(() => {
-  //   fetch('http://localhost:5000/api/upcoming-schedules')
-  //     .then(res => res.json())
-  //     .then(data => setUpcomingSchedules(data));
-  // }, []);
+  // Format the date for display
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const { orders } = useTopOrder();
+  console.log('Top orders:', orders); 
 
   // Mở modal
   const handleOpenModal = () => {
@@ -98,11 +92,13 @@ const Dashboard = () => {
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
   // Callback khi thêm lịch thành công
   const handleAdd = () => {
     setIsModalVisible(false); // Đóng modal
-    // fetchSchedules(); // Refresh danh sách
+    console.log('Refreshing schedules after adding a new one');
+    setTimeout(() => {
+      refreshSchedules(); // Refresh danh sách sau một khoảng thời gian ngắn
+    }, 100);
   };
 
   return (
@@ -130,31 +126,50 @@ const Dashboard = () => {
             <div className="sales-total">$6,820 <span>+8% last year</span></div>
           </Card>
         </Col>
-      </Row>
-
+      </Row>      
       <Row gutter={[16, 16]} className='row-2'>
         {/* Upcoming Schedules */}
 
         <Col xs={24} md={12} >
-          <Card title="Upcoming Schedules" className='upcoming-schedules'
+          <Card            title="Upcoming Schedules" 
+            className='upcoming-schedules'
             extra={
-              <Button type="primary" onClick={handleOpenModal} style={{ float: 'right' }}>
-                Add Schedule
-              </Button>
+              <div>
+                <Button 
+                  type="text" 
+                  icon={<i className="fas fa-sync"></i>} 
+                  onClick={refreshSchedules}
+                  style={{ marginRight: '8px' }}
+                  title="Refresh schedules"
+                />
+                <Button type="primary" onClick={handleOpenModal}>
+                  Add Schedule
+                </Button>
+              </div>
             }
           >
-            <List
-              dataSource={schedules}
-              renderItem={(item) => (
-                <List.Item>
-                  <div className="schedule-item">
-                    <span className="time">{item.time}</span>
-                    <span className="description">{item.description}</span>
-                    {item.amount && <span className="amount">{item.amount}</span>}
-                  </div>
-                </List.Item>
-              )}
-            />
+            {loading ? (
+              <div className="loading-container">Loading schedules...</div>
+            ) : error ? (
+              <div className="error-container">{error}</div>
+            ) : schedules.length === 0 ? (
+              <Empty description="No upcoming schedules" />
+            ) : (
+              <List
+                dataSource={schedules}
+                renderItem={(item) => (
+                  <List.Item>
+                    <div className="schedule-item">
+                      <span className="time">{formatDateTime(item.start_time)}</span>
+                      <span className="description">{item.title}</span>
+                      {item.description && (
+                        <span className="amount">{item.description}</span>
+                      )}
+                    </div>
+                  </List.Item>
+                )}
+              />
+            )}
           </Card>
         </Col>
 
@@ -163,16 +178,15 @@ const Dashboard = () => {
           <Card title="Top Paying Clients" className='top-paying-clients'>
             <Table
               columns={columns}
-              dataSource={clientsData}
+              dataSource={orders}
               pagination={false}
               rowKey="id"
             />
           </Card>
-        </Col>
-      </Row>
+        </Col>      </Row>
 
       <AddScheduleForm
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         onAdd={handleAdd}
       />

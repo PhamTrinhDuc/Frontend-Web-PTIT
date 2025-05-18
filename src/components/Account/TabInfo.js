@@ -1,25 +1,22 @@
-import React, { useState, useEffect} from 'react';
-
+import React, { useState, useRef, useCallback, useEffect} from 'react';
 import {
   Card,
   Descriptions,
   Timeline,
-  List,
   Badge,
   Tabs,
   Button,
   Modal,
   Pagination,
   Divider,
+  message,
 } from 'antd';
 import {
-  DeleteOutlined,
   MailOutlined,
   PhoneOutlined,
   HomeOutlined,
   LogoutOutlined,
 } from '@ant-design/icons';
-import { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../../slices/authSlice';
@@ -27,6 +24,23 @@ import EditProfile from './EditProfile';
 import { clearCart } from '../../slices/cartSlice';
 import './TabInfo.scss';
 import { put } from '../../utils/requests';
+
+// Helper function to safely dispatch multiple actions
+const safeDispatch = (dispatch, actions) => {
+  try {
+    actions.forEach(action => {
+      if (typeof action === 'function') {
+        dispatch(action());
+      } else {
+        dispatch(action);
+      }
+    });
+    return true;
+  } catch (error) {
+    console.error("Error dispatching actions:", error);
+    return false;
+  }
+};
 
 function TabInfo({
   userInfo,
@@ -42,6 +56,13 @@ function TabInfo({
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const token = useSelector((state) => state.auth.token);
+  const isMounted = useRef(true);
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const showDeleteModal = useCallback((id) => {
     setSelectedOrderId(id);
     setIsDeleteModalVisible(true);
@@ -52,6 +73,10 @@ function TabInfo({
       // Gọi API PUT để hủy đơn hàng
       const response = await put(`orders/cancel/${selectedOrderId}`, null, token);
       console.log('response', response);
+      
+      // Check if component is still mounted before updating state
+      if (!isMounted.current) return;
+      
       if (response.status) {
         // Nếu hủy thành công, đóng modal và reset selectedOrderId
         setIsDeleteModalVisible(false);
@@ -62,10 +87,14 @@ function TabInfo({
         console.error('Failed to cancel order:', response?.data || response);
       }
     } catch (error) {
+      // Check if component is still mounted before showing error
+      if (isMounted.current) {
+        message.error('Error cancelling order');
+      }
       // Xử lý lỗi nếu API call gặp sự cố
       console.error('Error cancelling order:', error);
     }
-  }, [selectedOrderId]);
+  }, [selectedOrderId, token]);
 
   const handleCancelDelete = () => {
     setIsDeleteModalVisible(false);
@@ -73,18 +102,17 @@ function TabInfo({
 
   const showLogoutModal = () => {
     setIsLogoutModalVisible(true);
-  };
-  useEffect(() => {
-    if (!user && !isLogoutModalVisible) {
-      navigate('/login');
-    }
-  }, [user, isLogoutModalVisible, navigate]);
+  };  
 
-  const handleLogoutAccount = () => {
-    dispatch(logout());
-    dispatch(clearCart());
+  const handleLogoutAccount = useCallback(() => {
+    // Close the modal first
     setIsLogoutModalVisible(false);
-  };
+    // Dispatch logout and clear cart actions, then navigate
+    if (isMounted.current) {
+      safeDispatch(dispatch, [logout(), clearCart()]);
+      navigate('/login', { replace: true });
+    }
+  }, [dispatch, navigate]);
 
   const handleCancelLogout = () => {
     setIsLogoutModalVisible(false);
@@ -192,49 +220,6 @@ function TabInfo({
           </Card>
         </Tabs.TabPane>
 
-        {/* <Tabs.TabPane tab="Promotion" key="3">
-          <Card className="profile-card">
-            <List
-              dataSource={vouchers}
-              renderItem={(voucher) => (
-                <List.Item>
-                  <List.Item.Meta
-                    title={voucher.name}
-                    description={`Hết hạn: ${voucher.expiry}`}
-                  />
-                  <Button type="primary" onClick={() => navigate('/products')}>
-                    Sử dụng
-                  </Button>
-                </List.Item>
-              )}
-            />
-          </Card>
-        </Tabs.TabPane>
-
-        <Tabs.TabPane tab="Wishlist" key="4">
-          <Card className="profile-card">
-            <List
-              dataSource={wishlist}
-              renderItem={(item) => (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        style={{ width: 50, height: 50, objectFit: 'cover' }}
-                      />
-                    }
-                    title={item.name}
-                    description={`${item.price.toLocaleString()} VNĐ`}
-                  />
-                  <Button type="link" icon={<DeleteOutlined />} onClick={showDeleteModal} />
-                </List.Item>
-              )}
-            />
-          </Card>
-        </Tabs.TabPane> */}
-
         <Tabs.TabPane tab="Logout" key="5">
           <Card className="profile-card logout-card">
             <div className="logout-content">
@@ -258,10 +243,9 @@ function TabInfo({
           <EditProfile />
         </Tabs.TabPane>
       </Tabs>
-
       <Modal
         title="Confirm item cancellation"
-        visible={isDeleteModalVisible}
+        open={isDeleteModalVisible}
         onOk={handleDeleteItem}
         onCancel={handleCancelDelete}
         okText="Confirm"
@@ -271,7 +255,7 @@ function TabInfo({
       </Modal>
       <Modal
         title="Confirm logout action"
-        visible={isLogoutModalVisible}
+        open={isLogoutModalVisible}
         onOk={handleLogoutAccount}
         onCancel={handleCancelLogout}
         okText="Confirm"

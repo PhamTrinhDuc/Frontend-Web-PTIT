@@ -19,10 +19,10 @@ function Footer() {
             <a href="#" target="_blank"><InstagramOutlined /></a>
           </div>
           <p>Subscribe to get 10% off your first order</p>
-          <div className="subscribe-form">
+          {/* <div className="subscribe-form">
             <Input placeholder="Enter your email" />
             <Button type="primary" shape="circle" icon={<FaLocationArrow />} />
-          </div>
+          </div> */}
         </Col>
         <Col xs={24} sm={12} md={6} className="footer-section">
           <h3>support</h3>
