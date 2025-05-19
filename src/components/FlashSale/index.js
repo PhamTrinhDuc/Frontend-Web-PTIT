@@ -13,7 +13,7 @@ function FlashSale({products, pageSize, currentPage, totalPages, loading, onPagi
   return (
     <>
       <div className='flash-sale'>
-        <CountdownTimer />
+        {/* <CountdownTimer /> */}
         <PanigationProduct
           products={products}
           pageSize={pageSize}

@@ -8,6 +8,7 @@ import AddScheduleForm from './AddScheduleForm';
 import useSchedules from '../../../hook/useSchedules';
 import './Dashboard.scss';
 import useTopOrder from '../../../hook/useTopOrder';
+import useTopProducts from '../../../hook/useTopProducts';
 
 // Đăng ký các thành phần của Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, LineElement, PointElement);
@@ -54,20 +55,19 @@ const salesData = {
 };
 
 // Dữ liệu cho Top Paying Clients
-const columns = [
+const columnsClient = [
   { title: '', dataIndex: 'id', key: 'id', width: 50 },
   { title: 'Name', dataIndex: 'fullname', key: 'fullname' },
   // { title: 'Priority', dataIndex: 'priority', key: 'priority', render: (text) => <span className={`priority ${text.toLowerCase()}`}>{text}</span> },
   { title: 'Budget', dataIndex: 'totalSpending', key: 'totalSpending' },
 ];
 
-// const clientsData = [
-//   { id: 1, name: 'Sunil Joshi', priority: 'Low', budget: '$3.9' },
-//   { id: 2, name: 'Andrew McDownland', priority: 'Medium', budget: '$24.5k' },
-//   { id: 3, name: 'Christopher Jamil', priority: 'High', budget: '$12.8k' },
-//   { id: 4, name: 'Niwel Joshi', priority: 'Low', budget: '$2.4k' },
-//   { id: 5, name: 'Tim Geroge', priority: 'Critical', budget: '$5.4k' },
-// ];
+const columnsProducts = [
+  { title: '', dataIndex: 'id', key: 'id', width: 50 },
+  { title: 'Name', dataIndex: 'name', key: 'name' },
+  { title: 'Price', dataIndex: 'price', key: 'price' },
+  { title: 'Sold Quantity', dataIndex: 'soldQuantity', key: 'soldQuantity' },
+];
 
 
 const Dashboard = () => {
@@ -81,7 +81,7 @@ const Dashboard = () => {
   };
 
   const { orders } = useTopOrder();
-  console.log('Top orders:', orders); 
+  const { products } = useTopProducts();
 
   // Mở modal
   const handleOpenModal = () => {
@@ -177,13 +177,25 @@ const Dashboard = () => {
         <Col xs={24} md={12}>
           <Card title="Top Paying Clients" className='top-paying-clients'>
             <Table
-              columns={columns}
+              columns={columnsClient}
               dataSource={orders}
               pagination={false}
               rowKey="id"
             />
           </Card>
-        </Col>      </Row>
+        </Col>      
+
+        <Col xs={24} md={12}>
+          <Card title="Top Products" className='top-paying-clients'>
+            <Table
+              columns={columnsProducts}
+              dataSource={products}
+              pagination={false}
+              rowKey="id"
+            />
+          </Card>
+        </Col>      
+      </Row>
 
       <AddScheduleForm
         open={isModalVisible}

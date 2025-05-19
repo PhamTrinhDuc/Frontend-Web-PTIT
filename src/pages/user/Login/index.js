@@ -107,7 +107,7 @@ function Login() {
               </Button>
             </Item>
 
-            <Item>
+            {/* <Item>
               <Button type="primary" 
                 className="login-btn"
                 icon={<FcGoogle />}
@@ -115,7 +115,7 @@ function Login() {
               >
                 Login with Google
               </Button>
-            </Item>
+            </Item> */}
 
             <div className='signup-link'>
               <span>You are new to Zenith?</span>

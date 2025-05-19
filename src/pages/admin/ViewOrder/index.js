@@ -16,6 +16,8 @@ function ViewOrder() {
   const [allOrders, setOrders] = useState([]);
   const pageSize = numPageProduct;
   const [currentPage, setCurrentPage] = useState(1);
+  // Add sort state
+  const [sortByDateDesc, setSortByDateDesc] = useState(true);
 
   const { orders, loading, error } = useAllOrder(
     isLoggedIn && user
@@ -23,16 +25,34 @@ function ViewOrder() {
       : { skip: true }
   );
 
+  // Sort orders by date function
+  const sortOrdersByDate = (ordersToSort) => {
+    if (!ordersToSort || !Array.isArray(ordersToSort)) return [];
+    
+    return [...ordersToSort].sort((a, b) => {
+      const dateA = new Date(a.orderDate);
+      const dateB = new Date(b.orderDate);
+      return sortByDateDesc ? dateB - dateA : dateA - dateB;
+    });
+  };
+
+  // Toggle sort order
+  const toggleSortOrder = () => {
+    setSortByDateDesc(prev => !prev);
+    // Re-sort the orders based on new sort direction
+    setOrders(prev => sortOrdersByDate(prev));
+  };
 
   const handlePaginationChange = (newPage) => {
     setCurrentPage(newPage);
   };
-
   React.useEffect(() => {
     if (orders) {
-      setOrders(orders);
+      // Apply sorting to orders
+      const sortedOrders = sortOrdersByDate(orders);
+      setOrders(sortedOrders);
     }
-  }, [orders]);
+  }, [orders, sortByDateDesc]);
 
   if (loading) return <Loading loading={loading} />;
   if (error) {
@@ -43,16 +63,23 @@ function ViewOrder() {
   // Hàm lọc đơn hàng theo trạng thái
   const filterOrdersByStatus = (status) => {
     if (status === 'ALL') {
-      setOrders(orders);
+      // Apply sorting when resetting to all orders
+      setOrders(sortOrdersByDate(orders));
       return;
     }
     const filteredOrders = orders.filter((order) => order.status === status.toUpperCase());
-    setOrders(filteredOrders);
+    
+    // Apply sorting to filtered orders
+    setOrders(sortOrdersByDate(filteredOrders));
   };
-
   return (
     <>
-      <HeaderManageOrder orders={orders} onFilterByStatus={filterOrdersByStatus}/>
+      <HeaderManageOrder 
+        orders={orders} 
+        onFilterByStatus={filterOrdersByStatus} 
+        onToggleSort={toggleSortOrder}
+        sortByDateDesc={sortByDateDesc}
+      />
       <CardOrder orders={allOrders} onPaginationChange = {handlePaginationChange}/>
     </>
   );

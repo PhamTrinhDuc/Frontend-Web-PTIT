@@ -52,10 +52,10 @@ function CardProduct({ product }) {
                 <img src={product.imagePaths?.[0] || "default-image.jpg"} alt={product.name} className="product-image" />
               </div>
             }
-            actions={[
-              <HeartOutlined key="heart" className="product-action-icon" />,
-              <EyeOutlined key="view" className="product-action-icon" />,
-            ]}
+            // actions={[
+            //   <HeartOutlined key="heart" className="product-action-icon" />,
+            //   <EyeOutlined key="view" className="product-action-icon" />,
+            // ]}
           >
             {isHovered && (
               <Button
@@ -77,10 +77,10 @@ function CardProduct({ product }) {
         </div>
 
         <div>
-          <div className="product-rating">
+          {/* <div className="product-rating">
             <Rate disabled defaultValue={product.rating} />
             <Text className="review-count">({product.reviews})</Text>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

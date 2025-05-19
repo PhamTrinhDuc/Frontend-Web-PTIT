@@ -65,14 +65,14 @@ const AdminHeader = () => {
           </Col>
           
           <Col xs={12} md={8} className="header-actions">
-            <Input
+            {/* <Input
               placeholder="What you looking for?"
               suffix={<SearchOutlined onClick={handleSearchSubmit} />}
               className="search-bar"
               value={searchValue}
               onChange={handleSearch}
               onPressEnter={handleSearchSubmit}
-            />
+            /> */}
             <Button
               type="dashed"
               shape="round"

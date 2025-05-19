@@ -31,7 +31,7 @@ const Account = () => {
     avatar: user.avatar ? user.avatar : 'https://example.com/default-avatar.png',
     memberSince: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '',
     orders: orders.length ? orders.length : 0,
-    points: 1500,
+    // points: 1500,
   };
 
 

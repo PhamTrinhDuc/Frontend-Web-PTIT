@@ -28,10 +28,10 @@ function Header({ userInfo }) {
               <ShoppingCartOutlined />
               <span>{userInfo.orders} Đơn hàng</span>
             </div>
-            <div className="stat-item">
+            {/* <div className="stat-item">
               <GiftOutlined />
               <span>{userInfo.points} Điểm thưởng</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
