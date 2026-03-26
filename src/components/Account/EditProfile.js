@@ -8,20 +8,25 @@ import {
   Modal,
   message,
   Alert,
+  Upload,
 } from 'antd';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import ChangePassword from './ChangePassword';
 import { post } from '../../utils/requests';
+import { setCredentials } from '../../slices/authSlice';
 import './EditProfile.scss';
 
 const EditProfile = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { isLoggedIn, user, token } = useSelector((state) => state.auth);
   const [form] = Form.useForm();
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState(user?.avatar || '');
+  const [uploading, setUploading] = useState(false);
   
   const initialValues = {
     firstName: user?.fullname?.split(' ')[0] || '',
@@ -41,22 +46,54 @@ const EditProfile = () => {
         address: values.address || null,
         phoneNumber: values.phone || null,
         gender: values.gender || null,
+        avatar: avatarUrl || null,
       };
 
       console.log('Payload:', payload);
 
-      const response = await post('users/me/profile', payload, token)
-      navigate(0);
+      const response = await post('users/me/profile', payload, token);
 
       if (!response) {
-        const errText = await response.text();
-        throw new Error(errText);
+        throw new Error("Update failed, no response.");
       }
 
+      // Update Redux state with new user info so Header reflects it
+      dispatch(setCredentials({ user: response, token }));
+      
       setShowAlert(true);
       setTimeout(() => setShowAlert(false), 1500);
+      message.success("Profile updated successfully");
     } catch (error) {
       console.error('Lỗi cập nhật:', error.message);
+      message.error(error.message);
+    }
+  };
+
+  const uploadAvatar = async (options) => {
+    const { file, onSuccess, onError } = options;
+    const formData = new FormData();
+    formData.append('file', file);
+    setUploading(true);
+    try {
+      const res = await fetch('http://localhost:8080/api/upload/image', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body: formData
+      });
+      if (res.ok) {
+        const result = await res.json();
+        setAvatarUrl(result.data);
+        onSuccess("Ok");
+        message.success("Avatar uploaded successfully!");
+      } else {
+        throw new Error("Upload failed");
+      }
+    } catch (err) {
+      console.error(err);
+      onError(err);
+      message.error("Image upload failed");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -108,6 +145,26 @@ const EditProfile = () => {
       <div className="edit-profile-container">
         <Card className="form-card">
           <Divider className="form-title">Edit Your Profile</Divider>
+          
+          <div className="avatar-upload-section" style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <Upload
+              name="avatar"
+              listType="picture-circle"
+              className="avatar-uploader"
+              showUploadList={false}
+              customRequest={uploadAvatar}
+            >
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+              ) : (
+                <div>
+                  {uploading ? <LoadingOutlined /> : <PlusOutlined />}
+                  <div style={{ marginTop: 8 }}>Upload</div>
+                </div>
+              )}
+            </Upload>
+          </div>
+
           <Form
             form={form}
             name="edit-profile"

@@ -34,7 +34,7 @@ const Account = () => {
     email: user.email || '',
     phoneNumber: user.phoneNumber || '',
     address: user.address || '',
-    avatar: user.avatar || 'https://example.com/default-avatar.png',
+    avatar: user.avatar || 'https://cdn-icons-png.flaticon.com/512/1144/1144760.png',
     memberSince: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '',
     orders: orders.length || 0,
   };
