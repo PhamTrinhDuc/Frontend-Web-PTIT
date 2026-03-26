@@ -9,6 +9,7 @@ import useAllProduct from '../../../hook/useAllProduct';
 import { numPageProductHeader } from '../../../utils/variable';
 import './Product.scss';
 import ProductRelated from '../../../components/ProductRelated';
+import ProductReview from '../../../components/ProductReview';
 
 function Product() {
   const { id } = useParams();
@@ -38,6 +39,8 @@ function Product() {
   return (
     <>
       <ProductDetail product={product.data} />
+
+      <ProductReview productId={id} />
 
       <ProductRelated
         products={products}

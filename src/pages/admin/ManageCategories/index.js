@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table, Button, Space, Modal, Form, Input, message } from 'antd';
-import { EditOutlined, DeleteOutlined, PlusOutlined, FilterOutlined, ExportOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import HeaderMangeProduct from '../../../components/admin/HeaderManageProduct';
 import { useCategories } from '../../../hook/useCategories';
 import Loading from '../../../components/Loading';

@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useEffect } from 'react';
-import { Row, Col, Card, Form, Input, InputNumber, Select, Button, Upload, message, Space, Modal } from 'antd';
-import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
+import { Row, Col, Card, Form, Input, InputNumber, Select, Button, Upload, message, Space } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
 import Loading from '../../../components/Loading';
 import {useCategories} from '../../../hook/useCategories';
 import useAllSupplier from '../../../hook/useAllSupplier';
 import { WatchSpecification, PhoneSpecification } from '../../../components/Specification';
-import { post, get } from '../../../utils/requests';
+import { post } from '../../../utils/requests';
 import useProductById from '../../../hook/useProductById';
 import './EditProduct.scss';
 

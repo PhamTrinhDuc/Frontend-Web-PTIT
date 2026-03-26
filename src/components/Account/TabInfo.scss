@@ -52,4 +52,12 @@
       }
     }
   }
+
+  .pink-link {
+    color: #ff4d91 !important;
+    font-weight: 600;
+    &:hover {
+      color: #ff1a75 !important;
+    }
+  }
 }

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Popconfirm, message } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Table, Button, Popconfirm, message, Tag, Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import { useSelector } from 'react-redux';
 import { FaBan } from "react-icons/fa6";
 import { remove } from '../../../utils/requests';
 import './CardCustomer.scss';
 
-const CardCustomer = ({ filteredCustomers }) => {
+const CardCustomer = ({ filteredCustomers, onRefresh }) => {
   const token = useSelector((state) => state.auth.token);
   const [customers, setCustomers] = useState(filteredCustomers);
 
@@ -16,28 +16,37 @@ const CardCustomer = ({ filteredCustomers }) => {
 
   const handleBanCustomer = async (id) => {
     try {
-      const response = await remove(`users/me/${id}`, token); // Gọi API xoá user
+      const response = await remove(`users/me/${id}`, token);
   
-      if (response && response.status) {
-        message.success('Customer banned successfully!');
+      if (response) {
+        message.success('Account modified successfully!');
+        if (onRefresh) {
+          onRefresh();
+        } else {
+          setCustomers(prev => prev.filter(c => c.id !== id));
+        }
       } else {
-        message.error('Failed to ban customer');
+        message.error('Failed to update account');
       }
     } catch (error) {
       console.error(error);
-      message.error('An error occurred while banning the customer');
-    }
-    finally {
-      const newCustomers = customers.filter(customer => customer.id !== id);
-      setCustomers(newCustomers); // Cập nhật danh sách sau khi xoá
+      message.error('An error occurred during the operation');
     }
   };
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'fullname',
-      key: 'fullname',
+      title: 'User',
+      key: 'user',
+      render: (_, record) => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Avatar src={record.avatar} icon={<UserOutlined />} style={{ marginRight: 8 }} />
+          <div>
+            <div style={{ fontWeight: 'bold' }}>{record.fullname || 'No Name'}</div>
+            <div style={{ fontSize: '12px', color: '#999' }}>@{record.username}</div>
+          </div>
+        </div>
+      ),
     },
     {
       title: 'Email',
@@ -45,28 +54,42 @@ const CardCustomer = ({ filteredCustomers }) => {
       key: 'email',
     },
     {
-      title: 'Phone number',
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+      render: (role) => (
+        <Tag color={role === 'ADMIN' ? 'volcano' : 'blue'}>
+          {role?.toUpperCase()}
+        </Tag>
+      ),
+    },
+    {
+      title: 'Phone',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status) => (
+        <Tag color={status === 'ACTIVE' ? 'green' : 'red'}>
+          {status || 'ACTIVE'}
+        </Tag>
+      ),
     },
     {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
         <span>
-          {/* <Button type="link" icon={<EditOutlined />} /> */}
           <Popconfirm
-            title="Are you sure to ban this account?"
+            title="Are you sure to deactivate this account?"
             onConfirm={() => handleBanCustomer(record.id)}
             okText="Yes"
             cancelText="No"
           >
-            <Button type="link" danger icon={<FaBan />} />
+            <Button type="link" danger icon={<FaBan />} disabled={record.role === 'ADMIN'} />
           </Popconfirm>
         </span>
       ),
@@ -77,11 +100,12 @@ const CardCustomer = ({ filteredCustomers }) => {
     <div className="customer-management">
       <Table
         columns={columns}
-        dataSource={customers} // Sử dụng filteredCustomers từ props
+        dataSource={customers}
         pagination={{
           pageSize: 10,
-          style: { alignItems: 'center', justifyContent: 'center' },
+          style: { display: 'flex', justifyContent: 'center' },
         }}
+        rowKey="id"
       />
     </div>
   );

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { Table, Button, Popconfirm, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -8,16 +7,22 @@ import { numPageProduct } from '../../../utils/variable';
 import { useSelector } from 'react-redux';
 
 
-const CardProduct = ({ products, onPaginationChange}) => {
+const CardProduct = ({ products, onPaginationChange, onRefresh }) => {
   const navigate = useNavigate();
-  const { token } = useSelector((state => state.auth));
+  const { token } = useSelector((state) => state.auth);
 
   const handleDelete = async (id) => {
-    const response = await remove(`products/${id}`, token);
-    console.log("result: ", response)
-    window.location.reload();
-    if (!response) {
-      throw new Error(response.message || 'Failed to delete product');
+    try {
+      const response = await remove(`products/${id}`, token);
+      if (response && response.status) {
+        message.success('Product deleted successfully');
+        onRefresh?.(); // Gọi callback để refresh danh sách
+      } else {
+        message.error(response?.message || 'Failed to delete product');
+      }
+    } catch (error) {
+      message.error('An error occurred while deleting the product');
+      console.error(error);
     }
   };
 
@@ -27,6 +32,14 @@ const CardProduct = ({ products, onPaginationChange}) => {
   };
 
   const columns = [
+    {
+      title: 'Image',
+      dataIndex: 'imagePaths',
+      key: 'image',
+      render: (images) => (
+        <img src={images && images.length > 0 ? images[0] : ''} alt="product" style={{ width: 50, height: 50, borderRadius: 4, objectFit: 'cover' }} />
+      ),
+    },
     {
       title: 'Name',
       dataIndex: 'name',

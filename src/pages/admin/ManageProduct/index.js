@@ -1,9 +1,8 @@
-import React, { useState, useNavigate } from 'react';
+import { useState } from 'react';
 import { useEffect } from 'react';
 import CardProduct from '../../../components/admin/CardProduct';
 import './ManageProduct.scss';
 import HeaderMangeProduct from '../../../components/admin/HeaderManageProduct';
-import useAllProduct from '../../../hook/useAllProduct';
 import useProductByCategory from '../../../hook/useProductsByCategory';
 import { numPageProduct } from '../../../utils/variable';
 import Loading from '../../../components/Loading';
@@ -15,7 +14,7 @@ function ManageProduct() {
   const [filters, setFilters] = useState({ priceRange: null, sortOption: null });
   const [category, setCategory] = useState(null);
   
-  const { products: productsSearch, loading, error, totalPages } = useProductByCategory({ 
+  const { products: productsSearch, loading, error, refreshProduct } = useProductByCategory({ 
     categorySlug: category,
     page: page, 
     pageSize: pageSize, 
@@ -30,15 +29,13 @@ function ManageProduct() {
   }, [productsSearch]);
 
   const filterProductsByCategory = async (category) => {
-    try {
-      setCategory(category);
-    } catch (err) {
-      setProducts([]);
-    }
+    setCategory(category);
   };
+  
   const handlePaginationChange = (newPage) => {
     setPage(newPage);
   };
+
   if (loading) return <Loading loading={loading} />;
   if (error) return <div>Lỗi: {error}</div>;
 
@@ -50,7 +47,11 @@ function ManageProduct() {
       />
       <div className="navigation-container">
         <div className="carousel-container">
-          <CardProduct products={products} onPaginationChange = {handlePaginationChange} />
+          <CardProduct 
+            products={products} 
+            onPaginationChange={handlePaginationChange} 
+            onRefresh={refreshProduct} 
+          />
         </div>
       </div>
     </>

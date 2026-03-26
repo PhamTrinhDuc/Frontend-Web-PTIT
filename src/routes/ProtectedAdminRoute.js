@@ -3,8 +3,7 @@ import { useSelector } from "react-redux";
 
 const ProtectedAdminRoute = () => {
   const { isLoggedIn, user } = useSelector((state) => state.auth);
-  // const role = user?.role;
-  const role = "admin"; // Thêm dòng này để test
+  const role = user?.role;
 
   if (role !== "admin") {
     return <Navigate to="/" replace />;

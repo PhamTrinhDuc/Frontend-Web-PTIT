@@ -1,117 +1,153 @@
 @import "../../../utils/colors";
 
-
 .dashboard {
-  background: $white;
-  
+  padding: 24px;
+  background: #f0f2f5;
+  min-height: 100vh;
 
-  .ant-card {
-    border-radius: 8px;
-    box-shadow: $box-shadow;
-  }
+  .stats-overview {
+    margin-bottom: 24px;
 
-  .row-1{
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-
-    .profit-expenses {
-      width: 100%;
-      height: 100%;
-    }
-
-    .traffic-distribution {
-      .traffic-total {
-        text-align: center;
-        margin-top: 10px;
-        font-size: 18px;
-        font-weight: bold;
+    .stat-card {
+      border: none;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
       }
-    }
-    
-    .product-sales {
-      width: 100%;
-      height: 100%;
 
-      .sales-total {
-        width: 100%;
-        text-align: center;
-        margin-top: 10px;
-        font-size: 18px;
-        font-weight: bold;
-    
-        span {
-          color: #52c41a;
-          font-size: 14px;
-        }
+      .ant-card-body {
+        padding: 20px;
       }
-    }
-    
-  }
-  
-  .row-2 {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 30px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
 
-    .upcoming-schedules {
-      width: 100%;
-      height: 100%;      
-      .schedule-item {
+      .stat-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-    
-        .time {
-          font-weight: bold;
-          color: $ribbon-card;
-        }
-    
-        .description {
-          flex: 1;
-          margin-left: 10px;
-        }
-        .amount {
-          color: $button;
-        }
-      }
-      
-      .loading-container {
-        padding: 20px;
-        text-align: center;
-        color: $ribbon-card;
-      }
-      
-      .error-container {
-        padding: 20px;
-        text-align: center;
-        color: $ribbon-card;
-      }
-    }
+        margin-bottom: 12px;
 
-    .priority {
-      padding: 4px 10px;
-      border-radius: 4px;
-      color: $white;
-  
-      &.low {
-        background: #68b640;
+        .stat-icon {
+          width: 40px;
+          height: 40px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+        }
+
+        .stat-label {
+          font-size: 14px;
+          color: #8c8c8c;
+          font-weight: 500;
+        }
       }
-      &.medium {
-        background: #dea32f;
+
+      .stat-value {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+        color: #262626;
       }
-      &.high {
-        background: #d4363e;
+
+      .stat-footer {
+        margin-top: 12px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+
+        .trend-up { color: #52c41a; }
+        .trend-down { color: #ff4d4f; }
+        .trend-label { margin-left: 8px; color: #8c8c8c; }
       }
-      &.critical {
-        background: #7492ae;
+
+      &.revenue .stat-icon { background: #e6f7ff; color: #1890ff; }
+      &.orders .stat-icon { background: #f6ffed; color: #52c41a; }
+      &.products .stat-icon { background: #fffbe6; color: #faad14; }
+      &.customers .stat-icon { background: #f9f0ff; color: #722ed1; }
+    }
+  }
+
+  .main-row {
+    margin-bottom: 24px;
+
+    .chart-card {
+      border: none;
+      border-radius: 12px;
+      height: 400px;
+      
+      .ant-card-head {
+        border-bottom: 1px solid #f0f0f0;
+        padding: 0 24px;
+        min-height: 56px;
+        
+        .ant-card-head-title {
+          font-size: 16px;
+          font-weight: 600;
+        }
+      }
+
+      .ant-card-body {
+        padding: 20px;
+        height: calc(100% - 56px);
       }
     }
+  }
+
+  .secondary-row {
+    .data-card {
+      border: none;
+      border-radius: 12px;
+      height: 100%;
+      
+      .ant-card-head {
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .ant-table-wrapper {
+        .ant-table {
+          border-radius: 0;
+          
+          .ant-table-thead > tr > th {
+            background: #fafafa;
+            font-weight: 600;
+          }
+        }
+      }
+
+      .schedule-list {
+        .schedule-item {
+          padding: 12px 0;
+          
+          .time-box {
+            background: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #595959;
+            margin-right: 12px;
+          }
+
+          .title-text {
+            font-weight: 500;
+            color: #262626;
+          }
+
+          .desc-text {
+            font-size: 12px;
+            color: #8c8c8c;
+            display: block;
+          }
+        }
+      }
+    }
+  }
+
+  // Utilities to hide scrollbars on charts
+  canvas {
+    max-width: 100% !important;
   }
 }

@@ -1,0 +1,254 @@
+.transaction-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .transaction-content {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .payment-card {
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+    .payment-header {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #1890ff;
+
+      .anticon {
+        font-size: 24px;
+      }
+    }
+
+    .ant-card-head {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-bottom: none;
+
+      .payment-header {
+        color: white;
+      }
+    }
+
+    .ant-card-body {
+      padding: 30px;
+    }
+  }
+
+  .loading-card {
+    text-align: center;
+    padding: 60px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+
+  .order-info {
+    margin-bottom: 24px;
+    border-radius: 8px;
+    overflow: hidden;
+
+    .ant-descriptions-title {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .ant-descriptions-item-label {
+      background-color: #f5f5f5;
+      font-weight: 500;
+    }
+  }
+
+  .payment-details {
+    margin-top: 24px;
+    
+    .ant-descriptions {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+  }
+
+  // Form styles
+  .ant-form-item-label > label {
+    font-weight: 500;
+    color: #333;
+  }
+
+  .ant-input,
+  .ant-input-number,
+  .ant-select-selector,
+  .ant-input-textarea {
+    border-radius: 8px;
+    
+    &:hover,
+    &:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+    }
+  }
+
+  .ant-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    height: 48px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .ant-btn-default {
+    border-radius: 8px;
+    height: 48px;
+    font-size: 16px;
+    font-weight: 500;
+    border-color: #d9d9d9;
+    
+    &:hover {
+      border-color: #667eea;
+      color: #667eea;
+    }
+  }
+
+  // Result page styles
+  .ant-result {
+    padding: 48px 32px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+
+    .ant-result-icon {
+      margin-bottom: 24px;
+
+      .anticon {
+        font-size: 72px;
+      }
+    }
+
+    .ant-result-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .ant-result-subtitle {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .ant-result-extra {
+      margin-top: 32px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+
+      .ant-btn {
+        min-width: 140px;
+        height: 40px;
+        border-radius: 8px;
+      }
+    }
+  }
+
+  // Alert styles
+  .ant-alert {
+    border-radius: 8px;
+    
+    &.ant-alert-error {
+      border-color: #ff4d4f;
+      background-color: #fff2f0;
+    }
+  }
+
+  // Select options with icons
+  .ant-select-item-option-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .anticon {
+      font-size: 16px;
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .transaction-container {
+    padding: 20px 10px;
+
+    .transaction-content {
+      max-width: 100%;
+    }
+
+    .payment-card .ant-card-body {
+      padding: 20px 15px;
+    }
+
+    .ant-result {
+      padding: 32px 20px;
+
+      .ant-result-icon .anticon {
+        font-size: 56px;
+      }
+
+      .ant-result-title {
+        font-size: 20px;
+      }
+
+      .ant-result-subtitle {
+        font-size: 14px;
+      }
+
+      .ant-result-extra {
+        flex-direction: column;
+        
+        .ant-btn {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .transaction-container {
+    .payment-header {
+      font-size: 18px;
+
+      .anticon {
+        font-size: 20px;
+      }
+    }
+
+    .ant-btn-primary,
+    .ant-btn-default {
+      height: 44px;
+      font-size: 15px;
+    }
+
+    .order-info .ant-descriptions-item-label,
+    .order-info .ant-descriptions-item-content {
+      font-size: 13px;
+      padding: 8px 12px;
+    }
+  }
+}

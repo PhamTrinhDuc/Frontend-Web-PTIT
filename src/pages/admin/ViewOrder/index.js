@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import CardOrder from '../../../components/admin/CardOrder';
@@ -13,13 +13,12 @@ import './ViewOrder.scss';
 function ViewOrder() {
   const navigate = useNavigate();
   const { isLoggedIn, user } = useSelector((state) => state.auth);
-  const [allOrders, setOrders] = useState([]);
   const pageSize = numPageProduct;
   const [currentPage, setCurrentPage] = useState(1);
-  // Add sort state
   const [sortByDateDesc, setSortByDateDesc] = useState(true);
+  const [statusFilter, setStatusFilter] = useState('ALL');
 
-  const { orders, loading, error } = useAllOrder(
+  const { orders, loading, error, fetchOrders } = useAllOrder(
     isLoggedIn && user
       ? { currentPage, pageSize }
       : { skip: true }
@@ -36,23 +35,24 @@ function ViewOrder() {
     });
   };
 
+  const displayedOrders = useMemo(() => {
+    let result = orders || [];
+    
+    if (statusFilter !== 'ALL') {
+      result = result.filter((order) => order.status === statusFilter.toUpperCase());
+    }
+    
+    return sortOrdersByDate(result);
+  }, [orders, sortByDateDesc, statusFilter]);
+    
   // Toggle sort order
   const toggleSortOrder = () => {
     setSortByDateDesc(prev => !prev);
-    // Re-sort the orders based on new sort direction
-    setOrders(prev => sortOrdersByDate(prev));
   };
 
   const handlePaginationChange = (newPage) => {
     setCurrentPage(newPage);
   };
-  React.useEffect(() => {
-    if (orders) {
-      // Apply sorting to orders
-      const sortedOrders = sortOrdersByDate(orders);
-      setOrders(sortedOrders);
-    }
-  }, [orders, sortByDateDesc]);
 
   if (loading) return <Loading loading={loading} />;
   if (error) {
@@ -62,15 +62,7 @@ function ViewOrder() {
 
   // Hàm lọc đơn hàng theo trạng thái
   const filterOrdersByStatus = (status) => {
-    if (status === 'ALL') {
-      // Apply sorting when resetting to all orders
-      setOrders(sortOrdersByDate(orders));
-      return;
-    }
-    const filteredOrders = orders.filter((order) => order.status === status.toUpperCase());
-    
-    // Apply sorting to filtered orders
-    setOrders(sortOrdersByDate(filteredOrders));
+    setStatusFilter(status);
   };
   return (
     <>
@@ -80,7 +72,11 @@ function ViewOrder() {
         onToggleSort={toggleSortOrder}
         sortByDateDesc={sortByDateDesc}
       />
-      <CardOrder orders={allOrders} onPaginationChange = {handlePaginationChange}/>
+      <CardOrder 
+        orders={displayedOrders} 
+        onPaginationChange={handlePaginationChange}
+        onRefresh={fetchOrders}
+      />
     </>
   );
 }

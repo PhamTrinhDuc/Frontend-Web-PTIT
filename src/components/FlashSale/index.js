@@ -8,12 +8,12 @@ import PanigationProduct from '../PanigationProduct';
 import { numPageProductHeader } from '../../utils/variable';
 import Loading from '../../components/Loading';
 
-function FlashSale({products, pageSize, currentPage, totalPages, loading, onPaginationChange}) {
-  
+function FlashSale({ products, pageSize, currentPage, totalPages, loading, onPaginationChange }) {
+
   return (
     <>
       <div className='flash-sale'>
-        {/* <CountdownTimer /> */}
+        <CountdownTimer />
         <PanigationProduct
           products={products}
           pageSize={pageSize}

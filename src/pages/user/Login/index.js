@@ -1,8 +1,7 @@
 import { Form, Input, message, Button, Alert } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { FcGoogle } from "react-icons/fc";
 import './Login.scss';
 import {login} from '../../../slices/authSlice';
 import {post} from '../../../utils/requests';

@@ -1,206 +1,203 @@
 @import "../../../utils/colors";
 
+.cart-page {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
 
-.cart-container {
-  display: flex;
-  justify-content: space-between;
-  background-color: $white;
-  margin-bottom: 100px;
-}
+  .page-title {
+    margin-bottom: 24px;
+    color: #222;
+  }
 
-.cart-items {
-  width: 70%;
-  background: $hover-bg;
-  padding: 20px;
-  box-shadow: $box-shadow;
-  border-radius: 10px;
-
-  .cart-item {
+  .cart-layout {
     display: flex;
-    align-items: center;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #fff;
-    margin-bottom: 15px;
+    flex-direction: column;
+    gap: 16px;
+  }
 
-    .item-image {
-      width: 100px;
-      /* Đặt kích thước cố định */
-      height: 100px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      /* Ẩn phần dư của ảnh nếu cần */
-      margin-right: 30px;
+  /* Table Header */
+  .cart-header-card {
+    border-radius: 4px;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
+    background: #fff;
+    color: #888;
+    position: relative;
+    border: none;
+  }
 
-      img {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-        /* Đảm bảo ảnh lấp đầy khối mà không làm méo ảnh */
+  /* Individual Shop Group */
+  .cart-items-card {
+    border-radius: 4px;
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
+    background: #fff;
+    border: none;
+
+    .shop-header {
+      padding: 16px 0;
+      border-bottom: 1px solid #f0f0f0;
+
+      .anticon-shop {
+        color: #ee4d2d;
+        font-size: 16px;
       }
     }
 
-    .item-details {
-      flex: 1;
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: column;
-    }
+    .cart-items-list {
+      .cart-item-row {
+        padding: 20px 0;
+        border-bottom: 1px dashed #f0f0f0;
 
-    .quantity-control {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
-      border-radius: 8px;
-      /* Bo góc */
-      width: fit-content;
-      margin: 20px;
-
-      .quantity-button {
-        width: 32px;
-        height: 32px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border: none;
-        background: white;
-        cursor: pointer;
-        border-radius: 6px;
-        transition: all 0.2s ease-in-out;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-
-        &:hover {
-          background: $hover-bg;
+        &:last-child {
+          border-bottom: none;
         }
 
-        &:disabled {
-          background: #f0f0f0;
-          cursor: not-allowed;
-          opacity: 0.5;
+        .product-col {
+          display: flex;
+          align-items: flex-start;
+
+          .item-checkbox {
+            margin-right: 16px;
+            margin-top: 30px;
+          }
+
+          .item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border: 1px solid #e1e1e1;
+            border-radius: 4px;
+            margin-right: 16px;
+          }
+
+          .item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+
+            .item-name {
+              font-size: 14px;
+              color: #222;
+              display: -webkit-box;
+              -webkit-line-clamp: 2;
+              line-clamp: 2;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
         }
 
-        .quantity-value {
-          font-size: 16px;
-          font-weight: bold;
-          min-width: 30px;
+        .text-center {
           text-align: center;
         }
-      }
-    }
 
-    .subtotal {
-      font-size: 16px;
-      color: #333;
-      min-width: 80px;
-      text-align: right;
-      margin-right: 25px;
-
-      // &::after {
-      //   content: " đ";
-      //   font-size: 14px;
-      //   color: #666;
-      // }
-    }
-
-    .remove-button {
-      color: #d32f2f;
-      /* Màu đỏ cảnh báo */
-      font-size: 18px;
-      transition: color 0.2s ease-in-out;
-
-      &:hover {
-        color: #b71c1c;
-        /* Màu đỏ đậm hơn khi hover */
-        transform: scale(1.1);
-        /* Hiệu ứng phóng to nhẹ */
+        .action-col {
+          .ant-btn {
+            color: #ee4d2d; // Shopee orange scale
+            &:hover {
+              color: #ff7337;
+              background: transparent;
+            }
+          }
+        }
       }
     }
   }
 
-  .return-shop {
-    font-size: 16px;
-    font-weight: bold;
-    color: $text;
-    transition: all 0.2s ease-in-out;
-    padding: 8px 15px;
-    border-radius: 6px;
-    border: 1px solid $hover-bg;
-    &:hover {
-      color: $text;
-      /* Màu xanh đậm hơn khi hover */
-      text-decoration: underline;
+  /* Empty State */
+  .empty-cart-card {
+    padding: 60px 0;
+    text-align: center;
+    background: #fff;
+    border-radius: 4px;
+
+    .empty-state {
+      img {
+        width: 200px;
+        opacity: 0.8;
+      }
+      p {
+        margin: 20px 0;
+        color: #888;
+        font-weight: 500;
+        font-size: 16px;
+      }
     }
-    :active {
-      transform: scale(0.95);
-      /* Hiệu ứng nhấn xuống */
+  }
+
+  /* Sticky Bottom Floating Bar */
+  .cart-footer-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+    background: #fff;
+    padding: 16px 24px;
+    border-radius: 4px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,.05);
+    margin-top: 24px;
+    border: 1px solid #f0f0f0;
+
+    .checkout-section {
+      text-align: right;
+
+      .total-calculation {
+        display: inline-block;
+        margin-right: 20px;
+
+        .total-price {
+          font-size: 24px;
+          color: #ee4d2d;
+          font-weight: bold;
+          margin-left: 8px;
+        }
+      }
+
+      .checkout-btn {
+        width: 210px;
+        height: 48px;
+        font-size: 16px;
+        font-weight: 500;
+        background: #ee4d2d;
+        border-color: #ee4d2d;
+
+        &:hover, &:focus {
+          background: #f05d40;
+          border-color: #f05d40;
+        }
+      }
     }
   }
 }
 
-.cart-summary {
-  background: url('https://cdn.create.vista.com/api/media/small/54324565/stock-photo-online-shopping-and-e-commerce-background') no-repeat center center / cover;
-  padding: 20px;
-  width: 28%;
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-  color: #eee;
-  text-align: center;
+// Utility class definitions
+.text-center { text-align: center; }
 
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Màu nền đen mờ */
-    border-radius: 10px;
-  }
-
-  h3 {
-    margin-bottom: 20px;
-  }
-
-  .summary-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-
-    & >* {
-      position: relative;
-      z-index: 1;
+@media (max-width: 768px) {
+  .cart-page {
+    .cart-header-card {
+      display: none; // Hide table header on mobile
+    }
+    
+    .cart-layout {
+      margin-bottom: 80px;
     }
 
-    &.total {
-      font-weight: bold;
-      margin-top: 20px;
-      border-top: 1px solid #eee;
-      padding-top: 10px;
-    }
-  }
-
-  .coupon-section {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-
-    .ant-input {
-      flex: 1;
-    }
-  }
-
-  button {
-    background-color: $hover-bg;
-    opacity: 0.9;
-    transition: all 0.2s ease-in-out;
-
-    :hover {
-      opacity: 1;
-      transform: scale(1.05);
+    .cart-footer-bar {
+      padding: 12px;
+      
+      .checkout-section {
+        .checkout-btn {
+          width: auto;
+          padding: 0 16px;
+        }
+        .total-calculation {
+          margin-right: 10px;
+          .total-price {
+            font-size: 18px;
+          }
+        }
+      }
     }
   }
 }

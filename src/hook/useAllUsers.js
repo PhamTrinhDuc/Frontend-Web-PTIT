@@ -9,24 +9,23 @@ const useAllUsers = () => {
   const [error, setError] = useState(null);
   const token = useSelector((state) => state.auth.token);
 
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const response = await get('users', token);
+      setUsers(response);
+    } catch (err) {
+      setError(err.message || 'Failed to fetch users');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-
-    const fetchUsers = async () => {
-      setLoading(true);
-      try {
-        const response = await get('users', token);
-        setUsers(response);
-      } catch (err) {
-        setError(err.message || 'Failed to fetch users');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
-  }, []);
+  }, [token]);
 
-  return { users, loading, error };
+  return { users, loading, error, fetchUsers };
 };
 
 export default useAllUsers;

@@ -105,13 +105,17 @@ function TabInfo({
   };  
 
   const handleLogoutAccount = useCallback(() => {
-    // Close the modal first
+    // Close the modal
     setIsLogoutModalVisible(false);
-    // Dispatch logout and clear cart actions, then navigate
-    if (isMounted.current) {
-      safeDispatch(dispatch, [logout(), clearCart()]);
-      navigate('/login', { replace: true });
-    }
+    
+    // Clear localStorage
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    
+    // Dispatch logout actions and navigate
+    dispatch(logout());
+    dispatch(clearCart());
+    navigate('/login', { replace: true });
   }, [dispatch, navigate]);
 
   const handleCancelLogout = () => {
@@ -158,6 +162,19 @@ function TabInfo({
                             <strong>Product name:</strong> {item.productName} <br />
                             <strong>Price:</strong> {item.unitPrice.toLocaleString()} VNĐ <br />
                             <strong>Quantity:</strong> {item.quantity}
+                            {order.status === 'COMPLETED' && (
+                              <div style={{ marginTop: '5px' }}>
+                                <Button 
+                                  size="small" 
+                                  type="link" 
+                                  onClick={() => navigate(`/product-detail/${item.productId}`)}
+                                  className="pink-link"
+                                  style={{ padding: 0 }}
+                                >
+                                  Rating & Review
+                                </Button>
+                              </div>
+                            )}
                             <hr></hr>
                           </li>
                         ))

@@ -1,206 +1,257 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { Row, Col, Card, Table, List, Modal, Button, Empty } from 'antd';
-import { SyncOutlined, PlusOutlined } from '@ant-design/icons';
-import { Bar, Doughnut, Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, LineElement, PointElement } from 'chart.js';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Card, Table, List, Modal, Button, Empty, Typography, message, Statistic, Tag } from 'antd';
+import { 
+  SyncOutlined, 
+  PlusOutlined, 
+  DollarCircleOutlined, 
+  ShoppingCartOutlined, 
+  SkinOutlined, 
+  UserOutlined,
+  ArrowUpOutlined,
+  HistoryOutlined
+} from '@ant-design/icons';
+import { Bar, Doughnut } from 'react-chartjs-2';
+import { 
+  Chart as ChartJS, 
+  CategoryScale, 
+  LinearScale, 
+  BarElement, 
+  Title as ChartTitle, 
+  Tooltip, 
+  Legend, 
+  ArcElement, 
+  LineElement, 
+  PointElement 
+} from 'chart.js';
+
 import AddScheduleForm from './AddScheduleForm';
 import useSchedules from '../../../hook/useSchedules';
 import './Dashboard.scss';
 import useTopOrder from '../../../hook/useTopOrder';
 import useTopProducts from '../../../hook/useTopProducts';
+import useDashboardStats from '../../../hook/useDashboardStats';
+import useMonthlyRevenue from '../../../hook/useMonthlyRevenue';
+
+const { Title, Text } = Typography;
 
 // Đăng ký các thành phần của Chart.js
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, LineElement, PointElement);
+ChartJS.register(CategoryScale, LinearScale, BarElement, ChartTitle, Tooltip, Legend, ArcElement, LineElement, PointElement);
 
-
-// Dữ liệu cho biểu đồ Profit & Expenses
-const profitExpensesData = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  datasets: [
-    {
-      label: 'Profit',
-      data: [80, 40, 100, 50, 90, 30, 60],
-      backgroundColor: '#1890ff',
-    },
-    {
-      label: 'Expenses',
-      data: [50, 30, 70, 40, 60, 20, 50],
-      backgroundColor: '#ff6f61',
-    },
-  ],
-};
-
-// Dữ liệu cho biểu đồ Traffic Distribution
-const trafficData = {
-  labels: ['New', 'Returning'],
-  datasets: [
-    {
-      data: [40, 60], // Tỷ lệ New và Returning
-      backgroundColor: ['#1890ff', '#ff6f61'],
-    },
-  ],
-};
-
-// Dữ liệu cho biểu đồ Product Sales
-const salesData = {
-  labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-  datasets: [
-    {
-      label: 'Sales',
-      data: [20, 30, 25, 40, 35, 50],
-      borderColor: '#1890ff',
-      fill: false,
-    },  ],
-};
-
-// Dữ liệu cho Top Paying Clients
+// Column definitions for tables
 const columnsClient = [
-  { title: '', dataIndex: 'id', key: 'id', width: 50 },
-  { title: 'Name', dataIndex: 'fullname', key: 'fullname' },
-  // { title: 'Priority', dataIndex: 'priority', key: 'priority', render: (text) => <span className={`priority ${text.toLowerCase()}`}>{text}</span> },
-  { title: 'Budget', dataIndex: 'totalSpending', key: 'totalSpending' },
+  { 
+    title: 'Customer', 
+    dataIndex: 'fullname', 
+    key: 'fullname',
+    render: (text) => <Text strong>{text}</Text>
+  },
+  { 
+    title: 'Spending', 
+    dataIndex: 'totalSpending', 
+    key: 'totalSpending',
+    render: (amount) => <Text type="success">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount)}</Text>
+  },
 ];
 
 const columnsProducts = [
-  { title: '', dataIndex: 'id', key: 'id', width: 50 },
-  { title: 'Name', dataIndex: 'name', key: 'name' },
-  { title: 'Price', dataIndex: 'price', key: 'price' },
-  { title: 'Sold Quantity', dataIndex: 'soldQuantity', key: 'soldQuantity' },
+  { title: 'Product', dataIndex: 'name', key: 'name', ellipsis: true },
+  { 
+    title: 'Price', 
+    dataIndex: 'price', 
+    key: 'price',
+    render: (val) => new Intl.NumberFormat('vi-VN').format(val)
+  },
+  { 
+    title: 'Sold', 
+    dataIndex: 'soldQuantity', 
+    key: 'soldQuantity',
+    render: (count) => <Tag color="blue">{count}</Tag>
+  },
 ];
 
-
 const Dashboard = () => {
+  const currentYear = new Date().getFullYear();
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { schedules, loading, error, refreshSchedules } = useSchedules(true); // Get only active schedules
+  const { schedules, loading: schedulesLoading, error: schedulesError, refreshSchedules } = useSchedules(true);
+  const { stats, loading: statsLoading } = useDashboardStats();
+  const { revenueData, loading: revenueLoading } = useMonthlyRevenue(currentYear);
+  const { orders } = useTopOrder();
+  const { products } = useTopProducts();
 
-  // Format the date for display
+  const revenueChartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: 'Revenue 2024',
+        data: revenueData,
+        backgroundColor: '#1890ff',
+        borderRadius: 4,
+        barThickness: 20,
+      },
+    ],
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+  };
+  
   const formatDateTime = (dateTimeString) => {
     const date = new Date(dateTimeString);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  const { orders } = useTopOrder();
-  const { products } = useTopProducts();
-
-  // Mở modal
-  const handleOpenModal = () => {
-    setIsModalVisible(true);
-  };
-
-  // Đóng modal
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-  // Callback khi thêm lịch thành công
-  const handleAdd = () => {
-    setIsModalVisible(false); // Đóng modal
-    console.log('Refreshing schedules after adding a new one');
-    setTimeout(() => {
-      refreshSchedules(); // Refresh danh sách sau một khoảng thời gian ngắn
-    }, 100);
-  };
-
   return (
     <div className="dashboard">
-      <Row gutter={[16, 16]} className='row-1'>
-        {/* Profit & Expenses */}
-        <Col xs={24} md={12}>
-          <Card title="Profit & Expenses" className='profit-expenses'>
-            <Bar data={profitExpensesData} options={{ responsive: true }} />
+      {/* 4 Overview Stat Cards */}
+      <Row gutter={[24, 24]} className="stats-overview">
+        <Col xs={24} sm={12} lg={6}>
+          <Card className="stat-card revenue">
+            <div className="stat-header">
+              <div className="stat-label">TOTAL REVENUE</div>
+              <div className="stat-icon"><DollarCircleOutlined /></div>
+            </div>
+            <p className="stat-value">{formatCurrency(stats?.totalRevenue || 0)}</p>
+            <div className="stat-footer">
+              <span className="trend-up"><ArrowUpOutlined /> 12%</span>
+              <span className="trend-label">since last month</span>
+            </div>
           </Card>
         </Col>
-
-        {/* Traffic Distribution */}
-        <Col xs={24} md={6}>
-          <Card title="Traffic Distribution" className='traffic-distribution'>
-            <Doughnut data={trafficData} options={{ responsive: true }} />
-            <div className="traffic-total">$35,358</div>
+        <Col xs={24} sm={12} lg={6}>
+          <Card className="stat-card orders">
+            <div className="stat-header">
+              <div className="stat-label">TOTAL ORDERS</div>
+              <div className="stat-icon"><ShoppingCartOutlined /></div>
+            </div>
+            <p className="stat-value">{stats?.totalOrders || 0}</p>
+            <div className="stat-footer">
+              <span className="trend-up"><ArrowUpOutlined /> 8%</span>
+              <span className="trend-label">new orders today</span>
+            </div>
           </Card>
         </Col>
-
-        {/* Product Sales */}
-        <Col xs={24} md={6}>
-          <Card title="Product Sales" className='product-sales'>
-            <Line data={salesData} options={{ responsive: true }} />
-            <div className="sales-total">$6,820 <span>+8% last year</span></div>
+        <Col xs={24} sm={12} lg={6}>
+          <Card className="stat-card products">
+            <div className="stat-header">
+              <div className="stat-label">ACTIVE PRODUCTS</div>
+              <div className="stat-icon"><SkinOutlined /></div>
+            </div>
+            <p className="stat-value">{stats?.totalProducts || 0}</p>
+            <div className="stat-footer">
+              <span className="trend-label">Available in inventory</span>
+            </div>
           </Card>
         </Col>
-      </Row>      
-      <Row gutter={[16, 16]} className='row-2'>
-        {/* Upcoming Schedules */}
+        <Col xs={24} sm={12} lg={6}>
+          <Card className="stat-card customers">
+            <div className="stat-header">
+              <div className="stat-label">TOTAL CUSTOMERS</div>
+              <div className="stat-icon"><UserOutlined /></div>
+            </div>
+            <p className="stat-value">{stats?.totalCustomers || 0}</p>
+            <div className="stat-footer">
+              <span className="trend-label">Registered users</span>
+            </div>
+          </Card>
+        </Col>
+      </Row>
 
-        <Col xs={24} md={12} >
-          <Card            title="Upcoming Schedules" 
-            className='upcoming-schedules'
-            extra={
-              <div>
-                <Button 
-                  type="text" 
-                  icon={<i className="fas fa-sync"></i>} 
-                  onClick={refreshSchedules}
-                  style={{ marginRight: '8px' }}
-                  title="Refresh schedules"
-                />
-                <Button type="primary" onClick={handleOpenModal}>
-                  Add Schedule
-                </Button>
-              </div>
-            }
+      {/* Main Analysis Section */}
+      <Row gutter={[24, 24]} className="main-row">
+        <Col xs={24} lg={16}>
+          <Card title="Revenue Analytics" className="chart-card">
+            <Bar 
+              data={revenueChartData} 
+              options={{ 
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } },
+                plugins: { legend: { display: false } }
+              }} 
+            />
+          </Card>
+        </Col>
+        <Col xs={24} lg={8}>
+          <Card title="Traffic Source" className="chart-card">
+            <Doughnut 
+              data={{
+                labels: ['Completed', 'Processing', 'Cancelled'],
+                datasets: [{
+                  data: [65, 25, 10],
+                  backgroundColor: ['#52c41a', '#1890ff', '#ff4d4f'],
+                  borderWidth: 0,
+                }]
+              }} 
+              options={{ 
+                responsive: true, 
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } },
+                cutout: '70%'
+              }} 
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Lists and Schedules */}
+      <Row gutter={[24, 24]} className="secondary-row">
+        <Col xs={24} lg={8}>
+          <Card 
+            title={<span><HistoryOutlined /> Upcoming Schedules</span>} 
+            className="data-card"
+            extra={<Button size="small" type="primary" onClick={() => setIsModalVisible(true)}>Add</Button>}
           >
-            {loading ? (
-              <div className="loading-container">Loading schedules...</div>
-            ) : error ? (
-              <div className="error-container">{error}</div>
-            ) : schedules.length === 0 ? (
-              <Empty description="No upcoming schedules" />
-            ) : (
-              <List
-                dataSource={schedules}
-                renderItem={(item) => (
-                  <List.Item>
+            <div className="schedule-list">
+              {schedulesLoading ? <Empty description="Loading..." /> : schedules.length === 0 ? <Empty /> : (
+                <List
+                  dataSource={schedules.slice(0, 5)}
+                  renderItem={(item) => (
                     <div className="schedule-item">
-                      <span className="time">{formatDateTime(item.start_time)}</span>
-                      <span className="description">{item.title}</span>
-                      {item.description && (
-                        <span className="amount">{item.description}</span>
-                      )}
+                      <span className="time-box">{formatDateTime(item.start_time)}</span>
+                      <div style={{ display: 'inline-block' }}>
+                        <span className="title-text">{item.title}</span>
+                        {item.description && <span className="desc-text">{item.description}</span>}
+                      </div>
                     </div>
-                  </List.Item>
-                )}
-              />
-            )}
+                  )}
+                />
+              )}
+            </div>
           </Card>
         </Col>
-
-        {/* Top Paying Clients */}
-        <Col xs={24} md={12}>
-          <Card title="Top Paying Clients" className='top-paying-clients'>
+        
+        <Col xs={24} lg={8}>
+          <Card title="Top Clients" className="data-card">
             <Table
               columns={columnsClient}
-              dataSource={orders}
+              dataSource={orders?.slice(0, 5)}
               pagination={false}
+              size="small"
               rowKey="id"
             />
           </Card>
-        </Col>      
+        </Col>
 
-        <Col xs={24} md={12}>
-          <Card title="Top Products" className='top-paying-clients'>
+        <Col xs={24} lg={8}>
+          <Card title="Top Selling" className="data-card">
             <Table
               columns={columnsProducts}
-              dataSource={products}
+              dataSource={products?.slice(0, 5)}
               pagination={false}
+              size="small"
               rowKey="id"
             />
           </Card>
-        </Col>      
+        </Col>
       </Row>
 
       <AddScheduleForm
         open={isModalVisible}
-        onCancel={handleCancel}
-        onAdd={handleAdd}
+        onCancel={() => setIsModalVisible(false)}
+        onAdd={() => {
+          setIsModalVisible(false);
+          refreshSchedules();
+        }}
       />
     </div>
   );

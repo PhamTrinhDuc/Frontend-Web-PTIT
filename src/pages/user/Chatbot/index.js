@@ -85,9 +85,20 @@ const Chatbot = () => {
 
       // Xử lý phản hồi API
       if (response.data) {
+        // Đảm bảo text luôn là string
+        let botText = '';
+        if (typeof response.data === 'string') {
+          botText = response.data;
+        } else if (typeof response.data === 'object') {
+          // Thử các thuộc tính phổ biến
+          botText = response.data.message || response.data.answer || response.data.text || JSON.stringify(response.data);
+        } else {
+          botText = String(response.data);
+        }
+
         const botReply = {
           id: Date.now() + 1,
-          text: response.data, // Lấy trực tiếp câu trả lời từ response.data
+          text: botText,
           sender: "bot",
           timestamp: new Date().toLocaleTimeString(),
         };

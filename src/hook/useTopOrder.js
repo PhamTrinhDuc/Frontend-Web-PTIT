@@ -23,7 +23,7 @@ const useTopOrder = () => {
       }
     };
     fetchProducts();
-  }, []);
+  }, [token]);
 
   return { orders, loading, error};
 };

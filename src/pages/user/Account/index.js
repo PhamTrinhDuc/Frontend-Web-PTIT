@@ -19,19 +19,24 @@ const Account = () => {
       : { skip: true }
   );
 
+  React.useEffect(() => {
+    if (!isLoggedIn || !user) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, user, navigate]);
+
   if (!isLoggedIn || !user) {
-    navigate('/login');
+    return null;
   }
 
   const userInfo = {
-    fullName: user.fullname ? user.fullname : '',
-    email: user.email ? user.email : '',
-    phoneNumber: user.phoneNumber ? user.phoneNumber : '',
-    address: user.address ? user.address : '',
-    avatar: user.avatar ? user.avatar : 'https://example.com/default-avatar.png',
+    fullName: user.fullname || '',
+    email: user.email || '',
+    phoneNumber: user.phoneNumber || '',
+    address: user.address || '',
+    avatar: user.avatar || 'https://example.com/default-avatar.png',
     memberSince: user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '',
-    orders: orders.length ? orders.length : 0,
-    // points: 1500,
+    orders: orders.length || 0,
   };
 
 

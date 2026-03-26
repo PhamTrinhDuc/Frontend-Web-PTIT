@@ -8,51 +8,48 @@ const useProductsByCategory = ({ categorySlug, page, pageSize, priceRange, sortO
   const [error, setError] = useState(null);
   const [totalPages, setTotalPages] = useState();
 
-  useEffect(() => {
-    if (!categorySlug) return;
-
-    const params = new URLSearchParams();
-    params.append('page', page - 1); // Backend dùng 0-based
-    params.append('size', pageSize);
-  
-    if (priceRange) {
-      if (priceRange === '>2000') {
-        params.append('minPrice', 2000);
-      } else {
-        const [min, max] = priceRange.split('-').map(Number);
-        params.append('minPrice', min);
-        params.append('maxPrice', max);
-      }
-    }
-
-    // Xử lý sortOption
-    if (sortOption) {
-      params.append('sortBy', sortOption);
-    }
-
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        console.log('categorySlug', categorySlug);
-        console.log('Fetching products with params:', params.toString());
-        const response = await get(`products/${categorySlug}?${params.toString()}`);
-        console.log('Response:', response);
-        if (!response.status) {
-          throw new Error('Failed to fetch products');
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      params.append('page', page - 1);
+      params.append('size', pageSize);
+    
+      if (priceRange) {
+        if (priceRange === '>2000') {
+          params.append('minPrice', 2000);
+        } else {
+          const [min, max] = priceRange.split('-').map(Number);
+          params.append('minPrice', min);
+          params.append('maxPrice', max);
         }
+      }
+
+      if (sortOption) {
+        params.append('sortBy', sortOption);
+      }
+
+      const url = categorySlug ? `products/${categorySlug}?${params.toString()}` : `products?${params.toString()}`;
+      const response = await get(url);
+      
+      if (response && response.status) {
         setTotalPages(response.data.totalPages);
         setProducts(response.data.content);
-      } catch (err) {
-        setError(err.message || 'Failed to fetch products');
-      } finally {
-        setLoading(false);
+      } else {
+        throw new Error('Failed to fetch products');
       }
-    };
+    } catch (err) {
+      setError(err.message || 'Failed to fetch products');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchProducts();
   }, [categorySlug, page, pageSize, priceRange, sortOption]);
 
-  return { products, loading, error, totalPages};
+  return { products, loading, error, totalPages, refreshProduct: fetchProducts };
 };
 
 export default useProductsByCategory;
