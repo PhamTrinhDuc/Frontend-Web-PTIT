@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Row, Col, Input, Button, Badge } from 'antd';
-import { SearchOutlined, ShoppingCartOutlined, UserOutlined, MenuOutlined} from '@ant-design/icons';
+import { SearchOutlined, ShoppingCartOutlined, UserOutlined, MenuOutlined } from '@ant-design/icons';
 import { FaHome, FaShoppingCart, FaInfoCircle, FaEnvelope } from 'react-icons/fa';
 import { get } from '../../utils/requests';
 import './Header.scss';
@@ -47,6 +47,14 @@ const Header = () => {
     setSearchValue('');
   };
 
+  // 1. Xác định tên hiển thị (Ưu tiên fullname, sau đó đến username)
+  const rawName = user?.fullname || user?.username || "";
+
+  // 2. Logic cắt chuỗi: Nếu dài hơn 10 ký tự thì lấy 10 ký tự đầu + "..."
+  const displayName = rawName.length > 10
+    ? `${rawName.substring(0, 10)}...`
+    : rawName;
+
   return (
     <>
       <div className="decorative-bar"></div>
@@ -83,7 +91,7 @@ const Header = () => {
               </Link>
             </nav>
           </Col>
-          
+
           <Col xs={12} md={8} className="header-actions">
             <Input
               placeholder="What you looking for?"
@@ -110,7 +118,7 @@ const Header = () => {
               icon={<UserOutlined />}
               onClick={handleUserClick}
             >
-              {isLoggedIn && user?.username ? user.username : 'Sign in'}
+              {isLoggedIn && user ? (displayName) : 'Sign in'}
             </Button>
           </Col>
         </Row>

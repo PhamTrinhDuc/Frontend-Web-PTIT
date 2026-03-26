@@ -1,112 +1,160 @@
-import { Form, Input, message, Button } from 'antd';
-import { Link } from 'react-router-dom';
+import { Form, Input, message, Button, Alert, Divider } from 'antd';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { GoogleOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import './SignUp.scss';
-import { FcGoogle } from "react-icons/fc";
 import { post } from '../../../utils/requests';
-import { useNavigate } from 'react-router-dom';
-import Password from 'antd/es/input/Password';
-
-
-const { Item } = Form;
 
 function SignUp() {
-
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const onFinish = async (values) => {
+    setLoading(true);
+    setErrorMessage("");
     try {
-      // Gửi dữ liệu đến backend
-      console.log('Form values:', values);
-      const response = await post('auth/register', values);
-      console.log('Response:', response);
-      navigate('/login');
-      form.resetFields(); // Xóa form (tùy chọn, tùy thuộc vào logic)
-      // Thêm logic chuyển hướng sau khi đăng nhập thành công (ví dụ: useHistory từ react-router)
+      const payload = {
+        username: values.username,
+        password: values.password,
+        confirmPassword: values.confirmPassword
+      };
+
+      const response = await post('auth/register', payload);
+
+      if (response) {
+        message.success({ content: 'Account created successfully! Please login.', duration: 3 });
+        form.resetFields();
+        navigate('/login');
+      }
     } catch (error) {
-      console.error('Login failed:', error);
-      message.error('Login failed. Please try again.'); // Thông báo lỗi
+      console.error('Registration failed:', error);
+      setErrorMessage(error.message || "Registration failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleGoogleSignup = () => {
+    // TODO: Google OAuth integration logic goes here
+    message.loading("Redirecting to Google authentication...", 2);
+    // Typical Flow: window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+    setTimeout(() => {
+      message.info("Google OAuth placeholder active. Implement OAuth2 flow on the backend.");
+    }, 2000);
+  };
+
   return (
-    <>
-      <div className='signup-container'>
-
-        <div className='illustration'></div>
-          
-        <div className='signup-form'>
+    <div className="signup-wrapper">
+      <div className="signup-box">
+        <div className="signup-header">
           <h2>Create an account</h2>
-          <p className='desciption'>
-            Enter your details below to create your account
-          </p>
-          <Form
-            form={form}
-            layout='vertical'
-            onFinish={onFinish}
-            requiredMark={false}
-          >
-            <Item
-              name="username"
-              label="Username"
-              className='item'
-              rules={[{ required: true, message: 'Please input your username!' }]}
-            >
-              <Input placeholder='Enter your username'/>
-            </Item>
-
-            {/* <Item
-              name="address"
-              label="Email or Phone Number"
-              className='item'
-              rules={[{ required: true, message: 'Please input your email or phone number!' }]}
-            >
-              <Input placeholder='Enter your email or phone number'/>
-            </Item> */}
-
-            <Item
-              name="password"
-              label="Password"
-              className='item'
-              rules={[{ required: true, type: Password, message: 'Please input your password!' }]}
-            >
-              <Input.Password placeholder='Enter your password'/>
-            </Item>
-
-            <Item
-              name="confirmPassword"
-              label="Confirm Password"
-              className='item'
-              rules={[{ required: true, type: Password, message: 'Please confirm your password' }]}
-            >
-              <Input.Password placeholder='Enter your password'/>
-            </Item>
-
-
-            <Item>
-              <Button type="primary" htmlType="submit" className="login-btn">
-                Create Account
-              </Button>
-            </Item>
-
-            {/* <Item>
-              <Button type="primary" 
-                className="login-btn"
-                icon={<FcGoogle />}
-                onClick={() => window.location.href = 'URL_GOOGLE_AUTH'}
-              >
-                Sign up with Google
-              </Button>
-            </Item> */}
-
-            <div className='login-link'>
-              <span>Already have an account?</span>
-              <Link className='login' to='/login'>Login</Link>
-            </div>
-          </Form>
+          <p>Join Zenith today</p>
         </div>
+
+        {errorMessage && (
+          <Alert
+            message="Error"
+            description={errorMessage}
+            type="error"
+            showIcon
+            closable
+            onClose={() => setErrorMessage("")}
+            className="signup-alert"
+          />
+        )}
+
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          requiredMark={false}
+          className="signup-form"
+        >
+          <Form.Item
+            name="username"
+            rules={[
+              { required: true, message: 'Please input your username!' },
+              { min: 3, message: 'Username must be at least 3 characters.' }
+            ]}
+          >
+            <Input 
+              prefix={<UserOutlined className="site-form-item-icon" />} 
+              placeholder="Username" 
+              size="large"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            rules={[
+              { required: true, message: 'Please input your password!' },
+              { min: 6, message: 'Password must be at least 6 characters.' }
+            ]}
+          >
+            <Input.Password 
+              prefix={<LockOutlined className="site-form-item-icon" />} 
+              placeholder="Password" 
+              size="large"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="confirmPassword"
+            dependencies={['password']}
+            rules={[
+              { required: true, message: 'Please confirm your password!' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('The two passwords do not match!'));
+                },
+              }),
+            ]}
+          >
+            <Input.Password 
+              prefix={<LockOutlined className="site-form-item-icon" />} 
+              placeholder="Confirm Password" 
+              size="large"
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <Button 
+              type="primary" 
+              htmlType="submit" 
+              className="submit-btn" 
+              size="large"
+              loading={loading}
+              block
+            >
+              SIGN UP
+            </Button>
+          </Form.Item>
+
+          <Divider className="divider-text" plain>OR</Divider>
+
+          <Form.Item>
+            <Button 
+              className="google-btn" 
+              icon={<GoogleOutlined />} 
+              size="large" 
+              onClick={handleGoogleSignup}
+              block
+            >
+              Sign up with Google
+            </Button>
+          </Form.Item>
+
+          <div className="login-prompt">
+            Already have an account? <Link to="/login">Log In</Link>
+          </div>
+        </Form>
       </div>
-    </>
+    </div>
   );
 }
 

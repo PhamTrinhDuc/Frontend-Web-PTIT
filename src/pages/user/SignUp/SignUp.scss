@@ -1,91 +1,119 @@
 @import "../../../utils/colors";
 
-.signup-container {
+.signup-wrapper {
   display: flex;
-  width: 100%;
-  position: relative;
-  height: 600px;
-  overflow: hidden; // Ẩn phần nội dung vượt quá kích thước
-  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px); /* Adjust based on your header height */
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 20px;
 
-  .illustration{
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("https://applemagazine.com/wp-content/uploads/2021/12/brandon-romanchuk-NOFyRmSQfUQ-unsplash.jpg");
-    background-size: cover;
+  .signup-box {
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
     width: 100%;
-    height: 100%;
-    background-position: center;
-    position: absolute;
-    z-index: 0; // Đặt dưới nội dung
-    will-change: transform; // Tối ưu hiệu suất trình duyệt
+    max-width: 450px;
+  }
+
+  .signup-header {
+    text-align: center;
+    margin-bottom: 30px;
+
+    h2 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: #666;
+      font-size: 15px;
+    }
+  }
+
+  .signup-alert {
+    margin-bottom: 24px;
+    border-radius: 6px;
   }
 
   .signup-form {
-    border-radius: 10px;
-    border: $white 1px solid;
-    color: $white;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); // Bóng chữ tạo độ nổi
-    margin: 10px 0px 10px 10px;
-    z-index: 1; // Đặt trên nền
-
-    padding: 30px 40px;
-    background-color: rgba(255, 255, 255, 0.1); // Nền trắng trong suốt
-    backdrop-filter: blur(8px); // Hiệu ứng blur
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); // Đổ bóng nhẹ
-
-    h2 {
-      font-size: 35px;
-      margin-bottom: 10px;
+    .ant-input-affix-wrapper {
+      padding: 10px 15px;
+      border-radius: 8px;
     }
-    p {
+
+    .submit-btn {
+      background: #ee4d2d;
+      border-color: #ee4d2d;
+      height: 48px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+
+      &:hover, &:focus {
+        background: #f05d40;
+        border-color: #f05d40;
+      }
+    }
+
+    .divider-text {
+      color: #999;
+      font-size: 12px;
+      margin: 16px 0;
+    }
+
+    .google-btn {
+      height: 48px;
       font-size: 15px;
-      margin-bottom: 30px;
+      font-weight: 500;
+      color: #444;
+      border-color: #d9d9d9;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .anticon-google {
+        font-size: 18px;
+        color: #DB4437; /* Google red */
+      }
+
+      &:hover {
+        border-color: #bfbfbf;
+        color: #222;
+        background: #fafafa;
+      }
     }
-    .item {
-      .ant-form-item-label {
-        label {
-          color: $white;
-          font-size: 15px;
-          font-weight: 500;
+
+    .login-prompt {
+      text-align: center;
+      margin-top: 24px;
+      color: #666;
+
+      a {
+        color: #ee4d2d;
+        font-weight: 600;
+        margin-left: 6px;
+
+        &:hover {
+          text-decoration: underline;
         }
       }
     }
-    .login-link {
-      display: flex;
-      justify-content: center;
-      color: $white;
-      font-size: 13px;
-      margin-top: 15px;
+  }
+}
 
-    }
+@media (max-width: 576px) {
+  .signup-wrapper {
+    padding: 20px;
+    background: #fff; /* Simplify background on mobile */
 
-    .login {
-      color: $white;
-      font-weight: 500;
-      cursor: pointer;
-      transition: color 0.3s ease-out;
-      margin-left: 10px;
-      text-decoration: underline;
-  
-      &:hover {
-        color: $hover-bg;
-      }
-    }
-
-    .login-btn {
-      color: $text;
-      width: 100%;
-      font-size: 16px;
-      background-color: #7D8184;
-      font-weight: 500;
-      padding: 20px 35px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease-out;
-  
-      &:hover {
-        background-color: $hover-bg;
-      }
+    .signup-box {
+      padding: 20px;
+      box-shadow: none;
     }
   }
 }

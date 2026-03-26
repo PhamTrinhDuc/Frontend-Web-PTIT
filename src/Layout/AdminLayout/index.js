@@ -79,7 +79,7 @@ const AdminHeader = () => {
               icon={<UserOutlined />}
               onClick={handleUserClick}
             >
-              {isLoggedIn && user?.username ? user.username : 'Sign in'}
+              {isLoggedIn && user ? (user.fullname || user.username) : 'Sign in'}
             </Button>
           </Col>
         </Row>

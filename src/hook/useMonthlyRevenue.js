@@ -9,6 +9,7 @@ const useMonthlyRevenue = (year = new Date().getFullYear()) => {
   const token = useSelector((state) => state.auth.token);
 
   const fetchRevenue = async () => {
+    if (!token) return; // Prevent 403 fetch before Redux hydrates
     setLoading(true);
     try {
       const response = await get(`admin/dashboard/revenue/monthly?year=${year}`, token);

@@ -8,15 +8,21 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store from './stores';
 import { persistor } from './stores';
+import { GoogleOAuthProvider } from '@react-oauth/google';
+
+// TODO: Replace with your actual Google OAuth Client ID
+const GOOGLE_CLIENT_ID = "351347449879-tmd5n0n3c20tp2lvd40omd36k887mga6.apps.googleusercontent.com";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <BrowserRouter>
-        <App />
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+          <App />
+        </GoogleOAuthProvider>
       </BrowserRouter>
-      </PersistGate>
+    </PersistGate>
   </ Provider>
 );
 
@@ -24,4 +30,3 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
-                
