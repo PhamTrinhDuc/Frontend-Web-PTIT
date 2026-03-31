@@ -45,13 +45,22 @@
 
 
   .chatbot-box {
-    width: 500px;
     height: 600px;
     background: white;
     border-radius: 8px;
     box-shadow: $box-shadow;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    &.sidebar-open {
+      width: 750px; /* Cửa sổ chat rộng hơn để chứa Sidebar lịch sử (260px) và Chat (490px) */
+    }
+
+    &.sidebar-closed {
+      width: 450px; /* Cửa sổ gọn gàng như chat Messenger truyền thống khi ẩn Sidebar */
+    }
   }
 
   .chatbot-header {
@@ -61,10 +70,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
 
-    span {
+    .chatbot-title {
+      display: flex;
+      align-items: center;
       font-size: 16px;
       font-weight: 500;
     }
@@ -72,6 +81,126 @@
     .ant-btn {
       color: $white;
     }
+  }
+
+  /* Bố cục chia đôi Flex Sidebar Trái + Chat Phải */
+  .chatbot-layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Khung liệt kê danh sách Sidebar trái */
+  .chatbot-sidebar {
+    width: 260px;
+    border-right: 1px solid #e8e8e8;
+    background: #f7f7f8; /* Màu nền cực kỳ nhạt, giống sidebar ChatGPT */
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    overflow-y: auto;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), padding 0.3s ease, opacity 0.2s;
+    opacity: 1;
+
+    &.closed {
+      width: 0;
+      padding-left: 0;
+      padding-right: 0;
+      border: none;
+      opacity: 0;
+      overflow: hidden;
+      white-space: nowrap; /* Đảm bảo không bị wrap chữ khi đang thụt vào */
+      * {
+         display: none; /* Tránh tràn layout khi height/width thụt */
+      }
+    }
+
+    .new-chat-btn {
+      margin-bottom: 20px;
+      font-weight: 500;
+      border-radius: 8px;
+      height: 40px;
+      background-color: #10a37f; /* Xanh lá của ChatGPT */
+      border-color: #10a37f;
+      
+      &:hover {
+         background-color: #1a7f64;
+         border-color: #1a7f64;
+      }
+    }
+
+    .session-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+
+      .session-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 10px;
+        background: transparent;
+        border-radius: 6px;
+        cursor: pointer;
+        border: none;
+        transition: background 0.2s ease;
+        color: #333;
+
+        &:hover {
+          background: #ececf1;
+        }
+
+        &.active {
+          background: #ececf1;
+          font-weight: 500;
+        }
+
+        .session-content {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          overflow: hidden;
+          flex: 1;
+
+          .session-icon {
+            font-size: 14px;
+            opacity: 0.7;
+          }
+
+          .session-title {
+            font-size: 13.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 150px;
+          }
+        }
+
+        .delete-icon {
+          color: #ff4d4f;
+          opacity: 0;
+          font-size: 14px;
+          transition: opacity 0.2s;
+          padding: 4px;
+          
+          &:hover {
+             color: #cf1322;
+          }
+        }
+
+        &:hover .delete-icon {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  /* Khung trò chuyện bự bên phải */
+  .chatbot-main-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #f9f9f9;
   }
 
   .typing-indicator {
@@ -104,59 +233,115 @@
 
   .chatbot-messages {
     flex: 1;
-    padding: 15px;
+    padding: 15px 20px;
     overflow-y: auto;
-    background: #f9f9f9;
+    background: 'transparent'; /* Đã định nghĩa màu ở chatbot-main-pane */
 
 
     .message {
       display: flex;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
+      align-items: flex-end; /* Align avatar and message nicely at bottom */
 
       &.user {
         justify-content: flex-end;
-        order: 1; /* Avatar của bot nằm sau tin nhắn */
 
         .message-content {
-          background: $hover-bg;
-          color: $white;
-          border-radius: 12px 12px 0 12px;
+          background: #0084ff; /* Xanh Messenger */
+          color: white;
+          border-radius: 18px 18px 4px 18px;
+        }
+
+        .message-avatar {
+          margin-left: 8px; 
         }
       }
 
       &.bot {
         justify-content: flex-start;
-        order: -1; /* Avatar của user nằm trước tin nhắn */
+        
         .message-content {
-          background: $hover-bg;
-          color: $white;
-          border-radius: 12px 12px 12px 0;
+          background: #e4e6eb; /* Xám sáng Messenger */
+          color: #050505;
+          border-radius: 18px 18px 18px 4px;
         }
-      }
-      .user .message-avatar {
-        order: -1; /* Avatar của user nằm trước tin nhắn */
-      }
-      .bot .message-avatar {
-        order: 1; /* Avatar của bot nằm sau tin nhắn */
-      }
-      .message-avatar {
-        margin: 0 8px;
+
+        .message-avatar {
+          margin-right: 8px;
+        }
+
+        /* Fix Markdown list bullets or paragraphs */
+        .markdown-content {
+          color: #050505;
+          
+          p {
+            margin-bottom: 8px;
+            &:last-child {
+              margin-bottom: 0;
+            }
+          }
+          
+          ul, ol {
+            padding-left: 20px;
+            margin-bottom: 8px;
+          }
+        }
       }
 
       .message-content {
-        max-width: 70%;
-        padding: 12px 12px;
+        max-width: 75%;
+        padding: 10px 14px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        font-size: 14px;
+        line-height: 1.4;
 
         p {
           margin: 0;
           word-wrap: break-word;
         }
 
-        .message-timestamp {
-          font-size: 10px;
-          opacity: 0.7;
-          display: block;
-          margin-top: 4px;
+        .chatbot-product-list {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 10px;
+
+          .chatbot-product-card {
+            background-color: white;
+            color: black;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            }
+
+            .product-details {
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+
+              strong {
+                font-size: 13px;
+                line-height: 1.2;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                line-clamp: 2; /* Add standard line-clamp to suppress IDE warnings */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+              }
+
+              .product-price {
+                color: #ee4d2d; // Shopee orange
+                font-weight: bold;
+                font-size: 14px;
+              }
+            }
+          }
         }
       }
     }
