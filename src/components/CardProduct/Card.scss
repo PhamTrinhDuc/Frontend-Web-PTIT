@@ -32,22 +32,43 @@
     }
 
     .product-image-container {
-      margin-bottom: 10px;
+      position: relative; // Để wishlist icon căn theo ảnh
       background-color: $card-product;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 200px;
       overflow: hidden;
-      padding: 0;
-      margin: 0 auto;
     
       img {
-        max-width: 90%; /* Tăng lên 100% để ảnh lấp đầy container */
-        max-height: 90%; /* Tăng lên 100% để ảnh lấp đầy container */
-        object-fit: contain; /* Giữ tỷ lệ ảnh */
-        display: block;
-        margin: 0 auto;
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+      }
+    }
+
+    .product-wishlist-icon {
+      position: absolute;
+      top: 10px;
+      left: 10px; // Di chuyển sang trái để không đè Badge
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
       }
     }
   }
@@ -79,22 +100,20 @@
 
   .product-action-button {
     position: absolute;
-    bottom: 60px; /* Đặt nút phía trên icon */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
+    bottom: 0px; // Đặt sát mép dưới của ảnh
+    left: 0;
+    width: 100%; // Chiếm toàn bộ chiều ngang ảnh
+    height: 40px;
     background-color: $black;
     color: $white;
+    border: none;
+    border-radius: 0 0 15px 15px; // Bo góc dưới khớp với card
     opacity: 0;
-    transition: opacity 0.3s ease;
-    z-index: 1; /* Đặt z-index thấp hơn icon để không che khuất */
+    transition: all 0.3s ease;
+    z-index: 5;
 
     &:hover {
-      background-color: $hover-bg;
-    }
-
-    &:active {
-      transform: translateX(-50%) scale(0.95);
+      background-color: #333;
     }
   }
 
@@ -108,12 +127,14 @@
     }
   }
 
-  .card-content {
-    margin: 12px 8px;
-
+  .card-content-inner {
+    padding: 12px 0;
+    
     .product-title {
-      margin-bottom: 5px;
-      font-weight: bold;
+      font-weight: 500;
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: $text;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -121,26 +142,20 @@
 
     .product-price {
       display: flex;
-      align-items: center;
-      margin-bottom: 8px;
+      gap: 12px;
+      align-items: baseline;
 
       .sale-price {
-        font-weight: bold;
-        color: $text;
-        font-size: 16px;
-        margin-right: 8px;
+        font-weight: 600;
+        color: #DB4444; // Đỏ đậm sang trọng
+        font-size: 18px;
       }
 
       .original-price {
-        margin-right: 10px;
         text-decoration: line-through;
-        color: $text-line-through;
+        color: #888;
         font-size: 14px;
       }
-    }
-
-    &:hover {
-      cursor: pointer;
     }
   }
 
