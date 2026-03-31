@@ -30,6 +30,7 @@ import EditProduct from '../pages/admin/EditProduct';
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
 import ManageCategoriesSuppliers from '../pages/admin/Category_Supplier';
 import Transaction from '../pages/user/Transaction';
+import Wishlist from '../pages/user/Wishlist';
 export const routes = [
   {
     path: "/",
@@ -56,6 +57,7 @@ export const routes = [
           { path: "edit-profile", element: <EditProfile /> },
           { path: "order-success", element: <SuccessOrder />},
           { path: "transaction", element: <Transaction />},
+          { path: "wishlist", element: <Wishlist />},
         ],
       },
     ],

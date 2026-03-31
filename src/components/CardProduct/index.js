@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Typography } from 'antd';
-import { HeartOutlined, EyeOutlined } from '@ant-design/icons';
+import { HeartOutlined, HeartFilled, EyeOutlined } from '@ant-design/icons';
 import { addToCart } from '../../slices/cartSlice';
+import { addToWishlist, removeFromWishlist } from '../../slices/wishlistSlice';
 import './Card.scss';
 
 const { Text } = Typography;
@@ -13,7 +14,9 @@ const { Text } = Typography;
 function CardProduct({ product }) {
   const [isHovered, setIsHovered] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  // const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const wishlistItems = useSelector((state) => state.wishlist.items) || [];
+  const isFavorite = wishlistItems.some(item => item.productId === product.id);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -26,6 +29,19 @@ function CardProduct({ product }) {
 
   const handleViewDetail = () => {
     navigate(`/product-detail/${product.id}`);
+  };
+
+  const handleToggleWishlist = (e) => {
+    e.stopPropagation();
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
+    if (isFavorite) {
+      dispatch(removeFromWishlist({ userId: user.id, productId: product.id }));
+    } else {
+      dispatch(addToWishlist({ userId: user.id, productId: product.id }));
+    }
   };
 
   return (
@@ -56,6 +72,15 @@ function CardProduct({ product }) {
             //   <HeartOutlined key="heart" className="product-action-icon" />,
             //   <EyeOutlined key="view" className="product-action-icon" />,
             // ]}
+            extra={
+              <div className="product-wishlist-icon" onClick={handleToggleWishlist}>
+                {isFavorite ? (
+                  <HeartFilled style={{ color: '#DB4444' }} />
+                ) : (
+                  <HeartOutlined />
+                )}
+              </div>
+            }
           >
             {isHovered && (
               <Button

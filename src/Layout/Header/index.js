@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Row, Col, Input, Button, Badge } from 'antd';
-import { SearchOutlined, ShoppingCartOutlined, UserOutlined, MenuOutlined } from '@ant-design/icons';
+import { SearchOutlined, ShoppingCartOutlined, UserOutlined, MenuOutlined, HeartOutlined } from '@ant-design/icons';
 import { FaHome, FaShoppingCart, FaInfoCircle, FaEnvelope } from 'react-icons/fa';
 import { get } from '../../utils/requests';
 import './Header.scss';
@@ -14,7 +14,9 @@ const Header = () => {
   const [searchValue, setSearchValue] = useState('');
   const { isLoggedIn, user } = useSelector((state) => state.auth);
   const cartItems = useSelector((state) => state.cart.items);
+  const wishlistItems = useSelector((state) => state.wishlist.items) || [];
   const totalQuantityProduct = isLoggedIn ? cartItems.reduce((sum, item) => sum + item.quantity, 0) : 0;
+  const totalWishlist = isLoggedIn ? wishlistItems.length : 0;
   const [menuVisible, setMenuVisible] = useState(false); // State để toggle menu
   // Logic cho cart
   const handleAddToCart = () => {
@@ -78,16 +80,16 @@ const Header = () => {
           <Col xs={0} md={12} className={`nav-links ${menuVisible ? 'active' : ''}`}>
             <nav>
               <Link to="/" className="nav-link">
-                <FaHome /> Home
+                <FaHome /> <span>Home</span>
               </Link>
               <Link to="/products" className="nav-link">
-                <FaShoppingCart /> Shop
+                <FaShoppingCart /> <span>Shop</span>
               </Link>
               <Link to="/about" className="nav-link">
-                <FaInfoCircle /> About
+                <FaInfoCircle /> <span>About</span>
               </Link>
               <Link to="/contact" className="nav-link">
-                <FaEnvelope /> Contact
+                <FaEnvelope /> <span>Contact</span>
               </Link>
             </nav>
           </Col>
@@ -101,16 +103,23 @@ const Header = () => {
               onChange={handleSearch}
               onPressEnter={handleSearchSubmit}
             />
+            <Badge count={totalWishlist} showZero>
+              <Button
+                type="text"
+                shape="circle"
+                icon={<HeartOutlined style={{ fontSize: '22px' }} />}
+                className="wishlist-icon"
+                onClick={() => navigate(isLoggedIn ? '/wishlist' : '/login')}
+              />
+            </Badge>
             <Badge count={totalQuantityProduct} showZero>
               <Button
-                type="dashed"
-                shape="round"
-                icon={<ShoppingCartOutlined />}
+                type="text"
+                shape="circle"
+                icon={<ShoppingCartOutlined style={{ fontSize: '22px' }} />}
                 className="cart-icon"
                 onClick={handleAddToCart}
-              >
-                Cart
-              </Button>
+              />
             </Badge>
             <Button
               type="dashed"

@@ -13,12 +13,13 @@ import storage from 'redux-persist/lib/storage';
 import authReducer from '../slices/authSlice';
 import cartReducer from '../slices/cartSlice';
 import reviewReducer from '../slices/reviewSlice';
+import wishlistReducer from '../slices/wishlistSlice';
 
 // Cấu hình persist
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'cart', 'reviews'], // Persist cả auth, cart và reviews
+  whitelist: ['auth', 'cart', 'reviews', 'wishlist'], // Persist cả auth, cart, reviews và wishlist
 };
 
 // Kết hợp các reducer
@@ -26,6 +27,7 @@ const rootReducer = combineReducers({
   auth: authReducer, // Key là 'auth'
   cart: cartReducer, // Key là 'cart'
   reviews: reviewReducer, // Key là 'reviews'
+  wishlist: wishlistReducer, // Key là 'wishlist'
 });
 
 // Áp dụng persist cho rootReducer

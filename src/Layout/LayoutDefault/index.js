@@ -1,6 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, Link, Outlet } from 'react-router-dom';
+import { useEffect } from 'react';
+import { fetchWishlist } from '../../slices/wishlistSlice';
 import AdminButton from '../../components/AdminButton';
 import Header from '../Header';
 import Footer from '../Footer';
@@ -11,7 +13,14 @@ import Chatbot from '../../pages/user/Chatbot';
 function LayoutDefault() {
 
   const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const role = user?.role;
+
+  useEffect(() => {
+    if (isLoggedIn && user?.id) {
+      dispatch(fetchWishlist(user.id));
+    }
+  }, [isLoggedIn, user?.id, dispatch]);
 
   return (
     <>

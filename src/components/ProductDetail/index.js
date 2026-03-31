@@ -3,8 +3,10 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Rate } from 'antd';
 import { Row, Col, Card, Radio, Button, Image, Typography, Divider } from 'antd';
-import { MinusOutlined, PlusOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { MinusOutlined, PlusOutlined, ShoppingCartOutlined, HeartOutlined, HeartFilled } from '@ant-design/icons';
 import { CarOutlined, SyncOutlined } from '@ant-design/icons';
+import { useSelector } from 'react-redux';
+import { addToWishlist, removeFromWishlist } from '../../slices/wishlistSlice';
 import { addToCart } from '../../slices/cartSlice';
 import './ProductDetail.scss';
 
@@ -51,6 +53,9 @@ const ProductDetail = ({ product }) => {
   } = product;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
+  const wishlistItems = useSelector((state) => state.wishlist.items) || [];
+  const isFavorite = wishlistItems.some(item => item.productId === product.id);
 
   // State để lưu các lựa chọn của từng thông số
   const [selectedOptions, setSelectedOptions] = useState(() => {
@@ -81,6 +86,18 @@ const ProductDetail = ({ product }) => {
       ...prev,
       [key]: value,
     }));
+  };
+
+  const handleToggleWishlist = () => {
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
+    if (isFavorite) {
+      dispatch(removeFromWishlist({ userId: user.id, productId: product.id }));
+    } else {
+      dispatch(addToWishlist({ userId: user.id, productId: product.id }));
+    }
   };
 
   return (
@@ -149,15 +166,24 @@ const ProductDetail = ({ product }) => {
           )}
 
           {/* Nút mua hàng */}
-          <Button
-            type="primary"
-            icon={<ShoppingCartOutlined />}
-            size="large"
-            className="buy-button"
-            onClick={handleBuyNow}
-          >
-            Buy Now
-          </Button>
+          <div className="product-actions" style={{ display: 'flex', gap: '10px' }}>
+            <Button
+              type="primary"
+              icon={<ShoppingCartOutlined />}
+              size="large"
+              className="buy-button"
+              onClick={handleBuyNow}
+              style={{ flex: 1 }}
+            >
+              Buy Now
+            </Button>
+            <Button
+              size="large"
+              icon={isFavorite ? <HeartFilled style={{ color: '#DB4444' }} /> : <HeartOutlined />}
+              onClick={handleToggleWishlist}
+              className="wishlist-detail-button"
+            />
+          </div>
 
           {/* Thông tin giao hàng và trả hàng */}
           <div className="delivery-info">
