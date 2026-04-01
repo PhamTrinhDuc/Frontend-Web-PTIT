@@ -31,9 +31,12 @@ function Billing() {
   const totalAmount = subtotal + shippingFee;
 
   const handlePlaceOrder = async (values) => {
+    console.log("Token in Billing state:", token);
+    console.log("Submit handlePlaceOrder triggered with values:", values);
+
     // Collect order data
     const orderDataResponse = {
-      userId: user.id || 1, // Fallback for testing
+      userId: user.id || null,
       items: selectedItems.map(item => ({
         productId: item.id,
         quantity: item.quantity,
@@ -41,34 +44,57 @@ function Billing() {
         discount: item.discount || 0
       })),
       paymentMethod: paymentMethod.toUpperCase(),
-      shippingAddress: values.streetAddress, // Ideally sent to backend
+      shippingAddress: values.streetAddress,
       contactPhone: values.phoneNumber,
       contactName: values.fullName
     };
 
-    if (paymentMethod === 'payos') {
-      // TODO: Placeholder for PayOS Integration
-      // 1. Call Backend to create PayOS payment link
-      // 2. Redirect user to the PayOS checkout URL returned by backend
-      message.loading('Redirecting to PayOS Checkout...', 2);
-      // Example: 
-      // const payOSResponse = await post('payments/payos/create', orderDataResponse, token);
-      // window.location.href = payOSResponse.checkoutUrl;
-      setTimeout(() => {
-        message.info('PayOS placeholder triggered. Implement redirect here.');
-      }, 2000);
-      return; 
-    }
+    console.log("Order Data Payload:", orderDataResponse);
 
     try {
+      // 1. Always create order first to get orderId
+      console.log("Calling API to create order...");
       const response = await post('orders', orderDataResponse, token);
-      if (response) {
+      console.log("Order Creation Response:", response);
+
+      if (response && response.id) {
+        const orderId = response.id;
+        console.log("Order created successfully, ID:", orderId);
+
+        // 2. If PayOS is selected, create payment link and redirect
+        if (paymentMethod === 'payos') {
+          console.log("Payment method is PayOS, calling create-payos...");
+          message.loading('Redirecting to PayOS Checkout...', 2);
+
+          try {
+            const payOSData = await post('payments/create-payos', { orderId }, token);
+            console.log("PayOS Link Response:", payOSData);
+
+            if (payOSData && payOSData.checkoutUrl) {
+              console.log("Redirecting to:", payOSData.checkoutUrl);
+              dispatch(clearCart());
+              window.location.href = payOSData.checkoutUrl;
+              return;
+            } else {
+              throw new Error('Failed to generate payment link');
+            }
+          } catch (payError) {
+            console.error("PayOS Error:", payError);
+            message.error('Payment gateway error. Please try again.');
+            return;
+          }
+        }
+
+        // 3. For COD or other methods, proceed to success page
         message.success('Order placed successfully!');
         dispatch(clearCart());
         navigate('/order-success');
+      } else {
+        console.error("Order response missing ID!");
+        message.error('Failed to create order properly.');
       }
     } catch (error) {
-      console.error("Error placing order:", error);
+      console.error("Critical Error placing order:", error);
       message.error(error.message || 'Failed to place order');
     }
   };
@@ -79,6 +105,7 @@ function Billing() {
         form={form}
         name="checkout_form"
         onFinish={handlePlaceOrder}
+        onFinishFailed={(errorInfo) => console.log('Validation Failed:', errorInfo)}
         layout="vertical"
         initialValues={{
           fullName: user?.fullname || "",
@@ -117,7 +144,7 @@ function Billing() {
             <ShopOutlined className="icon-shop" />
             <Title level={4}>Products Ordered</Title>
           </div>
-          
+
           <div className="products-table-header">
             <Row>
               <Col span={10}>Product</Col>
@@ -148,7 +175,7 @@ function Billing() {
               </Row>
             ))}
           </div>
-          
+
           <div className="shipping-option">
             <Row justify="space-between" align="middle">
               <Col><Text strong>Shipping Option:</Text> Standard Delivery</Col>
@@ -208,4 +235,4 @@ function Billing() {
   );
 }
 
-export default Billing;
+export default Billing;
