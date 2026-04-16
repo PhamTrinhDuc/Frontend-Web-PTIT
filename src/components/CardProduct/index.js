@@ -60,7 +60,45 @@ function CardProduct({ product }) {
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleViewDetail}
       >
-        <Badge.Ribbon text={`-${product.discount}%`} color="#DB4444" className="sale-badge">
+        {product.discount > 0 ? (
+          <Badge.Ribbon text={`-${product.discount}%`} color="#DB4444" className="sale-badge">
+            <Card
+              className="card-image"
+              hoverable
+              cover={
+                <div className="product-image-container">
+                  <img src={product.imagePaths?.[0] || "default-image.jpg"} alt={product.name} className="product-image" />
+                  <div className="product-wishlist-icon" onClick={handleToggleWishlist}>
+                    {isFavorite ? (
+                      <HeartFilled style={{ color: '#DB4444' }} />
+                    ) : (
+                      <HeartOutlined />
+                    )}
+                  </div>
+                  {isHovered && (
+                    <Button
+                      type="primary"
+                      className="product-action-button"
+                      onClick={handleAddToCart}
+                    >
+                      Add to cart
+                    </Button>
+                  )}
+                </div>
+              }
+            >
+              <div className="card-content-inner">
+                <h3 className="product-title">{product.name}</h3>
+                <div className="product-price">
+                  <Text className="sale-price">
+                    ${(product.price * (1 - product.discount / 100)).toFixed(2)}
+                  </Text>
+                  <Text className="original-price">${product.price}</Text>
+                </div>
+              </div>
+            </Card>
+          </Badge.Ribbon>
+        ) : (
           <Card
             className="card-image"
             hoverable
@@ -89,20 +127,11 @@ function CardProduct({ product }) {
             <div className="card-content-inner">
               <h3 className="product-title">{product.name}</h3>
               <div className="product-price">
-                {product.discount > 0 ? (
-                  <>
-                    <Text className="sale-price">
-                      ${(product.price * (1 - product.discount / 100)).toFixed(2)}
-                    </Text>
-                    <Text className="original-price">${product.price}</Text>
-                  </>
-                ) : (
-                  <Text className="sale-price">${product.price}</Text>
-                )}
+                <Text className="sale-price">${product.price}</Text>
               </div>
             </div>
           </Card>
-        </Badge.Ribbon>
+        )}
       </div>
     </>
   );

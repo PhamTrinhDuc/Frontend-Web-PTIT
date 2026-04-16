@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Table, Button, Alert, message, Select } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Table, message, Select } from 'antd';
 import { useSelector } from 'react-redux';
 import { put } from '../../../utils/requests';
 

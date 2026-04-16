@@ -7,6 +7,7 @@ import Loading from "../Loading";
 const BestSellingSection = () => {
   const [page, setPage] = useState(1);
   const pageSize = numPageProductHeader;
+  // const pageSize = 8;
 
   const { products, totalPages, loading, error } = useAllProduct({ page, pageSize });
 

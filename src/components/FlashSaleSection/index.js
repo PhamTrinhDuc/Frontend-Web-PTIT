@@ -1,25 +1,50 @@
-import { useState } from "react";
-import useProductByDiscountDesc from "../../hook/useProductByDiscountDesc";
+import { useState, useEffect } from "react";
 import FlashSale from "../FlashSale";
 import { numPageProductHeader } from "../../utils/variable";
 import Loading from "../Loading";
+import { get } from "../../utils/requests";
 
 const FlashSaleSection = () => {
   const [page, setPage] = useState(1);
   const pageSize = numPageProductHeader;
+  const [activeSale, setActiveSale] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const { products, loading, error, totalPages } = useProductByDiscountDesc({page, pageSize});
+  useEffect(() => {
+    const fetchActiveSale = async () => {
+      setLoading(true);
+      try {
+        const response = await get('flashsales/active');
+        if (response) {
+          setActiveSale(response);
+        }
+      } catch (err) {
+        console.error('Failed to fetch active flash sale:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActiveSale();
+  }, []);
 
   const handlePaginationChange = (newPage) => {
     setPage(newPage);
   };
 
   if (loading) return <Loading loading={loading} />;
-  if (error) return <div>Error: {error}</div>;
+  
+  if (!activeSale) return null;
+
+  const products = activeSale.products || [];
+  const paginatedProducts = products.slice((page - 1) * pageSize, page * pageSize);
+  const totalPages = Math.ceil(products.length / pageSize);
 
   return (
     <FlashSale
-      products={products}
+      title={activeSale.title}
+      endDate={activeSale.endDate}
+      products={paginatedProducts}
       pageSize={pageSize}
       currentPage={page}
       totalPages={totalPages}

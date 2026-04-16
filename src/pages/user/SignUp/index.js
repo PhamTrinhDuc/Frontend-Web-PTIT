@@ -1,7 +1,7 @@
 import { Form, Input, message, Button, Alert, Divider } from 'antd';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { GoogleOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
+import { GoogleOutlined, LockOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import './SignUp.scss';
 import { post } from '../../../utils/requests';
 
@@ -17,11 +17,13 @@ function SignUp() {
     try {
       const payload = {
         username: values.username,
+        email: values.email,
         password: values.password,
         confirmPassword: values.confirmPassword
       };
 
       const response = await post('auth/register', payload);
+      console.log("Register response", response);
 
       if (response) {
         message.success({ content: 'Account created successfully! Please login.', duration: 3 });
@@ -79,9 +81,23 @@ function SignUp() {
               { min: 3, message: 'Username must be at least 3 characters.' }
             ]}
           >
-            <Input 
-              prefix={<UserOutlined className="site-form-item-icon" />} 
-              placeholder="Username" 
+            <Input
+              prefix={<UserOutlined className="site-form-item-icon" />}
+              placeholder="Username"
+              size="large"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="email"
+            rules={[
+              { required: true, message: 'Please input your email!' },
+              { type: 'email', message: 'The input is not valid E-mail!' }
+            ]}
+          >
+            <Input
+              prefix={<MailOutlined className="site-form-item-icon" />}
+              placeholder="Email"
               size="large"
             />
           </Form.Item>
@@ -93,9 +109,9 @@ function SignUp() {
               { min: 6, message: 'Password must be at least 6 characters.' }
             ]}
           >
-            <Input.Password 
-              prefix={<LockOutlined className="site-form-item-icon" />} 
-              placeholder="Password" 
+            <Input.Password
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              placeholder="Password"
               size="large"
             />
           </Form.Item>
@@ -115,18 +131,18 @@ function SignUp() {
               }),
             ]}
           >
-            <Input.Password 
-              prefix={<LockOutlined className="site-form-item-icon" />} 
-              placeholder="Confirm Password" 
+            <Input.Password
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              placeholder="Confirm Password"
               size="large"
             />
           </Form.Item>
 
           <Form.Item>
-            <Button 
-              type="primary" 
-              htmlType="submit" 
-              className="submit-btn" 
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="submit-btn"
               size="large"
               loading={loading}
               block
@@ -138,10 +154,10 @@ function SignUp() {
           <Divider className="divider-text" plain>OR</Divider>
 
           <Form.Item>
-            <Button 
-              className="google-btn" 
-              icon={<GoogleOutlined />} 
-              size="large" 
+            <Button
+              className="google-btn"
+              icon={<GoogleOutlined />}
+              size="large"
               onClick={handleGoogleSignup}
               block
             >

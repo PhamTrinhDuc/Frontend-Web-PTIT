@@ -29,6 +29,7 @@ import AddProduct from '../pages/admin/AddProduct';
 import EditProduct from '../pages/admin/EditProduct';
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
 import ManageCategoriesSuppliers from '../pages/admin/Category_Supplier';
+import ManageBanner from '../pages/admin/ManageBanner';
 import Transaction from '../pages/user/Transaction';
 import Wishlist from '../pages/user/Wishlist';
 export const routes = [
@@ -79,6 +80,7 @@ export const routes = [
         // { path: "manage-categories", element: <ManageCategories /> },
         { path: "manage-product", element: <ManageProduct /> },
         {path: "manage-categories-supplier", element: <ManageCategoriesSuppliers /> },
+        { path: "manage-banner", element: <ManageBanner /> },
         { path: "*", element: <Error /> },
       ]},
     ],

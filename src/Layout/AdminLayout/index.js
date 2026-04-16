@@ -1,11 +1,10 @@
 import React from 'react';
-import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Row, Col, Input, Button, Badge, Menu, Layout} from 'antd';
+import { Row, Col, Button, Menu, Layout} from 'antd';
 import { Outlet } from 'react-router-dom';
-import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
-import { MdDashboard, MdOutlineBorderColor, MdInventory, MdCategory   } from "react-icons/md";
+import { UserOutlined } from '@ant-design/icons';
+import { MdDashboard, MdOutlineBorderColor, MdInventory, MdViewCarousel } from "react-icons/md";
 import { BsPersonLinesFill } from "react-icons/bs";
 import { FaShoppingCart } from "react-icons/fa";
 import { HiSpeakerWave } from "react-icons/hi2";
@@ -19,7 +18,6 @@ import { Content } from 'antd/es/layout/layout';
 
 const AdminHeader = () => {
   const navigate = useNavigate();
-  const [searchValue, setSearchValue] = useState('');
   const { isLoggedIn, user } = useSelector((state) => state.auth);
 
 
@@ -29,26 +27,6 @@ const AdminHeader = () => {
       navigate('/account'); // Khi đã đăng nhập, click username dẫn đến trang account
     } else {
       navigate('/login'); // Chưa đăng nhập thì dẫn đến trang login
-    }
-  };
-
-  // Logic cho search
-  const handleSearch = (e) => {
-    setSearchValue(e.target.value);
-  };
-
-  const handleSearchSubmit = async () => {
-    if (searchValue.trim()) {
-      try {
-        const response = await fetch('YOUR_API_ENDPOINT/search'); // Thay bằng API search nếu cần
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-        console.log(data);
-      } catch (error) {
-        console.error('There was a problem with your fetch operation:', error);
-      }
     }
   };
 
@@ -65,14 +43,6 @@ const AdminHeader = () => {
           </Col>
           
           <Col xs={12} md={8} className="header-actions">
-            {/* <Input
-              placeholder="What you looking for?"
-              suffix={<SearchOutlined onClick={handleSearchSubmit} />}
-              className="search-bar"
-              value={searchValue}
-              onChange={handleSearch}
-              onPressEnter={handleSearchSubmit}
-            /> */}
             <Button
               type="dashed"
               shape="round"
@@ -118,6 +88,14 @@ const AdminMenu = () => {
         <Menu.Item key="4" icon={<BsPersonLinesFill style={{ fontSize: '24px' }} />}
         onClick={() => navigate('/admin/manage-customer')}>
           Customer
+        </Menu.Item>
+        <Menu.Item key="6" icon={<MdInventory style={{ fontSize: '24px' }} />}
+        onClick={() => navigate('/admin/promotion')}>
+          Flash Sale
+        </Menu.Item>
+        <Menu.Item key="7" icon={<MdViewCarousel style={{ fontSize: '24px' }} />}
+        onClick={() => navigate('/admin/manage-banner')}>
+          Manage Panel
         </Menu.Item>
         <Menu.Item 
           key="5" 
